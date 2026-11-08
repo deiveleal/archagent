@@ -25,14 +25,23 @@ MARGEM, TOPO_FAIXA = 20, 30
 ROTULOS = {"negocio": "Negócio", "aplicacao": "Aplicação", "tecnologia": "Tecnologia"}
 
 NEGOCIO_BPC = {
-    "BusinessProcess", "BusinessFunction", "BusinessInteraction", "BusinessEvent",
-    "BusinessService", "BusinessObject", "BusinessActor", "BusinessRole",
+    "BusinessProcess",
+    "BusinessFunction",
+    "BusinessInteraction",
+    "BusinessEvent",
+    "BusinessService",
+    "BusinessObject",
+    "BusinessActor",
+    "BusinessRole",
     "BusinessCollaboration",
-}  # fmt: skip
+}
 APLICACAO_AC = {
-    "ApplicationComponent", "ApplicationInterface", "ApplicationService", "DataObject",
+    "ApplicationComponent",
+    "ApplicationInterface",
+    "ApplicationService",
+    "DataObject",
     "ApplicationCollaboration",
-}  # fmt: skip
+}
 
 
 def _vizinhos(m: Modelo) -> dict[str, list[str]]:
@@ -82,13 +91,18 @@ def _bpc(m: Modelo, regras: Regras) -> set[str]:
     }
     # Componentes que servem o negócio por meio de um serviço de aplicação também entram.
     servicos_negocio = {
-        r.origem for r in m.relacoes
-        if r.destino in negocio and r.origem in ids and regras.camada(ids[r.origem].tipo)
-        == "aplicacao"
-    }  # fmt: skip
+        r.origem
+        for r in m.relacoes
+        if r.destino in negocio
+        and r.origem in ids
+        and regras.camada(ids[r.origem].tipo) == "aplicacao"
+    }
     for r in m.relacoes:
-        if (r.destino in servicos_negocio and r.origem in ids
-                and ids[r.origem].tipo == "ApplicationComponent"):  # fmt: skip
+        if (
+            r.destino in servicos_negocio
+            and r.origem in ids
+            and ids[r.origem].tipo == "ApplicationComponent"
+        ):
             componentes.add(r.origem)
     return negocio | componentes
 
@@ -130,19 +144,23 @@ def desenhar(m: Modelo, regras: Regras, ids: list[str], nome: str, viewpoint: st
             continue
         linhas = (len(elems) + colunas - 1) // colunas
         altura = TOPO_FAIXA + linhas * ALTURA + (linhas - 1) * ESPACO + MARGEM
-        visao.faixas.append(Faixa(rotulo=ROTULOS[camada], camada=camada, x=MARGEM, y=y,
-                                  w=largura_faixa, h=altura))  # fmt: skip
+        visao.faixas.append(
+            Faixa(rotulo=ROTULOS[camada], camada=camada, x=MARGEM, y=y, w=largura_faixa, h=altura)
+        )
         for i, e in enumerate(elems):
             lin, col = divmod(i, colunas)
-            visao.nos.append(No(
-                elemento=e.id,
-                x=2 * MARGEM + col * (LARGURA + ESPACO),
-                y=y + TOPO_FAIXA + lin * (ALTURA + ESPACO),
-            ))  # fmt: skip
+            visao.nos.append(
+                No(
+                    elemento=e.id,
+                    x=2 * MARGEM + col * (LARGURA + ESPACO),
+                    y=y + TOPO_FAIXA + lin * (ALTURA + ESPACO),
+                )
+            )
         y += altura + ESPACO
     na_visao = set(ids)
-    visao.conexoes = [Conexao(relacao=r.id) for r in m.relacoes
-                      if r.origem in na_visao and r.destino in na_visao]  # fmt: skip
+    visao.conexoes = [
+        Conexao(relacao=r.id) for r in m.relacoes if r.origem in na_visao and r.destino in na_visao
+    ]
     return visao
 
 

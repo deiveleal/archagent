@@ -1,0 +1,10 @@
+grupo: ambiguo
+descricao: Processo citado sem sistemas nem responsáveis
+rapido: false
+entradas:
+  - texto: |
+      O processo de faturamento precisa entrar no modelo. Ainda não sabemos quais
+      sistemas participam nem quem é o responsável.
+itens_esperados:
+  - {tipo: processo, nome: Faturar, sinonimos: [Faturamento, Realizar faturamento, Emitir faturamento]}
+deve_perguntar: true

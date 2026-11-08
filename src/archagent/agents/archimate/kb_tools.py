@@ -35,14 +35,27 @@ def carregar_exemplo(pasta: Path) -> tuple[list[ItemEsperado], Modelo]:
     briefing = json.loads((pasta / "briefing_esperado.json").read_text(encoding="utf-8"))
     esperado = json.loads((pasta / "modelo_esperado.json").read_text(encoding="utf-8"))
     itens = [ItemEsperado(i["id"], i["tipo"], i["nome"]) for i in briefing["itens"]]
-    elementos = [Elemento(tipo=e["tipo"], nome=e["nome"], origens=e.get("origens", []),
-                          premissa=e.get("premissa", False))
-                 for e in esperado["elementos"]]  # fmt: skip
+    elementos = [
+        Elemento(
+            tipo=e["tipo"],
+            nome=e["nome"],
+            origens=e.get("origens", []),
+            premissa=e.get("premissa", False),
+        )
+        for e in esperado["elementos"]
+    ]
     por_nome = {e.nome: e.id for e in elementos}
-    relacoes = [Relacao(tipo=r["tipo"], origem=por_nome.get(r["origem"], r["origem"]),
-                        destino=por_nome.get(r["destino"], r["destino"]), nome=r.get("nome", ""),
-                        origens=r.get("origens", []), acesso=r.get("acesso"))
-                for r in esperado["relacoes"]]  # fmt: skip
+    relacoes = [
+        Relacao(
+            tipo=r["tipo"],
+            origem=por_nome.get(r["origem"], r["origem"]),
+            destino=por_nome.get(r["destino"], r["destino"]),
+            nome=r.get("nome", ""),
+            origens=r.get("origens", []),
+            acesso=r.get("acesso"),
+        )
+        for r in esperado["relacoes"]
+    ]
     return itens, Modelo(nome=pasta.name, elementos=elementos, relacoes=relacoes)
 
 
@@ -87,15 +100,20 @@ def checar(kb: Path) -> tuple[list[str], list[str]]:
         erros.append(f"vault: elementos do MVP sem ficha: {', '.join(faltam)}")
     rascunhos = Vault(notas).rascunhos
     if rascunhos:
-        info.append(f"vault: {len(rascunhos)} notas em rascunho (o agente só usa 'revisado' "
-                    "quando VAULT_INCLUIR_RASCUNHOS=false)")  # fmt: skip
+        info.append(
+            f"vault: {len(rascunhos)} notas em rascunho (o agente só usa 'revisado' "
+            "quando VAULT_INCLUIR_RASCUNHOS=false)"
+        )
 
     # Exemplos ouro
     pasta_ex = kb / "archimate" / "exemplos"
     exemplos = sorted(p for p in pasta_ex.iterdir() if p.is_dir()) if pasta_ex.exists() else []
     for ex in exemplos:
-        faltando = [f for f in ("briefing_esperado.json", "modelo_esperado.json", "notas.md")
-                    if not (ex / f).exists()]  # fmt: skip
+        faltando = [
+            f
+            for f in ("briefing_esperado.json", "modelo_esperado.json", "notas.md")
+            if not (ex / f).exists()
+        ]
         if not (ex / "entrada").is_dir() or not any((ex / "entrada").iterdir()):
             faltando.append("entrada/")
         if faltando:
@@ -105,8 +123,11 @@ def checar(kb: Path) -> tuple[list[str], list[str]]:
         modelo.visoes = gerar_visoes(modelo, regras)
         achados = validar_v1(exportar(modelo), regras.xsd_dir)
         achados += validar_modelo(modelo, regras, itens)
-        erros += [f"exemplo {ex.name}: {a.criterio} {a.regra}: {a.mensagem}"
-                  for a in achados if a.severidade == "erro"]  # fmt: skip
+        erros += [
+            f"exemplo {ex.name}: {a.criterio} {a.regra}: {a.mensagem}"
+            for a in achados
+            if a.severidade == "erro"
+        ]
     info.append(f"exemplos ouro: {len(exemplos)}")
 
     # Propostas
@@ -132,8 +153,9 @@ def main(argv: list[str] | None = None) -> int:
     args = p.parse_args(argv)
     if args.cmd == "extract-relations":
         dados: dict[str, Any] = extrair_relacoes(args.xml, args.fonte)
-        args.saida.write_text(json.dumps(dados, ensure_ascii=False, indent=1) + "\n",
-                              encoding="utf-8")  # fmt: skip
+        args.saida.write_text(
+            json.dumps(dados, ensure_ascii=False, indent=1) + "\n", encoding="utf-8"
+        )
         print(f"{args.saida}: {len(dados['permitidas'])} conceitos")
         return 0
     erros, info = checar(args.kb)

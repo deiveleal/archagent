@@ -1,0 +1,13 @@
+{
+  "resultados": [
+    {
+      "caso": "ouro-EX-001",
+      "grupo": "ouro",
+      "tokens": 0,
+      "segundos": 0,
+      "perguntas": 0,
+      "itens": 0,
+      "erro": "LLMError: O provedor LLM não respondeu após 3 tentativas (APITimeoutError)."
+    }
+  ]
+}

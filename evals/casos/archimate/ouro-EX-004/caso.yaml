@@ -1,0 +1,5 @@
+grupo: ouro
+descricao: Exemplo ouro EX-004-entregas-drawio
+rapido: true
+exemplo: EX-004-entregas-drawio          # entradas e esperados vêm de kb/archimate/exemplos/
+deve_perguntar: false

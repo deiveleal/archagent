@@ -1,0 +1,8 @@
+grupo: ambiguo
+descricao: Pedido vago, sem nomes de sistemas nem de quem usa
+rapido: true
+entradas:
+  - texto: |
+      Precisamos de um sistema para o pessoal lançar as coisas e ele tem que conversar
+      com o outro sistema que já temos. Depois a gente vê onde vai rodar.
+deve_perguntar: true
