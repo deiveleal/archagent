@@ -42,8 +42,10 @@ test-integration:
 	$(PY) pytest -m integration
 
 ## Base de conhecimento (harness §9)
+# Cada agente valida a própria base; agentes sem base nesta branch são pulados.
 kb-check:
-	$(PY) python -m archagent.agents.archimate.kb_tools check --kb kb
+	@if [ -d kb/archimate ]; then $(PY) python -m archagent.agents.archimate.kb_tools check --kb kb; \
+	else echo "kb-check: kb/archimate ausente nesta branch; nada a validar."; fi
 
 ## N3 — avaliação do agente com o LLM real (gasta tokens)
 eval:
