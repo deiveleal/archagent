@@ -32,9 +32,9 @@
 
 | Fase | Status | Início | Fim | Critério de saída atingido? | PR |
 | --- | --- | --- | --- | --- | --- |
-| F0 — Fundação | Em andamento | 2026-11-08 | — | — | — |
+| F0 — Fundação | Concluída | 2026-11-08 | 2026-11-08 | Sim, exceto tornar a CI obrigatória no ruleset (P-10) | #2, #3 |
 | F1 — Base de conhecimento, modelo ArchiMate e validação | Em andamento | 2026-11-08 | — | — | — |
-| F2 — Entrada por texto e transcrição | Não iniciada | — | — | — | — |
+| F2 — Entrada por texto e transcrição | Em andamento | 2026-11-08 | — | — | — |
 | F3 — Modelagem a partir do briefing | Não iniciada | — | — | — | — |
 | F4 — Entrada por desenho | Não iniciada | — | — | — | — |
 | F5 — Refinamento pela conversa e avaliação | Não iniciada | — | — | — | — |
@@ -52,6 +52,10 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | F0 — agente: API FastAPI (`/health`, `/health/llm`), formato de erro com `request_id`, container `agent-archimate` sem porta publicada | `task/archimate/f0-api` | PR #3 |
 | 2026-11-08 | F1 — container `tool-archi`: Archi 5.10.0 + Xvfb + API `/health` e `/convert`; erro do Archi legível; testes N1 e N2 | `core/f1-tool-archi` | PR #4 |
 | 2026-11-08 | F1 — agente: regras (elementos, relações do Archi 5.10, coerência, XSDs), modelo interno, validadores V1–V4, exportação Exchange Format, layout por viewpoint, cliente do `tool-archi` (V5), vault (35 fichas + padrões, anti-padrões e convenções, em rascunho), busca BM25, 5 exemplos ouro, `kb-check` | `task/archimate/f1-kb-validacao` | PR #5 |
+| 2026-11-08 | Sincronização `main` → `agent/archimate` | `main` | PR #6 |
+| 2026-11-08 | F2 — núcleo: leitores de entrada (txt, md, vtt, srt, docx, drawio, imagem) com validação e proteção XXE, briefing, sessões em arquivo, `kb/core`, workflows `kb.yml` e `eval.yml` | `core/f2-entradas-briefing` | PR #7 |
+| 2026-11-08 | Sincronização `main` → `agent/archimate` | `sync/main-para-agent-archimate` | PR #10 (substitui o #8, que tinha conflito) |
+| 2026-11-08 | Núcleo: `LLM_ENABLE_THINKING` (modo de raciocínio do Qwen3 desligado por padrão) | `core/llm-sem-raciocinio` | PR #9 |
 
 ## 5. Pendências
 
@@ -64,11 +68,12 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | P-05 | ~~Versões dos XSDs do Exchange Format~~ **Resolvida:** XSDs do Archi 5.10.0 | Spec §19 | F1 (2026-11-08) |
 | P-06 | Limite de tokens por execução do `eval.yml` | Harness §13 | Depois da 1ª avaliação completa |
 | P-07 | Se o `deepseek-v4.1-flash-1017` funciona bem como juiz com temperatura 0 | Harness §13 | F3 |
-| P-08 | Se o Archi 5 roda na CI do GitHub (Linux, sem tela) | Harness §13 | F1 |
+| P-08 | ~~Se o Archi 5 roda na CI do GitHub~~ **Resolvida:** roda; os testes N2 com o `tool-archi` passam no `ubuntu-latest` | Harness §13 | F1 (2026-11-08) |
 | P-09 | Regra de aprovação de revisor quando entrar mais alguém | Harness §13 | Quando houver segunda pessoa |
-| P-10 | Adicionar as verificações obrigatórias (`ci`, `eval`, `kb`) ao ruleset quando os workflows existirem | Decisão D-02 | F0 |
+| P-10 | Adicionar as verificações obrigatórias (`N0`, `N1 + N2`, depois `eval` e `kb`) ao ruleset. **Precisa ser feito pelo responsável:** o agente de IA não tem permissão para mudar a proteção das branches | Decisão D-02 | Agora |
 | P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`) | Critério de saída da F1 | Antes de fechar a F1 |
 | P-13 | Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual) | Critério de saída da F1 | Antes de fechar a F1 |
+| P-14 | Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml` (o agente de IA não lê o `.env`) | Harness §6.1 | Antes da 1ª avaliação na CI |
 | P-11 | Chave SSH desta máquina não está cadastrada no GitHub; o envio está sendo feito por HTTPS com o login do `gh` | Decisão D-03 | Quando conveniente |
 
 ## 6. Referências científicas (arXiv)
@@ -85,7 +90,7 @@ Status possíveis: **em avaliação** (sugestão ainda não aceita), **adotado**
 | [2309.02427](https://arxiv.org/abs/2309.02427) | Cognitive Architectures for Language Agents (CoALA) | Separar a memória do agente em semântica, episódica e procedural; evitar que o agente escreva sozinho na memória procedural | Estrutura da base de conhecimento por agente (plano §2.4) | Adotado | 2026-11-08 |
 | [2502.12110](https://arxiv.org/abs/2502.12110) | A-MEM: Agentic Memory for LLM Agents | Notas curtas e ligadas (estilo Zettelkasten) como formato do conhecimento; o agente propõe novas notas e ligações | Vault de notas Markdown; pasta de aprendizados propostos | Adotado | 2026-11-08 |
 | [2501.13956](https://arxiv.org/abs/2501.13956) | Zep: A Temporal Knowledge Graph Architecture for Agent Memory | Marcar fatos corrigidos como superados, com data, em vez de apagar | Memória das sessões e briefing (correções do arquiteto) | Adotado | 2026-11-08 |
-| [2506.05690](https://arxiv.org/abs/2506.05690) | When to use Graphs in RAG | GraphRAG nem sempre supera a busca simples; não adotar grafo numa base pequena | Busca no vault: só BM25 no MVP (D-06) | Adotado | 2026-11-08 |
+| [2506.05690](https://arxiv.org/abs/2506.05690) | When to use Graphs in RAG | GraphRAG nem sempre supera a busca simples; não adotar grafo numa base pequena | Busca no vault (busca híbrida simples no MVP) | Adotado | 2026-11-08 |
 | [2607.26100](https://arxiv.org/abs/2607.26100) | LLMs for Software Engineering Diagrams: A Systematic Review of UML and ER modelling | LLMs violam o metamodelo mesmo com sintaxe correta; só o prompt não basta | Regras do ArchiMate em dados + validadores (V2, V3) | Adotado | 2026-11-08 |
 | [2510.25890](https://arxiv.org/abs/2510.25890) | Metamodel-Guided Model Generation with Layered Constraints | Validar o modelo gerado contra restrições explícitas do metamodelo, fora do LLM | Ciclo validar → corrigir do agente ArchiMate | Adotado | 2026-11-08 |
 | [2501.03566](https://arxiv.org/abs/2501.03566) | Applying LLMs in Knowledge Graph-based Enterprise Modeling: Challenges and Opportunities | A supervisão de um especialista humano é essencial na modelagem com LLM | Confirmação do briefing pelo arquiteto; revisão dos modelos | Adotado | 2026-11-08 |
@@ -116,6 +121,7 @@ ficam aqui.
 | D-06 | 2026-11-08 | Busca no vault só por palavra (BM25) no MVP | O Token Plan não oferece embeddings; base pequena (arXiv 2506.05690) |
 | D-07 | 2026-11-08 | Fichas do vault criadas como `rascunho`; rascunhos em uso por configuração até a revisão | Permite seguir com as fases sem esconder que a revisão está pendente |
 | D-08 | 2026-11-08 | Faixas de camada exportadas como containers; o Archi as converte em grupos | Visões legíveis; o Archi converte as coordenadas absolutas em relativas |
+| D-09 | 2026-11-08 | Modo de raciocínio do `qwen3.8-max` desligado por padrão (`LLM_ENABLE_THINKING=false`) | Medido na extração do EX-001: ligado, 203 s e 9.162 tokens de saída (estoura o limite de 60 s); desligado, 19 s e 1.129 tokens. Reavaliar se a qualidade do briefing ficar abaixo da meta |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
 ## 9. Backlog

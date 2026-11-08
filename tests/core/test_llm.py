@@ -95,3 +95,24 @@ def test_extract_json() -> None:
 def test_image_message() -> None:
     m = image_message("descreva", "QUJD", "image/jpeg")
     assert m["content"][1]["image_url"]["url"] == "data:image/jpeg;base64,QUJD"
+
+
+def test_dashscope_desliga_raciocinio_por_padrao(monkeypatch: pytest.MonkeyPatch) -> None:
+    from types import SimpleNamespace
+
+    from archagent.core.llm import DashScopeBackend
+
+    capturado: dict[str, object] = {}
+
+    def criar(**kw: object) -> object:
+        capturado.update(kw)
+        msg = SimpleNamespace(content="ok")
+        uso = SimpleNamespace(prompt_tokens=3, completion_tokens=1)
+        return SimpleNamespace(choices=[SimpleNamespace(message=msg)], usage=uso)
+
+    backend = DashScopeBackend(settings())
+    monkeypatch.setattr(backend._client.chat.completions, "create", criar)
+    r = backend.chat([{"role": "user", "content": "x"}], modelo="m", json_mode=True, no="t")
+    assert r.texto == "ok" and r.tokens == 4
+    assert capturado["extra_body"] == {"enable_thinking": False}
+    assert capturado["response_format"] == {"type": "json_object"}

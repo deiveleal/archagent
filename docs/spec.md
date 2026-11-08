@@ -573,6 +573,7 @@ A interface não tem lógica de agente: tudo passa pela API da seção 13.
 | `DASHSCOPE_BASE_URL` | Endpoint compatível com OpenAI | `agent-archimate` |
 | `LLM_MODEL_TEXT` | Modelo de texto (`qwen3.8-max`) | `agent-archimate` |
 | `LLM_MODEL_VISION` | Modelo de visão (`qwen3.8-max`) | `agent-archimate` |
+| `LLM_ENABLE_THINKING` | Modo de raciocínio do Qwen3 (padrão `false`; ver decisão D-09 do acompanhamento) | `agent-archimate` |
 | `LLM_TIMEOUT_SECONDS` | Tempo limite por chamada | `agent-archimate` |
 | `LLM_MAX_RETRIES` | Novas tentativas | `agent-archimate` |
 | `LLM_MAX_TOKENS_PER_SESSION` | Limite de tokens por sessão | `agent-archimate` |

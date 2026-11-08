@@ -1,0 +1,22 @@
+# Validação da base de conhecimento (docs/harness.md §9).
+name: kb
+
+on:
+  pull_request:
+    branches-ignore: ["exp/**"]
+    paths: ["kb/**", "src/archagent/agents/**", "Makefile", ".github/workflows/kb.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  kb-check:
+    name: kb-check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.9.11"
+      - run: uv sync --all-extras --frozen
+      - run: make kb-check PY="uv run"
