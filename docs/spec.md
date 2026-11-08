@@ -130,6 +130,16 @@ Negócio, Aplicação e Tecnologia, valida o modelo (V1–V5) e entrega o
 | RF-CON-05 | `comando`: ações explícitas (confirmar briefing, gerar modelo, regenerar) |
 | RF-CON-06 | Quando o agente não souber, diz que não sabe e indica o que falta |
 
+Implementação (F5): `POST /sessions/{id}/messages` roda o grafo
+`classificar → responder | atualizar_briefing | avaliar_alternativa | comando`.
+A pergunta é respondida com o briefing, o último modelo e até 3 notas do vault no contexto.
+Informação e correção entram como nova entrada de texto (a correção usa `substitui` e deixa
+o item antigo `superado`); se já existe modelo, o agente avisa que é preciso confirmar de
+novo e gerar outra versão. A alternativa devolve prós, contras, impacto no modelo,
+conflitos e recomendação, sem mudar o briefing. Os comandos aceitos são
+`confirmar_briefing` e `gerar_modelo`. Mensagens do arquiteto e respostas do agente ficam
+em `conversa.jsonl`.
+
 ### 4.9 Base de conhecimento
 
 | Id | Requisito |
@@ -137,7 +147,7 @@ Negócio, Aplicação e Tecnologia, valida o modelo (V1–V5) e entrega o
 | RF-KB-01 | As regras (seção 10.2) são carregadas na inicialização; se estiverem ausentes ou inválidas, o agente não sobe |
 | RF-KB-02 | O agente busca notas do vault por busca híbrida (palavra + embeddings) e segue os links `[[...]]` até 1 nível |
 | RF-KB-03 | O agente **nunca** altera regras ou vault; ele grava propostas em `kb/archimate/propostas/` |
-| RF-KB-04 | Uma correção do mesmo tipo feita pelo arquiteto em **3 sessões diferentes** gera uma proposta de nota |
+| RF-KB-04 | Uma correção do mesmo tipo feita pelo arquiteto em **3 sessões diferentes** gera uma proposta de nota. O "tipo" é o `tema` que o classificador dá à correção; o registro fica em `propostas/registro-correcoes.json` e a proposta em `propostas/AAAA-MM-DD-<tema>.md` |
 
 ## 5. Requisitos não funcionais
 
@@ -531,7 +541,7 @@ Base: `http://agent-archimate:8000` (rede interna). Respostas em JSON, com
 | GET | `/sessions` | Lista sessões |
 | GET | `/sessions/{id}` | Detalhe da sessão |
 | POST | `/sessions/{id}/inputs` | Envia entrada (multipart: arquivo, ou `texto`) |
-| POST | `/sessions/{id}/messages` | Envia mensagem do chat `{texto}`; resposta do agente |
+| POST | `/sessions/{id}/messages` | Envia mensagem do chat `{texto}`; devolve `classe`, `acao`, `resposta` e `detalhes` |
 | GET | `/sessions/{id}/briefing` | Briefing atual (filtros: `status`, `tipo`) |
 | GET | `/sessions/{id}/questions` | Perguntas de esclarecimento pendentes |
 | POST | `/sessions/{id}/questions/{qid}/answer` | Responde ou pula `{resposta}` / `{pular: true}` |

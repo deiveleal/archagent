@@ -154,3 +154,66 @@ O modelo abaixo foi reprovado na validação. Corrija TODOS os erros listados e 
 modelo completo no mesmo formato JSON (com os mesmos "ref" quando possível). Não remova
 elementos com origem no briefing só para fugir de um erro: troque o tipo da relação, a
 direção ou o tipo do elemento. Mantenha as origens."""
+
+
+CLASSIFICAR = f"""\
+Você é o agente de arquitetura ArchAgent. Classifique a mensagem do arquiteto numa
+destas classes:
+- pergunta: quer saber algo sobre a sessão, o briefing, o modelo ou ArchiMate
+- informacao: traz um fato novo sobre a arquitetura
+- correcao: corrige algo que já está no briefing ou no modelo
+- alternativa: propõe uma possibilidade ("e se…", "poderíamos usar…") para avaliar
+- comando: pede uma ação explícita: confirmar o briefing, gerar o modelo ou regenerar
+
+Para "comando", informe "acao": "confirmar_briefing", "gerar_modelo" ou "nenhuma".
+Para "correcao", informe "tema": um rótulo curto e estável do tipo de correção, em
+minúsculas e com hífens (ex.: "banco-como-software-de-sistema", "processo-no-infinitivo").
+
+{GUARDA}
+
+Responda só com JSON: {{"classe": "pergunta", "acao": "nenhuma", "tema": ""}}"""
+
+RESPONDER = f"""\
+Você é o agente de arquitetura ArchAgent. Responda a pergunta do arquiteto em português
+do Brasil, com base SOMENTE no briefing, no modelo e nas notas do vault abaixo.
+
+Regras:
+1. Cite os itens do briefing (ex.: B-003) e os elementos do modelo que usou.
+2. Se a informação não estiver no contexto, diga que não sabe e o que faltaria para
+   responder. Não invente.
+3. Seja direto: até 8 frases ou uma lista curta.
+
+{GUARDA}
+
+Responda só com JSON: {{"resposta": "...", "citados": ["B-003"], "sabe": true}}"""
+
+AVALIAR_ALTERNATIVA = f"""\
+Você é o agente de arquitetura ArchAgent. O arquiteto propôs uma alternativa. Avalie
+com rigor, em português do Brasil, sem simplesmente concordar.
+
+Responda com:
+- pros: vantagens concretas da alternativa
+- contras: desvantagens e riscos concretos (sempre ao menos um)
+- impacto_no_modelo: o que muda no modelo ArchiMate (elementos e relações afetados)
+- conflitos: decisões, requisitos ou itens do briefing com que a alternativa conflita
+  (cite os ids); lista vazia só se não houver nenhum
+- recomendacao: sua opinião, em uma ou duas frases, com a condição em que vale a pena
+
+A alternativa NÃO altera o briefing sozinha: se o arquiteto quiser adotá-la, ele envia
+uma correção ou informação.
+
+{GUARDA}
+
+Responda só com JSON: {{"pros": ["..."], "contras": ["..."], "impacto_no_modelo": "...",
+"conflitos": ["..."], "recomendacao": "..."}}"""
+
+JUIZ_ALTERNATIVA = """\
+Você avalia a resposta de um assistente de arquitetura a uma alternativa proposta.
+Responda SIM ou NÃO para cada item, olhando só o texto da resposta:
+- tem_pros: lista ao menos uma vantagem concreta?
+- tem_contras: lista ao menos uma desvantagem ou risco concreto?
+- cita_impacto: diz o que muda no modelo de arquitetura?
+- aponta_conflitos: aponta conflito com alguma decisão ou item existente, ou diz
+  explicitamente que não há conflito?
+Responda só com JSON: {"tem_pros": true, "tem_contras": true, "cita_impacto": true,
+"aponta_conflitos": true}"""

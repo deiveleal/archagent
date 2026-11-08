@@ -1,0 +1,8 @@
+grupo: conversa
+descricao: Alternativa avaliada com prós, contras, impacto e conflitos (CA-06)
+rapido: true
+base: EX-001-portal-pedidos
+mensagens:
+  - texto: E se trocássemos o PostgreSQL por MongoDB para guardar os pedidos?
+    classe: alternativa
+    julgar: true

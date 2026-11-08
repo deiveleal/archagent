@@ -1,0 +1,8 @@
+grupo: conversa
+descricao: Comando explícito de confirmar o briefing
+rapido: false
+base: EX-001-portal-pedidos
+mensagens:
+  - texto: Está tudo certo, pode confirmar o briefing.
+    classe: comando
+    acao: confirmar_briefing

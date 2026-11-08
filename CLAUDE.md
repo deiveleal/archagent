@@ -16,7 +16,7 @@ Leia antes de mudar qualquer coisa: [plano](docs/plano.md), [spec](docs/spec.md)
 - **Segredos**: nunca ler, copiar ou registrar o conteúdo do `.env`.
 - **Antes de propor commit**: `make check` e `make test-local` (ou `make test` nos containers).
 - **Fim de tarefa**: atualizar a documentação afetada e enviar ao GitHub (push + PR).
-- **Linha de base**: não alterar `evals/baseline.json` sem pedido explícito.
+- **Linha de base**: não alterar `evals/<agente>/baseline.json` sem pedido explícito.
 - **Experimentos**: só em branch `exp/*` e pasta `experiments/`; `src/` nunca importa de `experiments/`.
 - **Agente não escreve código nem altera `kb/` diretamente**: só grava propostas em
   `kb/<agente>/propostas/`.

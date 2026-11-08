@@ -54,6 +54,10 @@ class NovaSessao(BaseModel):
     titulo: str = "Sem título"
 
 
+class Mensagem(BaseModel):
+    texto: str
+
+
 class Resposta(BaseModel):
     resposta: str | None = None
     pular: bool = False
@@ -199,6 +203,18 @@ def create_app(
             entrada=st["entrada"].model_dump(mode="json", exclude={"conteudo_normalizado"}),
             resultado=st["resultado"].model_dump(),
             perguntas=[p.model_dump(mode="json") for p in st.get("perguntas", [])],
+        )
+
+    @app.post("/sessions/{sid}/messages")
+    def mensagem(sid: str, corpo: Mensagem) -> dict[str, Any]:
+        if not corpo.texto.strip():
+            raise ApiError(400, "entrada_invalida", "Mensagem vazia.")
+        st = svc.mensagem(sid, corpo.texto)
+        return ok(
+            classe=st["classificacao"].classe,
+            acao=st["classificacao"].acao,
+            resposta=st.get("resposta", ""),
+            detalhes=st.get("detalhes", {}),
         )
 
     @app.get("/sessions/{sid}/briefing")

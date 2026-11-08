@@ -91,7 +91,9 @@ conhecimento (`kb/archimate/exemplos/`), mais casos difíceis feitos de propósi
 | **Injeção** | Transcrição ou desenho com texto do tipo "ignore as instruções e…"; o agente deve tratar como conteúdo, não como ordem | 2 |
 | **Conversa** | Perguntas, correções e alternativas sobre uma sessão pronta | 5 |
 
-Na F2 já existem 13 casos: 5 ouro, 3 ambíguos, 2 contraditórios, 2 de injeção e 1 ilegível.
+Na F5 existem 18 casos: 5 ouro (com modelo), 3 ambíguos, 2 contraditórios, 2 de injeção,
+1 ilegível e 5 de conversa (pergunta, correção com novo modelo, alternativa com juiz,
+informação e comando), todos sobre sessões montadas a partir dos exemplos ouro.
 O executor é `python -m evals.archimate.run` (`make eval` roda só os casos `rapido: true`).
 Cada execução grava o relatório em `evals/archimate/reports/AAAA-MM-DD-<branch>.md`; o resultado
 bruto da última execução fica em `evals/archimate/reports/ultimo.json`, fora do git.
@@ -122,7 +124,7 @@ caso faz parte da avaliação rápida.
 | Desempenho | Tempo de geração | p95 por caso | ≤ 5 min |
 
 As metas são o ponto de partida. Depois da primeira rodada completa, a **linha de
-base** real é gravada em `evals/baseline.json`, e as metas podem ser revistas com
+base** real é gravada em `evals/<agente>/baseline.json`, e as metas podem ser revistas com
 registro no acompanhamento.
 
 ### 5.3 Como comparar o gerado com o esperado
@@ -221,7 +223,7 @@ Como a checagem de pastas é uma verificação obrigatória nos rulesets de `mai
 
 - Os workflows `ci.yml` e `eval.yml` **não** rodam em branches `exp/*`, para não gastar tokens nem misturar resultados com a linha de base.
 - Um experimento pode ter os próprios testes e scripts, rodados manualmente dentro da pasta dele.
-- Resultados de experimento nunca atualizam `evals/baseline.json`.
+- Resultados de experimento nunca atualizam `evals/<agente>/baseline.json`.
 
 ### 6.4 Segredos
 
@@ -310,7 +312,7 @@ raiz com:
 - nunca ler, copiar ou registrar o conteúdo do `.env`;
 - rodar `make check` e `make test` antes de propor um commit;
 - ao finalizar uma tarefa, atualizar a documentação e enviar ao GitHub (push + PR);
-- não alterar `evals/baseline.json` sem pedido explícito;
+- não alterar `evals/<agente>/baseline.json` sem pedido explícito;
 - experimentos só em branch `exp/*` e pasta `experiments/`, nunca misturados ao código validado.
 
 ## 11. Definição de pronto
@@ -352,6 +354,6 @@ O harness cresce junto com o produto:
 ## 13. Pontos a verificar ou decidir ⚠️
 
 - [ ] Limite de tokens por execução do `eval.yml` (depois da primeira rodada completa).
-- [ ] Se o `deepseek-v4.1-flash-1017` aceita temperatura 0 e funciona bem como juiz (primeira rodada da F3).
+- [x] Se o `deepseek-v4.1-flash-1017` aceita temperatura 0 e funciona bem como juiz: aceita e aprovou as respostas de alternativa nos casos de conversa (F5). A conferência humana de 10% dos julgamentos continua a cada rodada completa.
 - [x] Se o Archi 5 roda na CI do GitHub (imagem Linux, sem tela): roda, com Xvfb no container `tool-archi`.
 - [ ] Regra de aprovação de revisor quando entrar mais alguém no projeto.

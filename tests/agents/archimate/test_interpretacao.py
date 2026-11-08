@@ -198,3 +198,29 @@ def test_trecho_que_atravessa_a_quebra_de_linha() -> None:
     )
     assert b.itens[0].origens[0].local == "linha 1"
     assert b.itens[0].confianca == "media"
+
+
+def test_conflito_com_varias_linhas_vira_varias_origens() -> None:
+    texto = ler_mensagem("O portal roda na AWS.\nO portal roda no data center.\nNinguém sabe.")
+    b = Briefing()
+    aplicar(
+        b,
+        Interpretacao(
+            itens=[
+                it("infraestrutura", "AWS", local="linha 1"),
+                it("infraestrutura", "Data center", local="linha 2"),
+            ],
+            conflitos=[
+                ConflitoExtraido(
+                    descricao="Onde roda?",
+                    itens=["AWS", "Data center"],
+                    local="linha 1, linha 2",
+                    trecho="O portal roda na AWS / O portal roda no data center",
+                )
+            ],
+        ),
+        "E-001",
+        texto,
+    )
+    conflito = b.ativos("conflito")[0]
+    assert [o.local for o in conflito.origens] == ["linha 1", "linha 2"]

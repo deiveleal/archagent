@@ -6,6 +6,7 @@ correção) e confere se cada origem aponta para um trecho que existe.
 
 from __future__ import annotations
 
+import re
 from typing import Literal
 
 from pydantic import BaseModel, Field
@@ -241,8 +242,21 @@ def aplicar(
         ids = [x for x in (resolver(r) for r in c.itens) if x]
         if not ids:
             continue
-        origem = Origem(entrada=entrada_id, local=c.local, trecho=c.trecho)
-        criado = briefing.registrar_conflito(sorted(set(ids)), c.descricao, [origem])
+        # Um conflito costuma citar várias linhas: cada trecho vira uma origem.
+        partes = [
+            t.strip() for t in re.split(r"\s+/\s+|\s*\.\.\.\s*|\s*…\s*", c.trecho) if t.strip()
+        ] or [""]
+        origens: list[Origem] = []
+        for parte in partes:
+            o, ajustada = _ajustar_origem(
+                ItemExtraido(tipo="pendencia", nome=c.descricao, local=c.local, trecho=parte),
+                entrada_id,
+                lida,
+            )
+            res.origens_ajustadas += ajustada
+            if o not in origens:
+                origens.append(o)
+        criado = briefing.registrar_conflito(sorted(set(ids)), c.descricao, origens)
         res.conflitos.append(criado.id)
 
     # 4) descartes

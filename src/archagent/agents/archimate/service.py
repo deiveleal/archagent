@@ -19,6 +19,14 @@ from typing import Any, TypedDict
 from langgraph.graph import END, START, StateGraph
 
 from archagent.agents.archimate.archi import ArchiClient, ArchiIndisponivel
+from archagent.agents.archimate.conversa import (
+    Classificacao,
+    RegistroCorrecoes,
+    avaliar_alternativa,
+    classificar,
+    contexto,
+    responder,
+)
 from archagent.agents.archimate.exchange import exportar, validar_v1
 from archagent.agents.archimate.interpretacao import (
     Interpretacao,
@@ -67,6 +75,14 @@ class EstadoModelo(TypedDict, total=False):
     relatorio: str
 
 
+class EstadoMensagem(TypedDict, total=False):
+    sid: str
+    texto: str
+    classificacao: Classificacao
+    resposta: str
+    detalhes: dict[str, Any]
+
+
 class EstadoEntrada(TypedDict, total=False):
     sid: str
     nome_arquivo: str | None
@@ -98,6 +114,8 @@ class ArchimateService:
         self.archi = archi
         self.grafo_entrada = self._montar_grafo_entrada()
         self.grafo_modelo = self._montar_grafo_modelo()
+        self.grafo_mensagem = self._montar_grafo_mensagem()
+        self.correcoes = RegistroCorrecoes(settings.kb_dir / "archimate" / "propostas")
         self.jobs: dict[str, dict[str, Any]] = {}
         self.eventos: dict[str, list[dict[str, Any]]] = {}
         self._lock_jobs = threading.Lock()
@@ -200,6 +218,137 @@ class ArchimateService:
 
     def _no_esclarecer(self, st: EstadoEntrada) -> EstadoEntrada:
         return {"perguntas": self.esclarecer(st["sid"])}
+
+    # ------------------------------------------------------------ grafo da conversa
+
+    def _montar_grafo_mensagem(self) -> Any:
+        g: Any = StateGraph(EstadoMensagem)
+        g.add_node("classificar", self._no_classificar)
+        g.add_node("responder", self._no_responder)
+        g.add_node("atualizar_briefing", self._no_mensagem_briefing)
+        g.add_node("avaliar_alternativa", self._no_alternativa)
+        g.add_node("comando", self._no_comando)
+        g.add_edge(START, "classificar")
+        g.add_conditional_edges(
+            "classificar",
+            lambda st: {
+                "pergunta": "responder",
+                "informacao": "atualizar_briefing",
+                "correcao": "atualizar_briefing",
+                "alternativa": "avaliar_alternativa",
+                "comando": "comando",
+            }[st["classificacao"].classe],
+        )
+        for no in ("responder", "atualizar_briefing", "avaliar_alternativa", "comando"):
+            g.add_edge(no, END)
+        return g.compile()
+
+    def _ultimo_modelo(self, sid: str) -> Modelo | None:
+        versoes = self.store.obter(sid).versoes_modelo
+        return self.modelo(sid, versoes[-1]) if versoes else None
+
+    def _no_classificar(self, st: EstadoMensagem) -> EstadoMensagem:
+        sid = st["sid"]
+        c = classificar(
+            self.llm,
+            st["texto"],
+            self.store.briefing(sid),
+            tokens_usados=self.tokens(sid),
+            on_usage=self.hook(sid),
+        )
+        log_event(logger, "mensagem.classificada", classe=c.classe, acao=c.acao)
+        return {"classificacao": c}
+
+    def _no_responder(self, st: EstadoMensagem) -> EstadoMensagem:
+        sid = st["sid"]
+        ctx = contexto(self.store.briefing(sid), self._ultimo_modelo(sid), self.vault, st["texto"])
+        r = responder(
+            self.llm, st["texto"], ctx, tokens_usados=self.tokens(sid), on_usage=self.hook(sid)
+        )
+        return {"resposta": r.resposta, "detalhes": {"citados": r.citados, "sabe": r.sabe}}
+
+    def _no_mensagem_briefing(self, st: EstadoMensagem) -> EstadoMensagem:
+        sid, c = st["sid"], st["classificacao"]
+        estado = self.enviar_entrada(sid, texto=st["texto"])
+        res = estado["resultado"]
+        partes = []
+        if res.novos:
+            partes.append(f"novos: {', '.join(res.novos)}")
+        if res.unidos:
+            partes.append(f"atualizados: {', '.join(res.unidos)}")
+        if res.superados:
+            partes.append(f"superados: {', '.join(res.superados)}")
+        if res.conflitos:
+            partes.append(f"conflitos: {', '.join(res.conflitos)}")
+        texto = (
+            "Registrei no briefing (" + "; ".join(partes) + ")."
+            if partes
+            else "Não encontrei nada novo para o briefing nessa mensagem."
+        )
+        if self.store.obter(sid).versoes_modelo:
+            texto += (
+                " O briefing mudou: confirme de novo e gere uma nova versão do modelo "
+                "para incorporar a mudança."
+            )
+        perguntas = estado.get("perguntas", [])
+        if perguntas:
+            texto += f" Tenho {len(perguntas)} pergunta(s) nova(s)."
+        detalhes: dict[str, Any] = {
+            "entrada": estado["entrada"].id,
+            "resultado": res.model_dump(),
+            "perguntas": [p.model_dump(mode="json") for p in perguntas],
+        }
+        if c.classe == "correcao" and c.tema:
+            proposta = self.correcoes.registrar(c.tema, sid, st["texto"])
+            if proposta:
+                detalhes["proposta"] = proposta.name
+                log_event(logger, "proposta.criada", arquivo=proposta.name)
+        return {"resposta": texto, "detalhes": detalhes}
+
+    def _no_alternativa(self, st: EstadoMensagem) -> EstadoMensagem:
+        sid = st["sid"]
+        ctx = contexto(self.store.briefing(sid), self._ultimo_modelo(sid), self.vault, st["texto"])
+        a = avaliar_alternativa(
+            self.llm, st["texto"], ctx, tokens_usados=self.tokens(sid), on_usage=self.hook(sid)
+        )
+        return {"resposta": a.markdown(), "detalhes": {"avaliacao": a.model_dump()}}
+
+    def _no_comando(self, st: EstadoMensagem) -> EstadoMensagem:
+        sid, acao = st["sid"], st["classificacao"].acao
+        if acao == "confirmar_briefing":
+            self.confirmar_briefing(sid)
+            return {
+                "resposta": "Briefing confirmado. Já posso gerar o modelo.",
+                "detalhes": {"acao": acao},
+            }
+        if acao == "gerar_modelo":
+            try:
+                info = self.iniciar_geracao(sid)
+            except BriefingNaoConfirmado as exc:
+                return {"resposta": str(exc), "detalhes": {"acao": acao, "erro": True}}
+            return {
+                "resposta": f"Gerando o modelo {info['modelo']}; acompanhe na aba Modelo.",
+                "detalhes": {"acao": acao, **info},
+            }
+        return {
+            "resposta": "Não entendi qual ação executar. Posso confirmar o briefing ou "
+            "gerar o modelo.",
+            "detalhes": {"acao": acao},
+        }
+
+    def mensagem(self, sid: str, texto: str) -> EstadoMensagem:
+        """RF-CON-01..06: classifica a mensagem e responde conforme a classe."""
+        self.store.obter(sid)
+        self.store.registrar_mensagem(sid, "arquiteto", texto)
+        token = session_var.set(sid)
+        try:
+            final: EstadoMensagem = self.grafo_mensagem.invoke({"sid": sid, "texto": texto})
+        finally:
+            session_var.reset(token)
+        self.store.registrar_mensagem(
+            sid, "agente", final.get("resposta", ""), classe=final["classificacao"].classe
+        )
+        return final
 
     # ------------------------------------------------------------ grafo do modelo
 

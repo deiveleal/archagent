@@ -1,0 +1,8 @@
+grupo: conversa
+descricao: Informação nova vira item do briefing
+rapido: false
+base: EX-001-portal-pedidos
+mensagens:
+  - texto: O Backoffice também envia e-mails aos clientes usando o serviço SendGrid.
+    classe: informacao
+    novo_item: SendGrid

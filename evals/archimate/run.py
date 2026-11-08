@@ -37,7 +37,7 @@ RAIZ = Path(__file__).resolve().parents[2]
 CASOS = RAIZ / "evals" / "casos" / "archimate"
 EXEMPLOS = RAIZ / "kb" / "archimate" / "exemplos"
 RELATORIOS = RAIZ / "evals" / "archimate" / "reports"
-BASELINE = RAIZ / "evals" / "baseline.json"
+BASELINE = RAIZ / "evals" / "archimate" / "baseline.json"
 
 METAS = {
     "briefing.cobertura": (0.90, "≥"),
@@ -53,6 +53,10 @@ METAS = {
     "modelagem.relacoes_esperadas": (0.80, "≥"),
     "modelagem.premissas": (0.15, "≤"),
     "modelagem.rodadas": (1.5, "≤"),
+    "conversa.classificacao": (0.90, "≥"),
+    "conversa.avaliacao_alternativa": (0.90, "≥"),
+    "conversa.efeito_correto": (0.90, "≥"),
+    "conversa.modelo_apos_correcao_viavel": (1.00, "≥"),
 }
 
 
@@ -195,6 +199,10 @@ def carregar_caso(pasta: Path) -> Caso:
             caso.entradas.append((arq.name, arq.read_bytes(), None))
         caso.esperados = json.loads((ex / "briefing_esperado.json").read_text())["itens"]
         caso.modelo_esperado = json.loads((ex / "modelo_esperado.json").read_text())
+    if "base" in dados:
+        ex = EXEMPLOS / dados["base"]
+        for arq in sorted((ex / "entrada").iterdir()):
+            caso.entradas.append((arq.name, arq.read_bytes(), None))
     for e in dados.get("entradas", []):
         if "texto" in e:
             caso.entradas.append((None, None, e["texto"]))
@@ -248,6 +256,9 @@ def rodar_caso(caso: Caso, settings: ArchimateSettings) -> dict[str, Any]:
             except ImagemIlegivel as exc:
                 falhou = str(exc)
         duracao = time.monotonic() - inicio
+        conversa: dict[str, Any] = {}
+        if caso.grupo == "conversa":
+            conversa = rodar_conversa(caso, svc, sid, settings)
         modelo = None
         if caso.modelo_esperado is not None and caso.dados.get("modelar", True) and not falhou:
             svc.confirmar_briefing(sid)
@@ -313,11 +324,74 @@ def rodar_caso(caso: Caso, settings: ArchimateSettings) -> dict[str, Any]:
         m["vazou"] = vazou
     if caso.dados.get("deve_falhar"):
         m["entrada.ilegivel_falha"] = 1.0 if falhou else 0.0
+    m |= conversa
     if modelo is not None and caso.modelo_esperado is not None:
         m |= medir_modelo(modelo, caso.modelo_esperado)
         m["segundos_modelo"] = round(duracao_modelo, 1)
         m["segundos"] = round(duracao + duracao_modelo, 1)
     return m
+
+
+def rodar_conversa(caso: Caso, svc: ArchimateService, sid: str,
+                   settings: ArchimateSettings) -> dict[str, Any]:  # fmt: skip
+    """Casos de conversa (harness §5.1): classificação, efeito e juiz LLM."""
+    from evals.archimate.juiz import juiz, julgar_alternativa
+
+    svc.confirmar_briefing(sid)
+    if caso.dados.get("gerar_modelo_antes"):
+        svc.gerar_modelo(sid)
+    acertos, efeitos, alternativas, viaveis, notas = [], [], [], [], []
+    for msg in caso.dados["mensagens"]:
+        st = svc.mensagem(sid, msg["texto"])
+        c = st["classificacao"]
+        acertos.append(c.classe == msg["classe"])
+        if c.classe != msg["classe"]:
+            notas.append(f"classe {c.classe} (esperada {msg['classe']})")
+        resposta = st.get("resposta", "")
+        ok = c.classe == msg["classe"]
+        b = svc.store.briefing(sid)
+        for trecho in msg.get("contem", []):
+            if normalizar_nome(trecho) not in normalizar_nome(resposta):
+                ok = False
+                notas.append(f"resposta sem '{trecho}'")
+        if msg.get("superado") and not any(
+            i.status == "superado" and nomes_equivalem(msg["superado"], [], i.nome) for i in b.itens
+        ):
+            ok = False
+            notas.append(f"'{msg['superado']}' não ficou superado")
+        if msg.get("novo_item") and not any(
+            nomes_equivalem(msg["novo_item"], [], i.nome) for i in b.ativos()
+        ):
+            ok = False
+            notas.append(f"sem item '{msg['novo_item']}'")
+        if msg.get("acao") and c.acao != msg["acao"]:
+            ok = False
+            notas.append(f"ação {c.acao}")
+        if msg.get("julgar"):
+            rubrica = julgar_alternativa(juiz(settings), settings, msg["texto"], resposta)
+            alternativas.append(rubrica.aprovada)
+            if not rubrica.aprovada:
+                notas.append(f"juiz: {rubrica.model_dump()}")
+        if msg.get("regerar"):
+            svc.confirmar_briefing(sid)
+            novo = svc.gerar_modelo(sid)
+            tem = any(nomes_equivalem(msg.get("novo_item", ""), [], e.nome)
+                      for e in novo.elementos)  # fmt: skip
+            viaveis.append(novo.validacao.viavel and tem)
+            if not (novo.validacao.viavel and tem):
+                notas.append(f"modelo após correção: viável={novo.validacao.viavel}, "
+                             f"tem novo item={tem}")  # fmt: skip
+        efeitos.append(ok)
+    r: dict[str, Any] = {
+        "conversa.classificacao": sum(acertos) / len(acertos),
+        "conversa.efeito_correto": sum(efeitos) / len(efeitos),
+        "notas_conversa": notas,
+    }
+    if alternativas:
+        r["conversa.avaliacao_alternativa"] = sum(alternativas) / len(alternativas)
+    if viaveis:
+        r["conversa.modelo_apos_correcao_viavel"] = sum(viaveis) / len(viaveis)
+    return r
 
 
 ESTRUTURAIS = {"Realization", "Assignment", "Composition", "Aggregation"}
@@ -472,6 +546,8 @@ def relatorio(
             notas.append(f"relações: {', '.join(r['relacoes_faltando'][:4])}")
         if r.get("erros_modelo"):
             notas.append(f"erros: {'; '.join(r['erros_modelo'][:3])}")
+        if r.get("notas_conversa"):
+            notas.append("; ".join(r["notas_conversa"]))
         if r.get("vazou"):
             notas.append(f"**injeção vazou**: {', '.join(r['vazou'])}")
         for k in METAS:
