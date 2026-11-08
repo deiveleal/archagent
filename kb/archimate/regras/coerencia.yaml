@@ -1,0 +1,31 @@
+# Regras de coerência (V3) — spec §8.3. Ajuste severidade e limites aqui, sem mudar código.
+limites:
+  elementos_por_visao: 20
+  colunas_por_faixa: 6
+
+regras:
+  COE-01: {descricao: "Nenhum elemento sem relação", severidade: erro}
+  COE-02: {descricao: "Nenhuma relação com origem ou destino inexistente", severidade: erro}
+  COE-03: {descricao: "Nomes únicos por tipo de elemento", severidade: erro}
+  COE-04:
+    descricao: "Todo ApplicationService é realizado por ApplicationComponent, ApplicationFunction ou ApplicationProcess"
+    severidade: aviso
+    realizadores: [ApplicationComponent, ApplicationFunction, ApplicationProcess]
+  COE-05:
+    descricao: "Todo ApplicationComponent está ligado à camada de Tecnologia"
+    severidade: aviso
+  COE-06:
+    descricao: "Todo BusinessProcess tem um responsável (Assignment de ator, papel ou colaboração)"
+    severidade: aviso
+    responsaveis: [BusinessActor, BusinessRole, BusinessCollaboration]
+  COE-07: {descricao: "Negócio e Aplicação ligados por ao menos uma relação", severidade: aviso}
+  COE-08: {descricao: "Aplicação e Tecnologia ligadas por ao menos uma relação", severidade: aviso}
+  COE-09: {descricao: "Nenhuma visão com mais elementos que o limite", severidade: aviso}
+  COE-10:
+    descricao: "Nomes seguem as convenções do vault"
+    severidade: aviso
+    # Processos com verbo no infinitivo: a primeira palavra termina em ar/er/ir/or/ôr.
+    infinitivo:
+      tipos: [BusinessProcess, ApplicationProcess, TechnologyProcess]
+      padrao: "^\\S*(ar|er|ir|or|ôr)(-se)?\\b"
+    tamanho_maximo_nome: 60

@@ -11,7 +11,10 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse, Response
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from archagent.core.config import Settings, get_settings
+from archagent.agents.archimate.archi import ArchiClient, ArchiIndisponivel
+from archagent.agents.archimate.rules import carregar_regras
+from archagent.agents.archimate.settings import ArchimateSettings
+from archagent.agents.archimate.vault import Vault
 from archagent.core.llm import LLM, LLMError, build_llm
 from archagent.core.logs import log_event, new_request_id, request_id_var, setup_logging
 
@@ -37,12 +40,24 @@ def erro(status: int, codigo: str, mensagem: str) -> JSONResponse:
     )
 
 
-def create_app(settings: Settings | None = None, llm: LLM | None = None) -> FastAPI:
-    settings = settings or get_settings()
+def create_app(
+    settings: ArchimateSettings | None = None,
+    llm: LLM | None = None,
+    archi: ArchiClient | None = None,
+) -> FastAPI:
+    settings = settings or ArchimateSettings()
     setup_logging("agent-archimate", settings.log_level)
+    # RF-KB-01: sem regras válidas, o agente não sobe.
+    regras = carregar_regras(settings.kb_dir)
+    vault = Vault.carregar(settings.kb_dir / "archimate" / "vault",
+                           settings.vault_incluir_rascunhos)  # fmt: skip
     app = FastAPI(title="ArchAgent — agente ArchiMate", version=VERSION)
     app.state.settings = settings
     app.state.llm = llm or build_llm(settings)
+    app.state.regras = regras
+    app.state.vault = vault
+    app.state.archi = archi or ArchiClient(settings.tool_archi_url,
+                                           settings.tool_archi_timeout_seconds)  # fmt: skip
 
     @app.middleware("http")
     async def request_id_mw(
@@ -71,7 +86,18 @@ def create_app(settings: Settings | None = None, llm: LLM | None = None) -> Fast
 
     @app.get("/health")
     def health() -> dict[str, Any]:
-        return {"status": "ok", "versao": VERSION, "request_id": request_id_var.get()}
+        try:
+            archi_info: dict[str, Any] = dict(app.state.archi.health())
+        except ArchiIndisponivel:
+            archi_info = {"status": "indisponivel"}
+        return {
+            "status": "ok",
+            "versao": VERSION,
+            "regras": {"elementos": len(regras.elementos), "fonte": regras.fonte_relacoes},
+            "vault": {"notas_em_uso": len(vault.notas), "rascunhos": len(vault.rascunhos)},
+            "tool_archi": archi_info,
+            "request_id": request_id_var.get(),
+        }
 
     @app.get("/health/llm")
     def health_llm() -> dict[str, Any]:

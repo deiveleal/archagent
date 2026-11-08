@@ -17,10 +17,14 @@ services:
       LLM_MODE: ${LLM_MODE:-dashscope}
       TOOL_ARCHI_URL: http://tool-archi:8000
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      # Enquanto as fichas não forem revisadas, os rascunhos ficam em uso (pendência P-12).
+      VAULT_INCLUIR_RASCUNHOS: ${VAULT_INCLUIR_RASCUNHOS:-true}
     volumes:
       - sessions:/data/sessions
+      - propostas:/app/kb/archimate/propostas
     # Sem portas publicadas: só a ui fala com o agente, pela rede interna.
     restart: unless-stopped
 
 volumes:
   sessions:
+  propostas:

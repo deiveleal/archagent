@@ -1,0 +1,85 @@
+{
+  "itens": [
+    {
+      "id": "B-001",
+      "tipo": "ator",
+      "nome": "Analista de RH",
+      "sinonimos": []
+    },
+    {
+      "id": "B-002",
+      "tipo": "ator",
+      "nome": "Novo colaborador",
+      "sinonimos": [
+        "Colaborador"
+      ]
+    },
+    {
+      "id": "B-003",
+      "tipo": "processo",
+      "nome": "Admitir colaborador",
+      "sinonimos": [
+        "Admissão"
+      ]
+    },
+    {
+      "id": "B-004",
+      "tipo": "processo",
+      "nome": "Assinar contrato de trabalho",
+      "sinonimos": [
+        "Assinar contrato"
+      ]
+    },
+    {
+      "id": "B-005",
+      "tipo": "sistema",
+      "nome": "Sistema de RH",
+      "sinonimos": []
+    },
+    {
+      "id": "B-006",
+      "tipo": "sistema",
+      "nome": "Folha de Pagamento",
+      "sinonimos": []
+    },
+    {
+      "id": "B-007",
+      "tipo": "sistema",
+      "nome": "Portal do Colaborador",
+      "sinonimos": []
+    },
+    {
+      "id": "B-008",
+      "tipo": "dado",
+      "nome": "Cadastro do colaborador",
+      "sinonimos": []
+    },
+    {
+      "id": "B-009",
+      "tipo": "dado",
+      "nome": "Contrato de trabalho",
+      "sinonimos": []
+    },
+    {
+      "id": "B-010",
+      "tipo": "infraestrutura",
+      "nome": "Servidor on-premise",
+      "sinonimos": [
+        "Servidor on-premise da matriz"
+      ]
+    },
+    {
+      "id": "B-011",
+      "tipo": "ligacao",
+      "nome": "Sistema de RH → Folha de Pagamento",
+      "sinonimos": []
+    },
+    {
+      "id": "B-012",
+      "tipo": "requisito",
+      "nome": "Folha atualizada até o dia seguinte à admissão",
+      "sinonimos": []
+    }
+  ],
+  "deve_perguntar": false
+}

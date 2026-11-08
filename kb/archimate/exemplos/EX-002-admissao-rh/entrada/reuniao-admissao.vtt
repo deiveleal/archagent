@@ -1,0 +1,16 @@
+WEBVTT
+
+00:00:01.000 --> 00:00:09.000
+<v Ana (RH)>Hoje quem faz a admissão é o analista de RH. Ele cadastra o novo colaborador no Sistema de RH.
+
+00:00:09.500 --> 00:00:18.000
+<v Bruno (TI)>E o Sistema de RH manda um arquivo diário com o cadastro do colaborador para a Folha de Pagamento.
+
+00:00:18.500 --> 00:00:26.000
+<v Ana (RH)>Depois o novo colaborador assina o contrato de trabalho pelo Portal do Colaborador.
+
+00:00:26.500 --> 00:00:33.000
+<v Bruno (TI)>A Folha de Pagamento roda no servidor on-premise da matriz.
+
+00:00:33.500 --> 00:00:40.000
+<v Ana (RH)>O requisito é que a folha esteja atualizada até o dia seguinte à admissão.

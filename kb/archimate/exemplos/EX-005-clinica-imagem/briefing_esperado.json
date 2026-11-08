@@ -1,0 +1,77 @@
+{
+  "itens": [
+    {
+      "id": "B-001",
+      "tipo": "ator",
+      "nome": "Paciente",
+      "sinonimos": []
+    },
+    {
+      "id": "B-002",
+      "tipo": "ator",
+      "nome": "Recepcionista",
+      "sinonimos": []
+    },
+    {
+      "id": "B-003",
+      "tipo": "processo",
+      "nome": "Agendar consulta",
+      "sinonimos": []
+    },
+    {
+      "id": "B-004",
+      "tipo": "processo",
+      "nome": "Confirmar consulta",
+      "sinonimos": []
+    },
+    {
+      "id": "B-005",
+      "tipo": "sistema",
+      "nome": "App da Clínica",
+      "sinonimos": []
+    },
+    {
+      "id": "B-006",
+      "tipo": "sistema",
+      "nome": "API de Agendamento",
+      "sinonimos": []
+    },
+    {
+      "id": "B-007",
+      "tipo": "sistema",
+      "nome": "Sistema da Recepção",
+      "sinonimos": []
+    },
+    {
+      "id": "B-008",
+      "tipo": "infraestrutura",
+      "nome": "MySQL",
+      "sinonimos": []
+    },
+    {
+      "id": "B-009",
+      "tipo": "ligacao",
+      "nome": "App da Clínica → API de Agendamento",
+      "sinonimos": []
+    },
+    {
+      "id": "B-010",
+      "tipo": "ligacao",
+      "nome": "Sistema da Recepção → API de Agendamento",
+      "sinonimos": []
+    },
+    {
+      "id": "B-011",
+      "tipo": "ligacao",
+      "nome": "API de Agendamento → MySQL",
+      "sinonimos": []
+    },
+    {
+      "id": "B-012",
+      "tipo": "dado",
+      "nome": "Consulta",
+      "sinonimos": []
+    }
+  ],
+  "deve_perguntar": false
+}
