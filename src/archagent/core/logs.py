@@ -62,7 +62,7 @@ def setup_logging(servico: str, nivel: str = "INFO") -> None:
     handler.setFormatter(JsonFormatter(servico))
     raiz.addHandler(handler)
     raiz.setLevel(nivel.upper())
-    for ruidoso in ("httpx", "httpcore", "openai"):
+    for ruidoso in ("httpx", "httpx2", "httpcore", "openai"):
         logging.getLogger(ruidoso).setLevel(logging.WARNING)
 
 
