@@ -24,6 +24,9 @@ class Settings(BaseSettings):
     llm_max_retries: int = 3
     llm_max_tokens_per_session: int = 400_000
     llm_temperature: float | None = None
+    # Modo de raciocínio dos modelos Qwen3 (enable_thinking). Ligado, a extração leva
+    # ~10x mais tempo e tokens (medido em 2026-11-08: 203 s contra 19 s).
+    llm_enable_thinking: bool = False
     # "dashscope" chama a API; "replay" usa respostas gravadas (testes N1/N2).
     llm_mode: str = "dashscope"
     llm_fixtures_dir: Path = Path("tests/fixtures/llm")
