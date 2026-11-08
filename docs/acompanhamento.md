@@ -56,6 +56,7 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | F2 — núcleo: leitores de entrada (txt, md, vtt, srt, docx, drawio, imagem) com validação e proteção XXE, briefing, sessões em arquivo, `kb/core`, workflows `kb.yml` e `eval.yml` | `core/f2-entradas-briefing` | PR #7 |
 | 2026-11-08 | Sincronização `main` → `agent/archimate` | `main` | PR #8 |
 | 2026-11-08 | Núcleo: `LLM_ENABLE_THINKING` (modo de raciocínio do Qwen3 desligado por padrão) | `core/llm-sem-raciocinio` | PR #9 |
+| 2026-11-08 | Interface Streamlit completa (sessões, conversa com anexos, entradas, briefing, perguntas, modelo com progresso e downloads); `eval.yml` sobe o `tool-archi` | `core/ui-streamlit` | PR #13 |
 
 ## 5. Pendências
 
