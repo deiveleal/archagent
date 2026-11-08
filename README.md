@@ -18,6 +18,7 @@ Fase de **documentação** da Etapa 1 (MVP ArchiMate). Ainda não há código.
 | [Plano](docs/plano.md) | Visão, etapas, regras do projeto, fases, riscos e decisões |
 | [Spec](docs/spec.md) | Requisitos, dados, regras de validação, fluxo do agente, APIs |
 | [Harness](docs/harness.md) | Testes, avaliação do agente, CI, guardrails, observabilidade e custos |
+| [Arquitetura](docs/arquitetura.drawio) | Desenho em draw.io: contexto, containers, componentes e fluxo do agente |
 | [Acompanhamento](docs/acompanhamento.md) | Status, referências do arXiv, experimentos e backlog |
 
 ## Stack prevista

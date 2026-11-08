@@ -198,6 +198,7 @@ Um script (`scripts/check_paths.py`) roda no N0 e reprova o PR quando:
 
 - uma branch `task/<agente>/*` ou `agent/<agente>` altera arquivos fora de `src/archagent/agents/<agente>/`, `kb/<agente>/`, `compose/agent-<agente>.yml`, `evals/casos/<agente>/`, `tests/` do agente e `docs/`;
 - uma branch `core/*` altera a pasta de algum agente;
+- uma branch `docs/*` altera algo fora de `docs/`, `README.md` e `CLAUDE.md`;
 - qualquer PR para `main` ou `agent/*` vem de uma branch `exp/*` ou altera `experiments/`;
 - algum arquivo de `src/` importa algo de `experiments/`.
 
