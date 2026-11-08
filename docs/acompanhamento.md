@@ -37,7 +37,7 @@
 | F2 — Entrada por texto e transcrição | Concluída | 2026-11-08 | 2026-11-08 | Sim: briefing correto nos 5 exemplos ouro e metas N3 atingidas | #7, #11 |
 | F3 — Modelagem a partir do briefing | Concluída | 2026-11-08 | 2026-11-08 | Sim: os 5 exemplos geram modelos viáveis em V1–V5 | #12 |
 | F4 — Entrada por desenho | Concluída | 2026-11-08 | 2026-11-08 | Sim: EX-004 (`.drawio`) e EX-005 (imagem) geram briefing e modelo viáveis; leitor `.drawio` com XXE recusado; imagem ilegível vira falha | Entregue dentro de #7, #11 e #12 |
-| F5 — Refinamento pela conversa e avaliação | Em andamento | 2026-11-08 | — | — | — |
+| F5 — Refinamento pela conversa e avaliação | Concluída | 2026-11-08 | 2026-11-08 | Sim: correção incorporada com novo modelo viável; avaliação completa e linha de base gravadas. Na CI, a avaliação depende do secret (P-14) | #15 |
 
 Critérios de saída de cada fase: plano, seção 3.7.
 
@@ -125,6 +125,20 @@ aqui.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-11-08 | `task/archimate/f3-modelagem` | 5 ouro com modelo (13 no total) | 100% | 100% | 95% | 0% | 0,40 | 6.225 (média dos 13) | 74 s |
 
+**Avaliação completa da F5 (linha de base, `evals/archimate/baseline.json`)** — 18 casos × 3 repetições = 54 execuções, `qwen3.8-max` (agente) e `deepseek-v4.1-flash-1017` (juiz):
+
+| Área | Métrica | Média | Pior | Meta |
+| --- | --- | --- | --- | --- |
+| Briefing | Cobertura / inventados / origem correta | 100% / 2% / 99,6%¹ | 100% / 6% / 92% | ≥ 90% / ≤ 10% / 100% |
+| Esclarecimento | Pergunta quando deve / não pergunta sem motivo | 100% / 100% | 100% / 100% | ≥ 90% / ≥ 80% |
+| Briefing | Conflito quando deve | 100% | 100% | 100% |
+| Segurança | Resistência a injeção / imagem ilegível vira falha | 100% / 100% | 100% / 100% | 100% / 100% |
+| Modelagem | Viabilidade / tipo correto / relações / premissas / rodadas | 100% / 99% / 91% / 1% / 0,33 | 100% / 90% / 75% / 8% / 1 | 100% / ≥ 85% / ≥ 80% / ≤ 15% / ≤ 1,5 |
+| Conversa | Classificação / alternativa (juiz) / efeito / modelo após correção | 100% / 100% / 100% / 100% | 100% em todas | ≥ 90% / ≥ 90% / ≥ 90% / 100% |
+| Custo e tempo | Tokens por caso / p95 | 6.482 / 69 s | — | registrar / ≤ 5 min |
+
+¹ Conflitos que citavam várias linhas num só local. Corrigido no mesmo PR: cada trecho vira uma origem; 3 repetições dos casos contraditórios depois da correção: 100%.
+
 ## 8. Decisões
 
 As decisões até o plano v1.0 estão na seção 6 do plano. As decisões seguintes
@@ -144,6 +158,7 @@ ficam aqui.
 | D-11 | 2026-11-08 | O prompt de interpretação define quando usar `sistema` × `interface` × `servico` e pede nomes no singular | Na 1ª avaliação, "Portal Web", "API de Pedidos" e "Serviço de Pagamentos" foram classificados como interface/serviço; depois do ajuste, cobertura de 79–87% para 100% |
 | D-12 | 2026-11-08 | Camadas ligadas diretamente (`Serving`); serviços e interfaces intermediários só quando o briefing os cita | Na 1ª avaliação da F3, o agente inventava serviços para ligar camadas: premissas em 20% (meta ≤ 15%) e relações diretas ausentes; depois do ajuste, premissas 0% e relações 91–95% |
 | D-13 | 2026-11-08 | A avaliação aceita relações derivadas pelas regras do ArchiMate | Um modelo com serviço intermediário é equivalente ao com relação direta; sem isso, a métrica punia modelagem correta e mais detalhada |
+| D-14 | 2026-11-08 | Linha de base em `evals/<agente>/baseline.json` (não em `evals/baseline.json`) | Fica dentro das pastas que a branch do agente pode alterar; gravada uma vez, na F5, como pede o plano |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
 ## 9. Backlog
