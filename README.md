@@ -9,7 +9,8 @@ recomendações para a equipe decidir e implementar.
 
 ## Status
 
-Fase de **documentação** da Etapa 1 (MVP ArchiMate). Ainda não há código.
+Etapa 1 (MVP ArchiMate) em construção. Andamento das fases em
+[acompanhamento](docs/acompanhamento.md).
 
 ## Documentação
 
@@ -18,6 +19,7 @@ Fase de **documentação** da Etapa 1 (MVP ArchiMate). Ainda não há código.
 | [Plano](docs/plano.md) | Visão, etapas, regras do projeto, fases, riscos e decisões |
 | [Spec](docs/spec.md) | Requisitos, dados, regras de validação, fluxo do agente, APIs |
 | [Harness](docs/harness.md) | Testes, avaliação do agente, CI, guardrails, observabilidade e custos |
+| [Arquitetura](docs/arquitetura.drawio) | Desenho em draw.io: contexto, containers, componentes e fluxo do agente |
 | [Acompanhamento](docs/acompanhamento.md) | Status, referências do arXiv, experimentos e backlog |
 
 ## Stack prevista
@@ -28,4 +30,16 @@ Python 3.13 · LangGraph · FastAPI · Streamlit · Alibaba Cloud Model Studio
 ## Configuração
 
 Copie `.env.example` para `.env` e preencha a chave do DashScope. O `.env` nunca
-vai para o repositório.
+vai para o repositório. Se a porta 8501 já estiver em uso, defina `UI_PORT`.
+
+## Como rodar
+
+| Comando | O que faz |
+| --- | --- |
+| `uv sync --all-extras` | Instala as dependências localmente (Python 3.13) |
+| `make up` | Sobe os containers (`docker compose up`) |
+| `make check` | Verificação estática: ruff, mypy, gitleaks, pastas |
+| `make test-local` | Testes unitários com cobertura |
+| `make test` | Testes no container de testes |
+
+Regras para agentes de IA que trabalham neste repositório: [CLAUDE.md](CLAUDE.md).
