@@ -40,3 +40,17 @@ test-local:
 
 test-integration:
 	$(PY) pytest -m integration
+
+## Base de conhecimento (harness §9)
+kb-check:
+	$(PY) python -m archagent.agents.archimate.kb_tools check --kb kb
+
+## N3 — avaliação do agente com o LLM real (gasta tokens)
+eval:
+	$(PY) python -m evals.archimate.run --rapido
+
+eval-full:
+	$(PY) python -m evals.archimate.run --repeticoes 3
+
+report:
+	$(PY) python -m evals.archimate.run --so-relatorio
