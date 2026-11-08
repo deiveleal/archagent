@@ -1,0 +1,7 @@
+# Compose principal: cada serviço tem o seu arquivo em compose/ (plano §2.3).
+# Só a `ui` publica porta; os demais ficam na rede interna padrão do projeto.
+name: archagent
+
+include:
+  - compose/ui.yml
+  - compose/tests.yml
