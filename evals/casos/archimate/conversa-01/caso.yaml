@@ -1,0 +1,8 @@
+grupo: conversa
+descricao: Pergunta direta sobre a sessão pronta
+rapido: true
+base: EX-001-portal-pedidos
+mensagens:
+  - texto: Quais sistemas acessam o PostgreSQL?
+    classe: pergunta
+    contem: [API de Pedidos]

@@ -1,0 +1,11 @@
+grupo: conversa
+descricao: Correção do banco; o modelo novo continua viável (CA-05)
+rapido: false
+base: EX-001-portal-pedidos
+gerar_modelo_antes: true
+mensagens:
+  - texto: "Correção: o banco da API de Pedidos não é PostgreSQL, é Oracle Database."
+    classe: correcao
+    superado: PostgreSQL
+    novo_item: Oracle
+    regerar: true
