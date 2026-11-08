@@ -1,0 +1,10 @@
+services:
+  tests:
+    profiles: [test]
+    build:
+      context: ..
+      dockerfile: compose/tests.Dockerfile
+    environment:
+      LLM_MODE: replay
+      AGENT_ARCHIMATE_URL: http://agent-archimate:8000
+      TOOL_ARCHI_URL: http://tool-archi:8000

@@ -1,0 +1,14 @@
+services:
+  ui:
+    image: archagent/ui:${VERSION:-dev}
+    build:
+      context: ..
+      dockerfile: src/archagent/ui/Dockerfile
+      args:
+        VERSION: ${VERSION:-dev}
+    environment:
+      AGENT_ARCHIMATE_URL: http://agent-archimate:8000
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    ports:
+      - "${UI_PORT:-8501}:8501"
+    restart: unless-stopped

@@ -1,0 +1,66 @@
+# N0 → build → N1 → N2 → cobertura (docs/harness.md §6.1).
+name: ci
+
+on:
+  pull_request:
+    branches-ignore: ["exp/**"]
+  push:
+    branches: [main, "agent/**"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  estatica:
+    name: N0 (ruff, mypy, gitleaks, pastas)
+    if: ${{ !startsWith(github.head_ref, 'exp/') }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.9.11"
+      - run: uv sync --all-extras --frozen
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy
+      - name: Checagem de pastas
+        run: uv run python scripts/check_paths.py
+      - name: gitleaks
+        run: |
+          docker run --rm -v "$PWD:/repo" zricethezav/gitleaks:v8.30.1 \
+            git --no-banner --redact /repo
+
+  testes:
+    name: N1 + N2 (pytest e cobertura)
+    needs: estatica
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.9.11"
+      - run: uv sync --all-extras --frozen
+      - name: N1 (unitários, LLM simulado)
+        env:
+          LLM_MODE: replay
+        run: uv run pytest -m "not integration" --cov --cov-report=term-missing:skip-covered --cov-report=xml
+      - name: Build das imagens
+        run: docker compose build
+      - name: N2 (integração com containers)
+        run: |
+          docker compose up -d --wait
+          docker compose --profile test run --rm tests pytest -m integration -p no:cacheprovider \
+            || [ $? -eq 5 ]  # 5 = nenhum teste de integração ainda
+      - name: Logs dos containers em caso de falha
+        if: failure()
+        run: docker compose logs --no-color | tail -n 300
+      - name: Derruba os containers
+        if: always()
+        run: docker compose down -v

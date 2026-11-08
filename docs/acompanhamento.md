@@ -32,7 +32,7 @@
 
 | Fase | Status | Início | Fim | Critério de saída atingido? | PR |
 | --- | --- | --- | --- | --- | --- |
-| F0 — Fundação | Não iniciada | — | — | — | — |
+| F0 — Fundação | Em andamento | 2026-11-08 | — | — | — |
 | F1 — Base de conhecimento, modelo ArchiMate e validação | Não iniciada | — | — | — | — |
 | F2 — Entrada por texto e transcrição | Não iniciada | — | — | — | — |
 | F3 — Modelagem a partir do briefing | Não iniciada | — | — | — | — |
@@ -48,6 +48,7 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | Plano v1.0, spec v0.1, harness v0.1, README, `.env.example` | `main` (commit inicial, antes das regras de proteção) | `d2a0064` |
 | 2026-11-08 | Repositório público criado (`deiveleal/archagent`), branch `agent/archimate` criada, regras de proteção ativadas | — | Ruleset `protecao-main-e-agentes` |
 | 2026-11-08 | Desenho de arquitetura (drawio) e acompanhamento completo | `docs/arquitetura-acompanhamento` | PR #1 |
+| 2026-11-08 | F0 — núcleo: `pyproject`/`uv`, config, logs JSON, cliente LLM (DashScope + replay), `ui` mínima, compose, Makefile, CI, checagem de pastas, `CLAUDE.md` | `core/f0-fundacao` | PR #2 |
 
 ## 5. Pendências
 
