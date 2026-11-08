@@ -2,19 +2,21 @@
 
 from __future__ import annotations
 
+import asyncio
+import json
 import logging
-from collections.abc import Awaitable, Callable
+from collections.abc import AsyncIterator, Awaitable, Callable
 from typing import Annotated, Any
 
 from fastapi import FastAPI, File, Form, Request, UploadFile
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import JSONResponse, Response, StreamingResponse
 from pydantic import BaseModel
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from archagent.agents.archimate.archi import ArchiClient, ArchiIndisponivel
 from archagent.agents.archimate.rules import carregar_regras
-from archagent.agents.archimate.service import ArchimateService
+from archagent.agents.archimate.service import ArchimateService, BriefingNaoConfirmado
 from archagent.agents.archimate.settings import ArchimateSettings
 from archagent.agents.archimate.vault import Vault
 from archagent.core.inputs import EntradaInvalida
@@ -100,6 +102,10 @@ def create_app(
     @app.exception_handler(EntradaInvalida)
     async def entrada_400(_: Request, exc: EntradaInvalida) -> JSONResponse:
         return erro(400, "entrada_invalida", str(exc))
+
+    @app.exception_handler(BriefingNaoConfirmado)
+    async def briefing_409(_: Request, exc: BriefingNaoConfirmado) -> JSONResponse:
+        return erro(409, "briefing_nao_confirmado", str(exc))
 
     @app.exception_handler(LimiteDeEntradas)
     async def limite_409(_: Request, exc: LimiteDeEntradas) -> JSONResponse:
@@ -243,6 +249,85 @@ def create_app(
             aviso=bool(limite and u.total >= 0.8 * limite),
             bloqueado=bool(limite and u.total >= limite),
         )
+
+    # ------------------------------------------------------------ modelos
+
+    @app.post("/sessions/{sid}/models", status_code=202)
+    def gerar(sid: str) -> dict[str, Any]:
+        store.obter(sid)
+        return ok(**svc.iniciar_geracao(sid))
+
+    @app.get("/sessions/{sid}/models")
+    def listar_modelos(sid: str) -> dict[str, Any]:
+        sessao = store.obter(sid)
+        modelos = []
+        for mid in sessao.versoes_modelo:
+            m = svc.modelo(sid, mid)
+            modelos.append(
+                {
+                    "id": mid,
+                    "gerado_em": m.gerado_em,
+                    "viavel": m.validacao.viavel,
+                    "elementos": len(m.elementos),
+                    "relacoes": len(m.relacoes),
+                }
+            )
+        return ok(modelos=modelos)
+
+    @app.get("/sessions/{sid}/models/{mid}")
+    def obter_modelo(sid: str, mid: str) -> dict[str, Any]:
+        store.obter(sid)
+        try:
+            m = svc.modelo(sid, mid)
+        except KeyError as exc:
+            raise ApiError(404, "modelo_inexistente", f"Modelo {mid} não existe.") from exc
+        return ok(modelo=m.model_dump(mode="json"))
+
+    @app.get("/sessions/{sid}/models/{mid}/files/{tipo}")
+    def baixar(sid: str, mid: str, tipo: str) -> Response:
+        store.obter(sid)
+        try:
+            conteudo, mime, nome = svc.arquivo_modelo(sid, mid, tipo)
+        except KeyError as exc:
+            raise ApiError(
+                404, "arquivo_inexistente", f"Arquivo '{tipo}' do modelo {mid} não existe."
+            ) from exc
+        return Response(
+            conteudo,
+            media_type=mime,
+            headers={"content-disposition": f'attachment; filename="{nome}"'},
+        )
+
+    @app.get("/sessions/{sid}/events")
+    async def eventos(sid: str, desde: int = 0, aguardar: float = 300) -> StreamingResponse:
+        """Progresso em tempo real (Server-Sent Events) até o fim dos jobs da sessão."""
+        store.obter(sid)
+
+        async def fluxo() -> AsyncIterator[str]:
+            i, limite = desde, asyncio.get_running_loop().time() + aguardar
+            while True:
+                lista = svc.eventos.get(sid, [])
+                while i < len(lista):
+                    yield f"id: {i}\ndata: {json.dumps(lista[i], ensure_ascii=False)}\n\n"
+                    i += 1
+                ativos = [
+                    j
+                    for j in svc.jobs.values()
+                    if j["sessao"] == sid and j["status"] == "em_andamento"
+                ]
+                if not ativos or asyncio.get_running_loop().time() > limite:
+                    yield "event: fim\ndata: {}\n\n"
+                    return
+                await asyncio.sleep(0.5)
+
+        return StreamingResponse(fluxo(), media_type="text/event-stream")
+
+    @app.get("/sessions/{sid}/jobs/{job}")
+    def job(sid: str, job: str) -> dict[str, Any]:
+        info = svc.jobs.get(job)
+        if not info or info["sessao"] != sid:
+            raise ApiError(404, "job_inexistente", f"Job {job} não existe.")
+        return ok(**info)
 
     return app
 

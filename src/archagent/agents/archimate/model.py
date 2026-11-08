@@ -105,6 +105,7 @@ class Modelo(BaseModel):
     relacoes: list[Relacao] = Field(default_factory=list)
     visoes: list[Visao] = Field(default_factory=list)
     validacao: Validacao = Field(default_factory=Validacao)
+    rodadas_correcao: int = 0
     exchange_id: str = Field(default_factory=novo_id)
 
     def elemento(self, eid: str) -> Elemento | None:

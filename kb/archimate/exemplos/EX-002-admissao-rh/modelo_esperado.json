@@ -24,7 +24,11 @@
       "origens": [
         "B-003"
       ],
-      "sinonimos": []
+      "sinonimos": [
+        "Fazer admissão",
+        "Admissão",
+        "Realizar admissão"
+      ]
     },
     {
       "tipo": "BusinessProcess",

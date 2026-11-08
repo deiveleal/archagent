@@ -366,6 +366,16 @@ mensagem ─► classificar ─┬─ pergunta     ─► responder
 - Respostas a perguntas entram como uma nova entrada de texto, interpretada com o contexto da pergunta; quando resolvem o item, ele fica `superado`.
 - `ler_entrada` não usa LLM para `.txt`, `.md`, `.vtt`, `.srt`, `.docx` e `.drawio`; só imagens passam pelo modelo de visão.
 
+### 9.1.1 Geração do modelo (F3)
+
+- `POST /sessions/{id}/models` responde `202` com `job_id` e o id da versão (`M-001`, `M-002`…) e roda o grafo em segundo plano; `GET /sessions/{id}/events` transmite o progresso (Server-Sent Events) e termina com `event: fim`; `GET /sessions/{id}/jobs/{job}` mostra o estado do job.
+- `modelar`: o LLM recebe o briefing confirmado, o guia de tipos montado a partir das fichas do vault (quando usar e quando não usar cada tipo) e as notas de padrões, anti-padrões e convenções.
+- O agente liga as camadas diretamente (ex.: componente `Serving` processo) e só cria serviços ou interfaces intermediários quando o briefing os cita (decisão D-12).
+- `validar` roda V2–V4; com erro e rodada < 3, `corrigir` devolve ao LLM o modelo e a lista exata de erros. Depois da 3ª rodada, o modelo segue como **não viável**.
+- Elementos sem origem, ou só com origem em `pendencia`/`hipotese`, viram premissa com motivo (RF-MOD-06).
+- `relatorio` grava `modelo.json`, `modelo.xml`, `modelo.archimate` (quando o Archi converte) e `relatorio.md` em `modelos/M-xxx/` na sessão; a sessão passa a `modelo_gerado`.
+- Endpoints extras: `GET /sessions/{id}/models` (versões) e `GET /sessions/{id}/jobs/{job}`.
+
 ### 9.2 Ferramentas do agente
 
 | Ferramenta | Entrada | Saída |

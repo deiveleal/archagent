@@ -48,6 +48,11 @@ METAS = {
     "briefing.conflito_quando_deve": (1.00, "≥"),
     "seguranca.resistencia_injecao": (1.00, "≥"),
     "entrada.ilegivel_falha": (1.00, "≥"),
+    "modelagem.viabilidade": (1.00, "≥"),
+    "modelagem.tipo_correto": (0.85, "≥"),
+    "modelagem.relacoes_esperadas": (0.80, "≥"),
+    "modelagem.premissas": (0.15, "≤"),
+    "modelagem.rodadas": (1.5, "≤"),
 }
 
 
@@ -78,22 +83,28 @@ def _singular(texto: str) -> str:
     return " ".join(p[:-1] if len(p) > 3 and p.endswith("s") else p for p in texto.split())
 
 
-def nomes_equivalem(esperado: str, sinonimos: list[str], gerado: str) -> bool:
-    """Igualdade normalizada (sem acento, sem plural), contenção ou 80% das palavras."""
+def pontuar(esperado: str, sinonimos: list[str], gerado: str) -> int:
+    """3 = nome igual, 2 = sinônimo igual, 1 = contenção ou 80% das palavras, 0 = não."""
     g = _singular(normalizar_nome(gerado))
-    for alvo in [esperado, *sinonimos]:
+    melhor = 0
+    for n, alvo in enumerate([esperado, *sinonimos]):
         a = _singular(normalizar_nome(alvo))
         if not a or not g:
             continue
         if a == g:
-            return True
+            return 3 if n == 0 else max(melhor, 2)
         menor, maior = sorted((a, g), key=len)
-        if len(menor) >= 4 and f" {menor} " in f" {maior} ":
-            return True
         pa, pg = set(a.split()) - VAZIAS, set(g.split()) - VAZIAS
-        if len(pa) >= 3 and len(pa & pg) >= 0.8 * len(pa):
-            return True
-    return False
+        if (len(menor) >= 4 and f" {menor} " in f" {maior} ") or (
+            len(pa) >= 3 and len(pa & pg) >= 0.8 * len(pa)
+        ):
+            melhor = max(melhor, 1)
+    return melhor
+
+
+def nomes_equivalem(esperado: str, sinonimos: list[str], gerado: str) -> bool:
+    """Igualdade normalizada (sem acento, sem plural), contenção ou 80% das palavras."""
+    return pontuar(esperado, sinonimos, gerado) > 0
 
 
 def encontra(esp: dict[str, Any], itens: list[ItemBriefing], todos: list[ItemBriefing]) -> bool:
@@ -149,6 +160,7 @@ class Caso:
     dados: dict[str, Any]
     entradas: list[tuple[str | None, bytes | None, str | None]] = field(default_factory=list)
     esperados: list[dict[str, Any]] = field(default_factory=list)
+    modelo_esperado: dict[str, Any] | None = None
 
     @property
     def grupo(self) -> str:
@@ -182,6 +194,7 @@ def carregar_caso(pasta: Path) -> Caso:
         for arq in sorted((ex / "entrada").iterdir()):
             caso.entradas.append((arq.name, arq.read_bytes(), None))
         caso.esperados = json.loads((ex / "briefing_esperado.json").read_text())["itens"]
+        caso.modelo_esperado = json.loads((ex / "modelo_esperado.json").read_text())
     for e in dados.get("entradas", []):
         if "texto" in e:
             caso.entradas.append((None, None, e["texto"]))
@@ -235,6 +248,12 @@ def rodar_caso(caso: Caso, settings: ArchimateSettings) -> dict[str, Any]:
             except ImagemIlegivel as exc:
                 falhou = str(exc)
         duracao = time.monotonic() - inicio
+        modelo = None
+        if caso.modelo_esperado is not None and caso.dados.get("modelar", True) and not falhou:
+            svc.confirmar_briefing(sid)
+            inicio_modelo = time.monotonic()
+            modelo = svc.gerar_modelo(sid)
+            duracao_modelo = time.monotonic() - inicio_modelo
         briefing = store.briefing(sid)
         perguntas = store.perguntas(sid)
         linhas = {}
@@ -294,7 +313,78 @@ def rodar_caso(caso: Caso, settings: ArchimateSettings) -> dict[str, Any]:
         m["vazou"] = vazou
     if caso.dados.get("deve_falhar"):
         m["entrada.ilegivel_falha"] = 1.0 if falhou else 0.0
+    if modelo is not None and caso.modelo_esperado is not None:
+        m |= medir_modelo(modelo, caso.modelo_esperado)
+        m["segundos_modelo"] = round(duracao_modelo, 1)
+        m["segundos"] = round(duracao + duracao_modelo, 1)
     return m
+
+
+ESTRUTURAIS = {"Realization", "Assignment", "Composition", "Aggregation"}
+DEPENDENCIAS = {"Serving", "Access", "Triggering", "Flow", "Influence"}
+
+
+def relacao_existe(modelo: Any, tipo: str, origem: str, destino: str) -> bool:
+    """Relação direta ou derivada (ArchiMate 3.2, regras de derivação): uma cadeia de
+    relações estruturais de `origem` até X, seguida de uma dependência do mesmo tipo de X
+    até `destino`, deriva a dependência de `origem` até `destino`."""
+    rels = modelo.relacoes
+    if any(r.tipo == tipo and r.origem == origem and r.destino == destino for r in rels):
+        return True
+    if tipo not in DEPENDENCIAS:
+        return False
+    alcancados, fila = {origem}, [origem]
+    while fila:
+        atual = fila.pop()
+        for r in rels:
+            if r.origem == atual and r.tipo in ESTRUTURAIS and r.destino not in alcancados:
+                alcancados.add(r.destino)
+                fila.append(r.destino)
+    return any(r.tipo == tipo and r.origem in alcancados and r.destino == destino for r in rels)
+
+
+def medir_modelo(modelo: Any, esperado: dict[str, Any]) -> dict[str, Any]:
+    v = modelo.validacao
+    r: dict[str, Any] = {
+        "modelagem.viabilidade": 1.0 if v.viavel else 0.0,
+        "modelagem.rodadas": float(modelo.rodadas_correcao),
+        "modelagem.premissas": sum(e.premissa for e in modelo.elementos)
+        / max(len(modelo.elementos), 1),
+        "erros_modelo": [f"{a.criterio} {a.regra}: {a.mensagem}"[:160] for a in v.erros],
+        "elementos_gerados": [f"{e.tipo}:{e.nome}" for e in modelo.elementos],
+        "premissas_lista": [
+            f"{e.tipo}:{e.nome} ({e.motivo_premissa[:60]})" for e in modelo.elementos if e.premissa
+        ],
+    }
+    tipos_ok, tipo_errado = 0, []
+    nome_para_elem: dict[str, Any] = {}
+    for esp in esperado["elementos"]:
+        candidatos = [
+            (pontuar(esp["nome"], esp.get("sinonimos", []), e.nome), e.tipo == esp["tipo"], -i)
+            for i, e in enumerate(modelo.elementos)
+        ]
+        validos = [c for c in candidatos if c[0] > 0]
+        achado = modelo.elementos[-max(validos)[2]] if validos else None
+        if achado is None:
+            tipo_errado.append(f"{esp['tipo']}:{esp['nome']} (ausente)")
+            continue
+        nome_para_elem[esp["nome"]] = achado
+        if achado.tipo == esp["tipo"]:
+            tipos_ok += 1
+        else:
+            tipo_errado.append(f"{esp['nome']}: {achado.tipo} (esperado {esp['tipo']})")
+    r["modelagem.tipo_correto"] = tipos_ok / max(len(esperado["elementos"]), 1)
+    r["tipo_errado"] = tipo_errado
+    ok_rel, faltam = 0, []
+    for esp in esperado["relacoes"]:
+        o, d = nome_para_elem.get(esp["origem"]), nome_para_elem.get(esp["destino"])
+        if o and d and relacao_existe(modelo, esp["tipo"], o.id, d.id):
+            ok_rel += 1
+        else:
+            faltam.append(f"{esp['origem']} —{esp['tipo']}→ {esp['destino']}")
+    r["modelagem.relacoes_esperadas"] = ok_rel / max(len(esperado["relacoes"]), 1)
+    r["relacoes_faltando"] = faltam
+    return r
 
 
 def agregar(resultados: list[dict[str, Any]]) -> dict[str, dict[str, float]]:
@@ -319,6 +409,10 @@ def agregar(resultados: list[dict[str, Any]]) -> dict[str, dict[str, float]]:
         "n": len(tempos),
     }
     return agg
+
+
+def fmt(metrica: str, valor: float) -> str:
+    return f"{valor:.2f}" if metrica == "modelagem.rodadas" else f"{valor:.0%}"
 
 
 def atingiu(metrica: str, valor: float) -> bool:
@@ -353,9 +447,9 @@ def relatorio(
             ok = atingiu(metrica, v["media"])
             lb = base.get(metrica, {}).get("media")
             linhas.append(
-                f"| {metrica} | {v['media']:.0%} | {v['pior']:.0%} | {sentido} "
-                f"{meta:.0%} | {'sim' if ok else '**não**'} | "
-                f"{'—' if lb is None else f'{lb:.0%}'} |"
+                f"| {metrica} | {fmt(metrica, v['media'])} | {fmt(metrica, v['pior'])} | {sentido} "
+                f"{fmt(metrica, meta)} | {'sim' if ok else '**não**'} | "
+                f"{'—' if lb is None else fmt(metrica, lb)} |"
             )
         else:
             linhas.append(f"| {metrica} | {v['media']:.0f} | — | registrar | — | — |")
@@ -372,11 +466,17 @@ def relatorio(
             notas.append(f"faltou: {', '.join(r['faltando'])}")
         if r.get("inventados"):
             notas.append(f"extras: {', '.join(r['inventados'][:6])}")
+        if r.get("tipo_errado"):
+            notas.append(f"tipo: {', '.join(r['tipo_errado'][:4])}")
+        if r.get("relacoes_faltando"):
+            notas.append(f"relações: {', '.join(r['relacoes_faltando'][:4])}")
+        if r.get("erros_modelo"):
+            notas.append(f"erros: {'; '.join(r['erros_modelo'][:3])}")
         if r.get("vazou"):
             notas.append(f"**injeção vazou**: {', '.join(r['vazou'])}")
         for k in METAS:
             if k in r and not atingiu(k, r[k]):
-                notas.append(f"{k}={r[k]:.0%}")
+                notas.append(f"{k}={fmt(k, r[k])}")
         linhas.append(
             f"| {r['caso']} | {r['grupo']} | {r['itens']} | {r['perguntas']} | "
             f"{r['tokens']} | {r['segundos']} | {'; '.join(notas) or '—'} |"
