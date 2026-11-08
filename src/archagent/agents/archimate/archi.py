@@ -28,8 +28,12 @@ class ArchiClient:
     def converter(self, exchange: bytes) -> tuple[bytes | None, list[Achado]]:
         """Devolve o .archimate, ou os achados V5 quando o Archi falha."""
         try:
-            r = httpx.post(f"{self.url}/convert", content=exchange, timeout=self.timeout,
-                           headers={"content-type": "application/xml"})  # fmt: skip
+            r = httpx.post(
+                f"{self.url}/convert",
+                content=exchange,
+                timeout=self.timeout,
+                headers={"content-type": "application/xml"},
+            )
         except httpx.HTTPError as exc:
             raise ArchiIndisponivel(f"tool-archi indisponível: {exc}") from exc
         if r.status_code == 200:
@@ -40,5 +44,11 @@ class ArchiClient:
             erro = {"mensagem": r.text[:500]}
         mensagem = erro.get("mensagem", "Falha no Archi")
         log = erro.get("log", "")
-        return None, [Achado(criterio="V5", regra=erro.get("codigo", "ARCHI"), severidade="erro",
-                             mensagem=f"{mensagem} {log}".strip())]  # fmt: skip
+        return None, [
+            Achado(
+                criterio="V5",
+                regra=erro.get("codigo", "ARCHI"),
+                severidade="erro",
+                mensagem=f"{mensagem} {log}".strip(),
+            )
+        ]

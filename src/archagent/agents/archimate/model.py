@@ -89,8 +89,12 @@ class Validacao(BaseModel):
     def de_achados(cls, achados: list[Achado], criterios: dict[str, bool]) -> Validacao:
         erros = [a for a in achados if a.severidade == "erro"]
         avisos = [a for a in achados if a.severidade == "aviso"]
-        return cls(viavel=not erros and all(criterios.values()), erros=erros, avisos=avisos,
-                   criterios=criterios)  # fmt: skip
+        return cls(
+            viavel=not erros and all(criterios.values()),
+            erros=erros,
+            avisos=avisos,
+            criterios=criterios,
+        )
 
 
 class Modelo(BaseModel):

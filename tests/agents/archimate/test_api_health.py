@@ -24,12 +24,21 @@ class ArchiFalso:
         return {"status": "ok", "archi_versao": "5.10.0"}
 
 
-def settings(**kw: object) -> ArchimateSettings:
-    return ArchimateSettings(_env_file=None, kb_dir=KB, **kw)  # type: ignore[call-arg]
+def settings(tmp: Path, **kw: object) -> ArchimateSettings:
+    return ArchimateSettings(_env_file=None, kb_dir=KB, sessions_dir=tmp, **kw)  # type: ignore[call-arg]
+
+
+@pytest.fixture(autouse=True)
+def _tmp(tmp_path: Path) -> None:
+    global TMP
+    TMP = tmp_path
+
+
+TMP = Path()
 
 
 def cliente(backend: ScriptedBackend, archi: ArchiFalso | None = None) -> TestClient:
-    s = settings()
+    s = settings(TMP)
     return TestClient(create_app(s, LLM(backend, s), archi or ArchiFalso()))  # type: ignore[arg-type]
 
 
@@ -49,7 +58,7 @@ def test_health_com_archi_fora() -> None:
 
 
 def test_sem_regras_nao_sobe(tmp_path: Path) -> None:
-    s = ArchimateSettings(_env_file=None, kb_dir=tmp_path)  # type: ignore[call-arg]
+    s = ArchimateSettings(_env_file=None, kb_dir=tmp_path, sessions_dir=tmp_path)  # type: ignore[call-arg]
     with pytest.raises(RegrasInvalidas):
         create_app(s, LLM(ScriptedBackend(), s))
 

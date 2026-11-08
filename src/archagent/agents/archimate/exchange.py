@@ -65,8 +65,9 @@ def exportar(m: Modelo) -> bytes:
     if m.relacoes:
         relacoes = etree.SubElement(raiz, _q("relationships"))
         for r in m.relacoes:
-            el = etree.SubElement(relacoes, _q("relationship"), identifier=r.id,
-                                  source=r.origem, target=r.destino)  # fmt: skip
+            el = etree.SubElement(
+                relacoes, _q("relationship"), identifier=r.id, source=r.origem, target=r.destino
+            )
             el.set(f"{{{XSI}}}type", r.tipo)
             if r.tipo == "Access" and r.acesso:
                 el.set("accessType", r.acesso)
@@ -96,18 +97,26 @@ def _visao(pai: etree._Element, v: Visao, m: Modelo) -> None:
     def no_elemento(destino: etree._Element, eid: str, x: int, y: int, w: int, h: int) -> None:
         nid = novo_id()
         no_por_elemento[eid] = nid
-        n = etree.SubElement(destino, _q("node"), identifier=nid, elementRef=eid,
-                             x=str(x), y=str(y), w=str(w), h=str(h))  # fmt: skip
+        n = etree.SubElement(
+            destino,
+            _q("node"),
+            identifier=nid,
+            elementRef=eid,
+            x=str(x),
+            y=str(y),
+            w=str(w),
+            h=str(h),
+        )
         n.set(f"{{{XSI}}}type", "Element")
 
     restantes = list(v.nos)
     for f in v.faixas:
-        c = etree.SubElement(view, _q("node"), identifier=novo_id(), x=str(f.x), y=str(f.y),
-                             w=str(f.w), h=str(f.h))  # fmt: skip
+        c = etree.SubElement(
+            view, _q("node"), identifier=novo_id(), x=str(f.x), y=str(f.y), w=str(f.w), h=str(f.h)
+        )
         c.set(f"{{{XSI}}}type", "Container")
         _texto(c, "label", f.rotulo)
-        dentro = [n for n in restantes
-                  if f.x <= n.x < f.x + f.w and f.y <= n.y < f.y + f.h]  # fmt: skip
+        dentro = [n for n in restantes if f.x <= n.x < f.x + f.w and f.y <= n.y < f.y + f.h]
         for n in dentro:
             no_elemento(c, n.elemento, n.x, n.y, n.w, n.h)
             restantes.remove(n)
@@ -119,9 +128,14 @@ def _visao(pai: etree._Element, v: Visao, m: Modelo) -> None:
         r = rel_por_id.get(conexao.relacao)
         if not r or r.origem not in no_por_elemento or r.destino not in no_por_elemento:
             continue
-        con = etree.SubElement(view, _q("connection"), identifier=novo_id(),
-                               relationshipRef=r.id, source=no_por_elemento[r.origem],
-                               target=no_por_elemento[r.destino])  # fmt: skip
+        con = etree.SubElement(
+            view,
+            _q("connection"),
+            identifier=novo_id(),
+            relationshipRef=r.id,
+            source=no_por_elemento[r.origem],
+            target=no_por_elemento[r.destino],
+        )
         con.set(f"{{{XSI}}}type", "Relationship")
 
 
@@ -150,8 +164,9 @@ def carregar_schema(xsd_dir: Path) -> etree.XMLSchema:
 
 def parse_seguro(dados: bytes) -> etree._Element:
     """XML sem entidades externas, DTD nem rede (proteção contra XXE)."""
-    parser = etree.XMLParser(resolve_entities=False, no_network=True, load_dtd=False,
-                             huge_tree=False)  # fmt: skip
+    parser = etree.XMLParser(
+        resolve_entities=False, no_network=True, load_dtd=False, huge_tree=False
+    )
     return etree.fromstring(dados, parser)
 
 

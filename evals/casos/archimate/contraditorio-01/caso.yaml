@@ -1,0 +1,17 @@
+grupo: contraditorio
+descricao: Duas pessoas dizem bancos diferentes, sem decidir
+rapido: true
+entradas:
+  - arquivo: reuniao.vtt
+    conteudo: |
+      WEBVTT
+
+      00:00:01.000 --> 00:00:07.000
+      <v Ana>A API de Estoque grava os dados no PostgreSQL.
+
+      00:00:07.500 --> 00:00:14.000
+      <v Bruno>Não, a API de Estoque usa o Oracle da empresa.
+
+      00:00:14.500 --> 00:00:18.000
+      <v Ana>Bom, precisamos ver isso depois.
+deve_conflitar: true

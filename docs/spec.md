@@ -361,8 +361,9 @@ mensagem ─► classificar ─┬─ pergunta     ─► responder
                          └─ comando      ─► ação correspondente
 ```
 
-- As **pausas** usam o mecanismo de interrupção do LangGraph; a sessão espera a resposta do arquiteto sem ocupar recursos.
-- O estado do grafo é salvo por um checkpointer em SQLite, no volume `sessions` ⚠️.
+- As **pausas** (perguntas, confirmação do briefing) são o próprio estado da sessão, guardado no volume `sessions`. Cada chamada da API roda um grafo curto do LangGraph (ex.: `ler_entrada → interpretar → atualizar_briefing → esclarecer`) e termina; a próxima chamada retoma a partir do estado salvo. Assim, a sessão sobrevive ao reinício do container sem checkpointer (decisão D-10).
+- O LLM só propõe itens; o código aplica as regras do briefing (união, conflito, correção) e confere a origem: se o local citado não existe ou não contém o trecho, o agente procura o trecho na entrada (inclusive atravessando uma quebra de linha); sem achar, o item fica com confiança `baixa`.
+- Respostas a perguntas entram como uma nova entrada de texto, interpretada com o contexto da pergunta; quando resolvem o item, ele fica `superado`.
 - `ler_entrada` não usa LLM para `.txt`, `.md`, `.vtt`, `.srt`, `.docx` e `.drawio`; só imagens passam pelo modelo de visão.
 
 ### 9.2 Ferramentas do agente
@@ -624,6 +625,6 @@ archagent/
 
 - [x] Comando exato da linha de comando do Archi 5 e necessidade de Xvfb (F1: verificado, seção 14).
 - [x] Algoritmo de layout das visões (F1: seção 8.4).
-- [ ] Checkpointer do LangGraph em SQLite no volume `sessions`.
+- [x] Checkpointer do LangGraph em SQLite no volume `sessions`: não é necessário; o estado fica na sessão (seção 9.1, decisão D-10).
 - [x] Modelo de embeddings para a busca no vault: no MVP, só busca por palavra (BM25), seção 10.6.
 - [x] Versões exatas dos XSDs do Exchange Format: os que vêm no Archi 5.10.0 (namespace `archimate/3.0`, `schemaLocation` 3.1), em `kb/archimate/regras/xsd/`.

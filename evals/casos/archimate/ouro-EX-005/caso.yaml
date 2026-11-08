@@ -1,0 +1,5 @@
+grupo: ouro
+descricao: Exemplo ouro EX-005-clinica-imagem
+rapido: false
+exemplo: EX-005-clinica-imagem          # entradas e esperados vêm de kb/archimate/exemplos/
+deve_perguntar: false

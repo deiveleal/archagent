@@ -56,6 +56,7 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | F2 — núcleo: leitores de entrada (txt, md, vtt, srt, docx, drawio, imagem) com validação e proteção XXE, briefing, sessões em arquivo, `kb/core`, workflows `kb.yml` e `eval.yml` | `core/f2-entradas-briefing` | PR #7 |
 | 2026-11-08 | Sincronização `main` → `agent/archimate` | `sync/main-para-agent-archimate` | PR #10 (substitui o #8, que tinha conflito) |
 | 2026-11-08 | Núcleo: `LLM_ENABLE_THINKING` (modo de raciocínio do Qwen3 desligado por padrão) | `core/llm-sem-raciocinio` | PR #9 |
+| 2026-11-08 | F2 — agente: interpretação das entradas pelo LLM (com origem conferida), perguntas de esclarecimento, grafo de entrada no LangGraph, endpoints de sessão, entrada, briefing, perguntas e uso; 13 casos N3 e executor da avaliação | `task/archimate/f2-briefing` | PR #11 |
 
 ## 5. Pendências
 
@@ -63,7 +64,7 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | --- | --- | --- | --- |
 | P-01 | ~~Comando exato da linha de comando do Archi 5 e necessidade de Xvfb~~ **Resolvida:** precisa de Xvfb; comando na spec §14 | Spec §19 | F1 (2026-11-08) |
 | P-02 | ~~Algoritmo de layout das visões~~ **Resolvida:** spec §8.4 | Spec §19 | F1 (2026-11-08) |
-| P-03 | Checkpointer do LangGraph em SQLite no volume `sessions` | Spec §19 | F0/F2 |
+| P-03 | ~~Checkpointer do LangGraph em SQLite~~ **Resolvida:** não é necessário; estado na sessão (D-10) | Spec §19 | F2 (2026-11-08) |
 | P-04 | ~~Modelo de embeddings para a busca no vault~~ **Resolvida:** só busca por palavra (BM25) no MVP; spec §10.6 | Spec §19 | F1 (2026-11-08) |
 | P-05 | ~~Versões dos XSDs do Exchange Format~~ **Resolvida:** XSDs do Archi 5.10.0 | Spec §19 | F1 (2026-11-08) |
 | P-06 | Limite de tokens por execução do `eval.yml` | Harness §13 | Depois da 1ª avaliação completa |
@@ -107,6 +108,12 @@ aqui.
 | --- | --- | --- | --- | --- | --- |
 | EXP-001 | 2026-11-08 | Algum modelo do Token Plan faz bem as três tarefas do agente: chamada de ferramenta, saída JSON e leitura de imagem | 6 modelos testados. `qwen3.8-max`: melhor modelagem e leitura de imagem perfeita (17–20 s). `deepseek-v4.1-flash-1017`: bom e rápido (6–8 s). `qwen3.8-flash`: falhou na ferramenta. `deepseek-v4-pro-0813`: respondeu vazio à imagem sem dar erro. `glm-5.3`: não aceita imagem | `qwen3.8-max` para texto e visão; `deepseek-v4.1-flash-1017` como alternativa rápida e juiz | Feito antes da regra de isolamento, em pasta temporária fora do repositório; rodada única, entrada pequena |
 
+### Resultados da avaliação
+
+| Data | Branch | Casos | Cobertura | Inventados | Origem correta | Pergunta quando deve | Conflito | Injeção | Ilegível | Tokens/caso | p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-11-08 | `task/archimate/f2-briefing` | 13 (1 repetição) | 100% | 1% | 100% | 100% | 100% | 100% | 100% | 2.764 | 29 s |
+
 ## 8. Decisões
 
 As decisões até o plano v1.0 estão na seção 6 do plano. As decisões seguintes
@@ -122,6 +129,8 @@ ficam aqui.
 | D-07 | 2026-11-08 | Fichas do vault criadas como `rascunho`; rascunhos em uso por configuração até a revisão | Permite seguir com as fases sem esconder que a revisão está pendente |
 | D-08 | 2026-11-08 | Faixas de camada exportadas como containers; o Archi as converte em grupos | Visões legíveis; o Archi converte as coordenadas absolutas em relativas |
 | D-09 | 2026-11-08 | Modo de raciocínio do `qwen3.8-max` desligado por padrão (`LLM_ENABLE_THINKING=false`) | Medido na extração do EX-001: ligado, 203 s e 9.162 tokens de saída (estoura o limite de 60 s); desligado, 19 s e 1.129 tokens. Reavaliar se a qualidade do briefing ficar abaixo da meta |
+| D-10 | 2026-11-08 | Sem checkpointer do LangGraph: cada chamada da API roda um grafo curto; as pausas são o estado da sessão no volume | Mais simples e sobrevive ao reinício do container; os grafos não ficam parados esperando o arquiteto |
+| D-11 | 2026-11-08 | O prompt de interpretação define quando usar `sistema` × `interface` × `servico` e pede nomes no singular | Na 1ª avaliação, "Portal Web", "API de Pedidos" e "Serviço de Pagamentos" foram classificados como interface/serviço; depois do ajuste, cobertura de 79–87% para 100% |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
 ## 9. Backlog

@@ -1,0 +1,19 @@
+grupo: ambiguo
+descricao: Transcrição com dúvida sobre qual sistema apoia o processo
+rapido: false
+entradas:
+  - arquivo: reuniao.vtt
+    conteudo: |
+      WEBVTT
+
+      00:00:01.000 --> 00:00:08.000
+      <v Paula>O time comercial registra as propostas para os clientes.
+
+      00:00:08.500 --> 00:00:15.000
+      <v Rafael>Hoje isso fica no CRM, ou talvez numa planilha, não tenho certeza.
+
+      00:00:15.500 --> 00:00:21.000
+      <v Paula>E a proposta aprovada vai para algum sistema do financeiro, não sei qual.
+itens_esperados:
+  - {tipo: processo, nome: Registrar propostas, sinonimos: [Registrar proposta]}
+deve_perguntar: true

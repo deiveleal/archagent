@@ -80,8 +80,9 @@ def normalizar(texto: str) -> str:
 def tokens(texto: str) -> list[str]:
     # Separa CamelCase (ApplicationComponent → application component).
     texto = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", texto)
-    return [t for t in re.findall(r"[a-z0-9]+", normalizar(texto))
-            if len(t) > 1 and t not in STOPWORDS]  # fmt: skip
+    return [
+        t for t in re.findall(r"[a-z0-9]+", normalizar(texto)) if len(t) > 1 and t not in STOPWORDS
+    ]
 
 
 @dataclass
@@ -122,13 +123,21 @@ def ler_nota(arquivo: Path) -> Nota:
     meta = yaml.safe_load(cabecalho) or {}
     if not isinstance(meta, dict):
         raise ValueError(f"{arquivo}: cabeçalho inválido")
-    return Nota(id=str(meta.get("id", arquivo.stem)), meta=meta, corpo=corpo, arquivo=arquivo,
-                links=sorted(set(LINK.findall(corpo))))  # fmt: skip
+    return Nota(
+        id=str(meta.get("id", arquivo.stem)),
+        meta=meta,
+        corpo=corpo,
+        arquivo=arquivo,
+        links=sorted(set(LINK.findall(corpo))),
+    )
 
 
 def validar_nota(nota: Nota, ids: set[str]) -> list[str]:
-    erros = [f"{nota.arquivo.name}: falta o campo '{c}'" for c in CAMPOS_OBRIGATORIOS
-             if c not in nota.meta]  # fmt: skip
+    erros = [
+        f"{nota.arquivo.name}: falta o campo '{c}'"
+        for c in CAMPOS_OBRIGATORIOS
+        if c not in nota.meta
+    ]
     if nota.tipo not in TIPOS_NOTA:
         erros.append(f"{nota.arquivo.name}: tipo '{nota.tipo}' inválido")
     if nota.status not in ("rascunho", "revisado"):
@@ -139,8 +148,11 @@ def validar_nota(nota: Nota, ids: set[str]) -> list[str]:
         erros.append(f"{nota.arquivo.name}: ficha de elemento sem 'archimate'")
     if nota.id != nota.arquivo.stem:
         erros.append(f"{nota.arquivo.name}: id '{nota.id}' diferente do nome do arquivo")
-    erros += [f"{nota.arquivo.name}: link para nota inexistente [[{alvo}]]"
-              for alvo in nota.links if alvo not in ids]  # fmt: skip
+    erros += [
+        f"{nota.arquivo.name}: link para nota inexistente [[{alvo}]]"
+        for alvo in nota.links
+        if alvo not in ids
+    ]
     return erros
 
 
@@ -148,10 +160,16 @@ class Vault:
     def __init__(self, notas: list[Nota], incluir_rascunhos: bool = False) -> None:
         self.todas = {n.id: n for n in notas}
         self.notas = {n.id: n for n in notas if incluir_rascunhos or n.status == "revisado"}
-        self._docs = {nid: Counter(tokens(f"{n.titulo} {n.titulo} {n.corpo} "
-                                          f"{' '.join(map(str, n.meta.get('tags', [])))} "
-                                          f"{n.archimate or ''}"))
-                      for nid, n in self.notas.items()}  # fmt: skip
+        self._docs = {
+            nid: Counter(
+                tokens(
+                    f"{n.titulo} {n.titulo} {n.corpo} "
+                    f"{' '.join(map(str, n.meta.get('tags', [])))} "
+                    f"{n.archimate or ''}"
+                )
+            )
+            for nid, n in self.notas.items()
+        }
         n_docs = max(len(self._docs), 1)
         df: Counter[str] = Counter()
         for c in self._docs.values():
@@ -168,8 +186,9 @@ class Vault:
     def rascunhos(self) -> list[str]:
         return sorted(n.id for n in self.todas.values() if n.status != "revisado")
 
-    def _bm25(self, consulta: list[str], doc: Counter[str], k1: float = 1.5,
-              b: float = 0.75) -> float:  # fmt: skip
+    def _bm25(
+        self, consulta: list[str], doc: Counter[str], k1: float = 1.5, b: float = 0.75
+    ) -> float:
         tamanho = sum(doc.values())
         total = 0.0
         for t in consulta:
@@ -183,8 +202,9 @@ class Vault:
                 )
         return total
 
-    def buscar(self, consulta: str, limite: int = 5, tipo: str | None = None,
-               camada: str | None = None) -> list[Nota]:  # fmt: skip
+    def buscar(
+        self, consulta: str, limite: int = 5, tipo: str | None = None, camada: str | None = None
+    ) -> list[Nota]:
         """Ferramenta `buscar_vault`: notas mais relevantes + notas ligadas (1 nível)."""
         q = tokens(consulta)
         pontos = []
@@ -205,8 +225,14 @@ class Vault:
 
     def ficha(self, tipo_archimate: str) -> Nota | None:
         """Ferramenta `ficha_elemento`."""
-        return next((n for n in self.notas.values()
-                     if n.tipo == "elemento" and n.archimate == tipo_archimate), None)  # fmt: skip
+        return next(
+            (
+                n
+                for n in self.notas.values()
+                if n.tipo == "elemento" and n.archimate == tipo_archimate
+            ),
+            None,
+        )
 
     def resumo(self, tipos: tuple[str, ...] = ("padrao", "antipadrao", "convencao")) -> str:
         """Notas curtas que cabem inteiras no contexto (plano §2.4)."""
