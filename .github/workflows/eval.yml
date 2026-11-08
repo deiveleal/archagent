@@ -30,7 +30,7 @@ jobs:
       VAULT_INCLUIR_RASCUNHOS: "true"
     steps:
       - uses: actions/checkout@v4
-      - name: Sem chave do DashScope (ex.: PR de fork) — avaliação pulada
+      - name: "Sem chave do DashScope (ex.: PR de fork): avaliação pulada"
         if: env.DASHSCOPE_API_KEY == ''
         run: echo "::warning::Secret DASHSCOPE_API_KEY ausente; avaliação N3 não rodou."
       - uses: astral-sh/setup-uv@v6

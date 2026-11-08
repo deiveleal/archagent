@@ -4,7 +4,7 @@ name: kb
 on:
   pull_request:
     branches-ignore: ["exp/**"]
-    paths: ["kb/**", "src/archagent/agents/**"]
+    paths: ["kb/**", "src/archagent/agents/**", "Makefile", ".github/workflows/kb.yml"]
 
 permissions:
   contents: read
