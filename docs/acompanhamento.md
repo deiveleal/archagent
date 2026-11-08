@@ -49,6 +49,7 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | Repositório público criado (`deiveleal/archagent`), branch `agent/archimate` criada, regras de proteção ativadas | — | Ruleset `protecao-main-e-agentes` |
 | 2026-11-08 | Desenho de arquitetura (drawio) e acompanhamento completo | `docs/arquitetura-acompanhamento` | PR #1 |
 | 2026-11-08 | F0 — núcleo: `pyproject`/`uv`, config, logs JSON, cliente LLM (DashScope + replay), `ui` mínima, compose, Makefile, CI, checagem de pastas, `CLAUDE.md` | `core/f0-fundacao` | PR #2 |
+| 2026-11-08 | F0 — agente: API FastAPI (`/health`, `/health/llm`), formato de erro com `request_id`, container `agent-archimate` sem porta publicada | `task/archimate/f0-api` | PR #3 |
 
 ## 5. Pendências
 

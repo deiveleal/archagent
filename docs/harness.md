@@ -196,7 +196,8 @@ pioraram, tokens e custo estimado, tempo por caso.
 
 Um script (`scripts/check_paths.py`) roda no N0 e reprova o PR quando:
 
-- uma branch `task/<agente>/*` ou `agent/<agente>` altera arquivos fora de `src/archagent/agents/<agente>/`, `kb/<agente>/`, `compose/agent-<agente>.yml`, `evals/casos/<agente>/`, `tests/` do agente e `docs/`;
+- uma branch `task/<agente>/*` ou `agent/<agente>` altera arquivos fora de `src/archagent/agents/<agente>/`, `kb/<agente>/`, `compose/agent-<agente>.yml`, `evals/casos/<agente>/`, `tests/agents/<agente>/`, `docs/` e a linha de `include` do agente no `docker-compose.yml`;
+- arquivos iguais aos da `origin/main` não contam, porque são mudanças do núcleo que a branch só trouxe da `main`;
 - uma branch `core/*` altera a pasta de algum agente;
 - uma branch `docs/*` altera algo fora de `docs/`, `README.md` e `CLAUDE.md`;
 - qualquer PR para `main` ou `agent/*` vem de uma branch `exp/*` ou altera `experiments/`;
