@@ -51,11 +51,15 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | F0 — núcleo: `pyproject`/`uv`, config, logs JSON, cliente LLM (DashScope + replay), `ui` mínima, compose, Makefile, CI, checagem de pastas, `CLAUDE.md` | `core/f0-fundacao` | PR #2 |
 | 2026-11-08 | F0 — agente: API FastAPI (`/health`, `/health/llm`), formato de erro com `request_id`, container `agent-archimate` sem porta publicada | `task/archimate/f0-api` | PR #3 |
 | 2026-11-08 | F1 — container `tool-archi`: Archi 5.10.0 + Xvfb + API `/health` e `/convert`; erro do Archi legível; testes N1 e N2 | `core/f1-tool-archi` | PR #4 |
+| 2026-11-08 | F1 — agente: regras, modelo interno, validadores V1–V4, exportação, layout, vault, exemplos ouro, `kb-check` | `task/archimate/f1-kb-validacao` | PR #5 |
 | 2026-11-08 | F1 — agente: regras (elementos, relações do Archi 5.10, coerência, XSDs), modelo interno, validadores V1–V4, exportação Exchange Format, layout por viewpoint, cliente do `tool-archi` (V5), vault (35 fichas + padrões, anti-padrões e convenções, em rascunho), busca BM25, 5 exemplos ouro, `kb-check` | `task/archimate/f1-kb-validacao` | PR #5 |
 | 2026-11-08 | Sincronização `main` → `agent/archimate` | `main` | PR #6 |
 | 2026-11-08 | F2 — núcleo: leitores de entrada (txt, md, vtt, srt, docx, drawio, imagem) com validação e proteção XXE, briefing, sessões em arquivo, `kb/core`, workflows `kb.yml` e `eval.yml` | `core/f2-entradas-briefing` | PR #7 |
+| 2026-11-08 | Sincronização `main` → `agent/archimate` | `main` | PR #8 |
 | 2026-11-08 | Sincronização `main` → `agent/archimate` | `sync/main-para-agent-archimate` | PR #10 (substitui o #8, que tinha conflito) |
 | 2026-11-08 | Núcleo: `LLM_ENABLE_THINKING` (modo de raciocínio do Qwen3 desligado por padrão) | `core/llm-sem-raciocinio` | PR #9 |
+| 2026-11-08 | Interface Streamlit completa (sessões, conversa com anexos, entradas, briefing, perguntas, modelo com progresso e downloads); `eval.yml` sobe o `tool-archi` | `core/ui-streamlit` | PR #13 |
+| 2026-11-08 | Sincronização `main` → `agent/archimate` | `sync/main-para-agent-archimate-2` | PR #14 |
 | 2026-11-08 | F2 — agente: interpretação das entradas pelo LLM (com origem conferida), perguntas de esclarecimento, grafo de entrada no LangGraph, endpoints de sessão, entrada, briefing, perguntas e uso; 13 casos N3 e executor da avaliação | `task/archimate/f2-briefing` | PR #11 |
 | 2026-11-08 | F3 — agente: modelagem com guia de tipos do vault, ciclo validar → corrigir (até 3 rodadas), premissas, visões, exportação, V5, relatório de viabilidade, geração em segundo plano com eventos (SSE) e downloads; métricas de modelagem na avaliação N3 | `task/archimate/f3-modelagem` | PR #12 |
 | 2026-11-08 | F5 — agente: conversa (classificar, responder, corrigir, avaliar alternativa, comandos), propostas de aprendizado após 3 sessões, juiz LLM, 5 casos de conversa, avaliação completa e linha de base | `task/archimate/f5-conversa` | PR #15 |
@@ -76,7 +80,7 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | P-10 | Adicionar as verificações obrigatórias (`N0`, `N1 + N2`, depois `eval` e `kb`) ao ruleset. **Precisa ser feito pelo responsável:** o agente de IA não tem permissão para mudar a proteção das branches | Decisão D-02 | Agora |
 | P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`) | Critério de saída da F1 | Antes de fechar a F1 |
 | P-13 | Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual) | Critério de saída da F1 | Antes de fechar a F1 |
-| P-15 | O `eval.yml` precisa subir o `tool-archi` para medir a viabilidade (V5) na CI | Avaliação da F3 | Próximo PR do núcleo |
+| P-15 | ~~O `eval.yml` precisa subir o `tool-archi`~~ **Resolvida** no PR #13 | Avaliação da F3 | 2026-11-08 |
 | P-14 | Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml` (o agente de IA não lê o `.env`) | Harness §6.1 | Antes da 1ª avaliação na CI |
 | P-11 | Chave SSH desta máquina não está cadastrada no GitHub; o envio está sendo feito por HTTPS com o login do `gh` | Decisão D-03 | Quando conveniente |
 

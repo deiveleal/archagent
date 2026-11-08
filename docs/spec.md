@@ -584,7 +584,10 @@ xvfb-run -a -s "-screen 0 1280x1024x24" /opt/Archi/Archi \
 | Aba Perguntas | Perguntas pendentes, com campo de resposta e opção de pular |
 | Aba Modelo | Progresso da geração; resultado V1–V5; elementos por camada; downloads (`.archimate`, Exchange Format, relatório); versões anteriores |
 
-A interface não tem lógica de agente: tudo passa pela API da seção 13.
+A interface não tem lógica de agente: tudo passa pela API da seção 13
+(`src/archagent/ui/cliente.py`). A conversa usa `POST /sessions/{id}/messages`; enquanto o
+agente não tiver esse endpoint, a mensagem vai como entrada de texto
+(`POST /sessions/{id}/inputs`). O progresso da geração do modelo vem do fluxo SSE.
 
 ## 16. Configuração
 

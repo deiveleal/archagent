@@ -39,6 +39,13 @@ jobs:
           version: "0.9.11"
       - if: env.DASHSCOPE_API_KEY != ''
         run: uv sync --all-extras --frozen
+      - name: Sobe o tool-archi (V5)
+        if: env.DASHSCOPE_API_KEY != ''
+        run: |
+          docker compose up -d --wait tool-archi
+          ip=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' \
+            "$(docker compose ps -q tool-archi)")
+          echo "TOOL_ARCHI_URL=http://$ip:8000" >> "$GITHUB_ENV"
       - name: Avaliação
         if: env.DASHSCOPE_API_KEY != ''
         run: |
@@ -53,11 +60,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          rel=$(ls -t evals/reports/*.md 2>/dev/null | head -1)
+          rel=$(ls -t evals/*/reports/*.md 2>/dev/null | head -1)
           [ -n "$rel" ] && gh pr comment ${{ github.event.pull_request.number }} --body-file "$rel" || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: relatorio-avaliacao
-          path: evals/reports/
+          path: evals/*/reports/
           if-no-files-found: ignore
