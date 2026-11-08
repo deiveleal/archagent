@@ -1,0 +1,96 @@
+{
+  "itens": [
+    {
+      "id": "B-001",
+      "tipo": "ator",
+      "nome": "Cliente",
+      "sinonimos": []
+    },
+    {
+      "id": "B-002",
+      "tipo": "ator",
+      "nome": "Equipe de Atendimento",
+      "sinonimos": [
+        "Atendimento"
+      ]
+    },
+    {
+      "id": "B-003",
+      "tipo": "processo",
+      "nome": "Registrar pedido",
+      "sinonimos": []
+    },
+    {
+      "id": "B-004",
+      "tipo": "processo",
+      "nome": "Acompanhar pedidos",
+      "sinonimos": []
+    },
+    {
+      "id": "B-005",
+      "tipo": "sistema",
+      "nome": "Portal Web",
+      "sinonimos": []
+    },
+    {
+      "id": "B-006",
+      "tipo": "sistema",
+      "nome": "API de Pedidos",
+      "sinonimos": []
+    },
+    {
+      "id": "B-007",
+      "tipo": "sistema",
+      "nome": "Backoffice",
+      "sinonimos": []
+    },
+    {
+      "id": "B-008",
+      "tipo": "dado",
+      "nome": "Pedido",
+      "sinonimos": []
+    },
+    {
+      "id": "B-009",
+      "tipo": "infraestrutura",
+      "nome": "PostgreSQL",
+      "sinonimos": [
+        "Amazon RDS",
+        "RDS"
+      ]
+    },
+    {
+      "id": "B-010",
+      "tipo": "infraestrutura",
+      "nome": "Cluster Kubernetes",
+      "sinonimos": [
+        "Kubernetes"
+      ]
+    },
+    {
+      "id": "B-011",
+      "tipo": "ligacao",
+      "nome": "Portal Web → API de Pedidos",
+      "sinonimos": []
+    },
+    {
+      "id": "B-012",
+      "tipo": "ligacao",
+      "nome": "Backoffice → API de Pedidos",
+      "sinonimos": []
+    },
+    {
+      "id": "B-013",
+      "tipo": "ligacao",
+      "nome": "API de Pedidos → PostgreSQL",
+      "sinonimos": []
+    },
+    {
+      "id": "B-014",
+      "tipo": "decisao",
+      "nome": "PostgreSQL gerenciado no Amazon RDS",
+      "sinonimos": []
+    }
+  ],
+  "deve_perguntar": false
+}

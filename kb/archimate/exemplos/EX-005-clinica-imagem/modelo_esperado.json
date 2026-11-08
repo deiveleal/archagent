@@ -1,0 +1,145 @@
+{
+  "elementos": [
+    {
+      "tipo": "BusinessActor",
+      "nome": "Paciente",
+      "origens": [
+        "B-001"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "BusinessActor",
+      "nome": "Recepcionista",
+      "origens": [
+        "B-002"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "BusinessProcess",
+      "nome": "Agendar consulta",
+      "origens": [
+        "B-003"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "BusinessProcess",
+      "nome": "Confirmar consulta",
+      "origens": [
+        "B-004"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "App da Clínica",
+      "origens": [
+        "B-005"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "API de Agendamento",
+      "origens": [
+        "B-006"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Sistema da Recepção",
+      "origens": [
+        "B-007"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "SystemSoftware",
+      "nome": "MySQL",
+      "origens": [
+        "B-008"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "DataObject",
+      "nome": "Consulta",
+      "origens": [
+        "B-012"
+      ],
+      "sinonimos": []
+    }
+  ],
+  "relacoes": [
+    {
+      "tipo": "Assignment",
+      "origem": "Paciente",
+      "destino": "Agendar consulta",
+      "origens": [
+        "B-003"
+      ]
+    },
+    {
+      "tipo": "Assignment",
+      "origem": "Recepcionista",
+      "destino": "Confirmar consulta",
+      "origens": [
+        "B-004"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "App da Clínica",
+      "destino": "Agendar consulta",
+      "origens": [
+        "B-003",
+        "B-005"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Sistema da Recepção",
+      "destino": "Confirmar consulta",
+      "origens": [
+        "B-004",
+        "B-007"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "API de Agendamento",
+      "destino": "App da Clínica",
+      "origens": [
+        "B-009"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "API de Agendamento",
+      "destino": "Sistema da Recepção",
+      "origens": [
+        "B-010"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "MySQL",
+      "destino": "API de Agendamento",
+      "origens": [
+        "B-011"
+      ]
+    },
+    {
+      "tipo": "Access",
+      "origem": "API de Agendamento",
+      "destino": "Consulta",
+      "origens": [
+        "B-012"
+      ],
+      "acesso": "Write"
+    }
+  ]
+}

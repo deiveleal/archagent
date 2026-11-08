@@ -1,0 +1,165 @@
+{
+  "elementos": [
+    {
+      "tipo": "BusinessActor",
+      "nome": "Cliente",
+      "origens": [
+        "B-001"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "BusinessActor",
+      "nome": "Equipe de Atendimento",
+      "origens": [
+        "B-002"
+      ],
+      "sinonimos": [
+        "Atendimento"
+      ]
+    },
+    {
+      "tipo": "BusinessProcess",
+      "nome": "Registrar pedido",
+      "origens": [
+        "B-003"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "BusinessProcess",
+      "nome": "Acompanhar pedidos",
+      "origens": [
+        "B-004"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Portal Web",
+      "origens": [
+        "B-005"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "API de Pedidos",
+      "origens": [
+        "B-006"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Backoffice",
+      "origens": [
+        "B-007"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "DataObject",
+      "nome": "Pedido",
+      "origens": [
+        "B-008"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "SystemSoftware",
+      "nome": "PostgreSQL",
+      "origens": [
+        "B-009",
+        "B-014"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "Node",
+      "nome": "Cluster Kubernetes",
+      "origens": [
+        "B-010"
+      ],
+      "sinonimos": []
+    }
+  ],
+  "relacoes": [
+    {
+      "tipo": "Assignment",
+      "origem": "Cliente",
+      "destino": "Registrar pedido",
+      "origens": [
+        "B-003"
+      ]
+    },
+    {
+      "tipo": "Assignment",
+      "origem": "Equipe de Atendimento",
+      "destino": "Acompanhar pedidos",
+      "origens": [
+        "B-004"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Portal Web",
+      "destino": "Registrar pedido",
+      "origens": [
+        "B-003",
+        "B-005"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Backoffice",
+      "destino": "Acompanhar pedidos",
+      "origens": [
+        "B-004",
+        "B-007"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "API de Pedidos",
+      "destino": "Portal Web",
+      "origens": [
+        "B-011"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "API de Pedidos",
+      "destino": "Backoffice",
+      "origens": [
+        "B-012"
+      ]
+    },
+    {
+      "tipo": "Access",
+      "origem": "API de Pedidos",
+      "destino": "Pedido",
+      "origens": [
+        "B-008",
+        "B-013"
+      ],
+      "acesso": "Write"
+    },
+    {
+      "tipo": "Serving",
+      "origem": "PostgreSQL",
+      "destino": "API de Pedidos",
+      "origens": [
+        "B-013"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Cluster Kubernetes",
+      "destino": "API de Pedidos",
+      "origens": [
+        "B-010"
+      ]
+    }
+  ]
+}

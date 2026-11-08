@@ -1,0 +1,127 @@
+{
+  "elementos": [
+    {
+      "tipo": "BusinessActor",
+      "nome": "Entregador",
+      "origens": [
+        "B-001"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "BusinessProcess",
+      "nome": "Entregar encomenda",
+      "origens": [
+        "B-002"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "App do Entregador",
+      "origens": [
+        "B-003"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "API de Rotas",
+      "origens": [
+        "B-004"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Serviço de Mapas",
+      "origens": [
+        "B-005"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "Device",
+      "nome": "Celular do entregador",
+      "origens": [
+        "B-006"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "Node",
+      "nome": "Servidor de aplicação",
+      "origens": [
+        "B-007"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "DataObject",
+      "nome": "Rota",
+      "origens": [
+        "B-010"
+      ],
+      "sinonimos": []
+    }
+  ],
+  "relacoes": [
+    {
+      "tipo": "Assignment",
+      "origem": "Entregador",
+      "destino": "Entregar encomenda",
+      "origens": [
+        "B-002"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "App do Entregador",
+      "destino": "Entregar encomenda",
+      "origens": [
+        "B-003"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "API de Rotas",
+      "destino": "App do Entregador",
+      "origens": [
+        "B-008"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Serviço de Mapas",
+      "destino": "API de Rotas",
+      "origens": [
+        "B-009"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Celular do entregador",
+      "destino": "App do Entregador",
+      "origens": [
+        "B-006"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Servidor de aplicação",
+      "destino": "API de Rotas",
+      "origens": [
+        "B-007"
+      ]
+    },
+    {
+      "tipo": "Access",
+      "origem": "API de Rotas",
+      "destino": "Rota",
+      "origens": [
+        "B-010"
+      ],
+      "acesso": "Write"
+    }
+  ]
+}

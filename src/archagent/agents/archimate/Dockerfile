@@ -14,8 +14,13 @@ COPY pyproject.toml uv.lock README.md ./
 RUN uv sync --frozen --no-dev --no-install-project --extra agent
 COPY src ./src
 RUN uv sync --frozen --no-dev --extra agent
+# Base de conhecimento na imagem, sem escrita para o usuário do agente (RF-KB-03);
+# só a pasta de propostas é gravável (volume).
+COPY kb ./kb
 
-RUN useradd --create-home --uid 10001 app && mkdir -p /data/sessions && chown -R app /data
+RUN useradd --create-home --uid 10001 app \
+    && mkdir -p /data/sessions /app/kb/archimate/propostas \
+    && chown -R app /data /app/kb/archimate/propostas
 USER app
 
 EXPOSE 8000

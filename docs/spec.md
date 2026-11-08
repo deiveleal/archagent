@@ -328,9 +328,14 @@ ajustar sem mudar código.
 | Application Cooperation | Componentes, interfaces, serviços e objetos de dados de aplicação, e as relações entre eles | Há elementos de Aplicação |
 | Technology Usage | Componentes de aplicação e os elementos de Tecnologia que os apoiam | Há elementos de Aplicação e de Tecnologia |
 
-**Layout:** em faixas por camada, de cima para baixo; dentro da faixa, em grade
-seguindo a ordem das ligações; tamanho padrão de elemento 120 × 55; espaço mínimo
-de 40 entre elementos. ⚠️ O algoritmo exato é definido na F1.
+**Layout** (definido na F1, `agents/archimate/layout.py`):
+
+1. Cada viewpoint escolhe os seus elementos.
+2. Os elementos são ordenados por percurso em largura pelas ligações, para que elementos ligados fiquem perto.
+3. Acima de 20 elementos, a visão é dividida em partes ("(1/2)", "(2/2)").
+4. Cada camada vira uma faixa (grupo no Archi), de cima para baixo: Negócio, Aplicação, Tecnologia. Dentro da faixa, grade de até 6 colunas, elemento 120 × 55, espaço de 40.
+
+Os limites ficam em `coerencia.yaml` (`limites`).
 
 ## 9. Fluxo do agente (LangGraph)
 
@@ -466,6 +471,17 @@ Meta da F1: 5 exemplos; mais exemplos entram conforme o harness precisar.
 Arquivo `kb/archimate/propostas/AAAA-MM-DD-<assunto>.md` com: correção observada,
 sessões em que ocorreu, nota proposta (no formato 10.3, `status: rascunho`) e
 justificativa. A aprovação é feita por PR para a branch `agent/archimate`.
+
+### 10.6 Busca no vault
+
+- Busca por palavra (BM25), sem acento e sem diferenciar maiúsculas, separando nomes em CamelCase; segue os links `[[...]]` até 1 nível.
+- Não há busca por embeddings no MVP: o Token Plan não oferece modelo de embeddings, e uma base pequena não precisa (arXiv 2506.05690).
+- Enquanto as fichas não forem revisadas, `VAULT_INCLUIR_RASCUNHOS=true` permite usar os rascunhos. Com `false`, só notas `revisado` são usadas.
+
+### 10.7 Origem das regras
+
+- `relacoes.json` é extraído de `regras/fonte/relationships.xml`, copiado do Archi **5.10.0** (licença MIT, em `fonte/LICENSE-Archi.txt`), com o comando `python -m archagent.agents.archimate.kb_tools extract-relations`.
+- `make kb-check` (ou `python -m archagent.agents.archimate.kb_tools check`) refaz a extração e compara.
 
 ## 11. Relatório de viabilidade
 
@@ -606,7 +622,7 @@ archagent/
 ## 19. Pontos a verificar ou decidir ⚠️
 
 - [x] Comando exato da linha de comando do Archi 5 e necessidade de Xvfb (F1: verificado, seção 14).
-- [ ] Algoritmo de layout das visões (F1).
+- [x] Algoritmo de layout das visões (F1: seção 8.4).
 - [ ] Checkpointer do LangGraph em SQLite no volume `sessions`.
-- [ ] Modelo de embeddings para a busca no vault (verificar o que o Token Plan oferece; a lista de modelos atual não mostra modelo de embeddings).
-- [ ] Versões exatas dos XSDs do Exchange Format compatíveis com o Archi 5.
+- [x] Modelo de embeddings para a busca no vault: no MVP, só busca por palavra (BM25), seção 10.6.
+- [x] Versões exatas dos XSDs do Exchange Format: os que vêm no Archi 5.10.0 (namespace `archimate/3.0`, `schemaLocation` 3.1), em `kb/archimate/regras/xsd/`.

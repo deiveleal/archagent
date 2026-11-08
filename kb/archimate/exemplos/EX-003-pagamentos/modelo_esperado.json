@@ -1,0 +1,158 @@
+{
+  "elementos": [
+    {
+      "tipo": "BusinessActor",
+      "nome": "Cliente",
+      "origens": [
+        "B-001"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "BusinessProcess",
+      "nome": "Pagar pedido",
+      "origens": [
+        "B-002"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Loja Virtual",
+      "origens": [
+        "B-003"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Serviço de Pagamentos",
+      "origens": [
+        "B-004"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Gateway de Pagamentos",
+      "origens": [
+        "B-005"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Serviço de Pedidos",
+      "origens": [
+        "B-006"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "SystemSoftware",
+      "nome": "Kafka",
+      "origens": [
+        "B-007"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "DataObject",
+      "nome": "Pagamento",
+      "origens": [
+        "B-008"
+      ],
+      "sinonimos": [
+        "Registro de pagamento"
+      ]
+    },
+    {
+      "tipo": "ApplicationInterface",
+      "nome": "API REST de pagamentos",
+      "origens": [
+        "B-012"
+      ],
+      "sinonimos": []
+    }
+  ],
+  "relacoes": [
+    {
+      "tipo": "Assignment",
+      "origem": "Cliente",
+      "destino": "Pagar pedido",
+      "origens": [
+        "B-002"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Loja Virtual",
+      "destino": "Pagar pedido",
+      "origens": [
+        "B-002",
+        "B-003"
+      ]
+    },
+    {
+      "tipo": "Composition",
+      "origem": "Serviço de Pagamentos",
+      "destino": "API REST de pagamentos",
+      "origens": [
+        "B-012"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "API REST de pagamentos",
+      "destino": "Loja Virtual",
+      "origens": [
+        "B-009"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Gateway de Pagamentos",
+      "destino": "Serviço de Pagamentos",
+      "origens": [
+        "B-010"
+      ]
+    },
+    {
+      "tipo": "Flow",
+      "origem": "Serviço de Pagamentos",
+      "destino": "Serviço de Pedidos",
+      "origens": [
+        "B-011",
+        "B-013"
+      ],
+      "nome": "Pagamento confirmado"
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Kafka",
+      "destino": "Serviço de Pagamentos",
+      "origens": [
+        "B-007",
+        "B-011"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Kafka",
+      "destino": "Serviço de Pedidos",
+      "origens": [
+        "B-007",
+        "B-011"
+      ]
+    },
+    {
+      "tipo": "Access",
+      "origem": "Serviço de Pagamentos",
+      "destino": "Pagamento",
+      "origens": [
+        "B-008"
+      ],
+      "acesso": "Write"
+    }
+  ]
+}
