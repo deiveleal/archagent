@@ -1,0 +1,63 @@
+# Avaliação do agente com o LLM real (docs/harness.md §5 e §6.1).
+# PR para agent/*: rápida. PR para main: completa. Toda segunda-feira: completa.
+name: eval
+
+on:
+  pull_request:
+    branches: [main, "agent/**"]
+    paths: ["src/**", "kb/**", "evals/**"]
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+    inputs:
+      completa:
+        description: "Rodar a avaliação completa"
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  avaliacao:
+    name: N3 (avaliação do agente)
+    if: ${{ !startsWith(github.head_ref, 'exp/') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      DASHSCOPE_API_KEY: ${{ secrets.DASHSCOPE_API_KEY }}
+      VAULT_INCLUIR_RASCUNHOS: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - name: "Sem chave do DashScope (ex.: PR de fork): avaliação pulada"
+        if: env.DASHSCOPE_API_KEY == ''
+        run: echo "::warning::Secret DASHSCOPE_API_KEY ausente; avaliação N3 não rodou."
+      - uses: astral-sh/setup-uv@v6
+        if: env.DASHSCOPE_API_KEY != ''
+        with:
+          version: "0.9.11"
+      - if: env.DASHSCOPE_API_KEY != ''
+        run: uv sync --all-extras --frozen
+      - name: Avaliação
+        if: env.DASHSCOPE_API_KEY != ''
+        run: |
+          if [ "${{ github.base_ref }}" = "main" ] || [ "${{ github.event_name }}" = "schedule" ] \
+             || [ "${{ inputs.completa }}" = "true" ]; then
+            make eval-full PY="uv run"
+          else
+            make eval PY="uv run"
+          fi
+      - name: Relatório no PR
+        if: env.DASHSCOPE_API_KEY != '' && github.event_name == 'pull_request' && always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          rel=$(ls -t evals/reports/*.md 2>/dev/null | head -1)
+          [ -n "$rel" ] && gh pr comment ${{ github.event.pull_request.number }} --body-file "$rel" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: relatorio-avaliacao
+          path: evals/reports/
+          if-no-files-found: ignore

@@ -32,9 +32,9 @@
 
 | Fase | Status | Início | Fim | Critério de saída atingido? | PR |
 | --- | --- | --- | --- | --- | --- |
-| F0 — Fundação | Em andamento | 2026-11-08 | — | — | — |
+| F0 — Fundação | Concluída | 2026-11-08 | 2026-11-08 | Sim, exceto tornar a CI obrigatória no ruleset (P-10) | #2, #3 |
 | F1 — Base de conhecimento, modelo ArchiMate e validação | Em andamento | 2026-11-08 | — | — | — |
-| F2 — Entrada por texto e transcrição | Não iniciada | — | — | — | — |
+| F2 — Entrada por texto e transcrição | Em andamento | 2026-11-08 | — | — | — |
 | F3 — Modelagem a partir do briefing | Não iniciada | — | — | — | — |
 | F4 — Entrada por desenho | Não iniciada | — | — | — | — |
 | F5 — Refinamento pela conversa e avaliação | Não iniciada | — | — | — | — |
@@ -49,6 +49,11 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | Repositório público criado (`deiveleal/archagent`), branch `agent/archimate` criada, regras de proteção ativadas | — | Ruleset `protecao-main-e-agentes` |
 | 2026-11-08 | Desenho de arquitetura (drawio) e acompanhamento completo | `docs/arquitetura-acompanhamento` | PR #1 |
 | 2026-11-08 | F0 — núcleo: `pyproject`/`uv`, config, logs JSON, cliente LLM (DashScope + replay), `ui` mínima, compose, Makefile, CI, checagem de pastas, `CLAUDE.md` | `core/f0-fundacao` | PR #2 |
+| 2026-11-08 | F0 — agente: API FastAPI (`/health`, `/health/llm`), formato de erro com `request_id`, container `agent-archimate` sem porta publicada | `task/archimate/f0-api` | PR #3 |
+| 2026-11-08 | F1 — container `tool-archi`: Archi 5.10.0 + Xvfb + API `/health` e `/convert`; erro do Archi legível; testes N1 e N2 | `core/f1-tool-archi` | PR #4 |
+| 2026-11-08 | F1 — agente: regras, modelo interno, validadores V1–V4, exportação, layout, vault, exemplos ouro, `kb-check` | `task/archimate/f1-kb-validacao` | PR #5 |
+| 2026-11-08 | Sincronização `main` → `agent/archimate` | `main` | PR #6 |
+| 2026-11-08 | F2 — núcleo: leitores de entrada (txt, md, vtt, srt, docx, drawio, imagem) com validação e proteção XXE, briefing, sessões em arquivo, `kb/core`, workflows `kb.yml` e `eval.yml` | `core/f2-entradas-briefing` | PR #7 |
 
 ## 5. Pendências
 
@@ -61,9 +66,10 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | P-05 | Versões dos XSDs do Exchange Format compatíveis com o Archi 5 | Spec §19 | F1 |
 | P-06 | Limite de tokens por execução do `eval.yml` | Harness §13 | Depois da 1ª avaliação completa |
 | P-07 | Se o `deepseek-v4.1-flash-1017` funciona bem como juiz com temperatura 0 | Harness §13 | F3 |
-| P-08 | Se o Archi 5 roda na CI do GitHub (Linux, sem tela) | Harness §13 | F1 |
+| P-08 | ~~Se o Archi 5 roda na CI do GitHub~~ **Resolvida:** roda; os testes N2 com o `tool-archi` passam no `ubuntu-latest` | Harness §13 | F1 (2026-11-08) |
 | P-09 | Regra de aprovação de revisor quando entrar mais alguém | Harness §13 | Quando houver segunda pessoa |
-| P-10 | Adicionar as verificações obrigatórias (`ci`, `eval`, `kb`) ao ruleset quando os workflows existirem | Decisão D-02 | F0 |
+| P-10 | Adicionar as verificações obrigatórias (`N0`, `N1 + N2`, depois `eval` e `kb`) ao ruleset. **Precisa ser feito pelo responsável:** o agente de IA não tem permissão para mudar a proteção das branches | Decisão D-02 | Agora |
+| P-14 | Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml` (o agente de IA não lê o `.env`) | Harness §6.1 | Antes da 1ª avaliação na CI |
 | P-11 | Chave SSH desta máquina não está cadastrada no GitHub; o envio está sendo feito por HTTPS com o login do `gh` | Decisão D-03 | Quando conveniente |
 
 ## 6. Referências científicas (arXiv)

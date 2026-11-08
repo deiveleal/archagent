@@ -42,6 +42,7 @@ Tudo roda em containers, do mesmo jeito na máquina e na CI.
 | `make eval` | N3 rápida (casos marcados como `rapido`) |
 | `make eval-full` | N3 completa (todos os casos, 3 repetições) |
 | `make kb-check` | Validação da base de conhecimento (seção 9) |
+| `make test-local` | N1 local, sem containers |
 | `make report` | Gera o relatório de avaliação em `evals/reports/` |
 
 - O compose tem um perfil `test` com um container `tests`, que usa a mesma imagem do agente e inclui as dependências de teste.
@@ -177,7 +178,7 @@ pioraram, tokens e custo estimado, tempo por caso.
 | `eval.yml` | PR para `agent/*`: avaliação rápida. PR para `main`: completa. Agendado: completa, toda segunda-feira | Sobe os containers → N3 → relatório → comentário no PR |
 | `kb.yml` | PR que altera `kb/` | `make kb-check` |
 
-- A chave do DashScope fica nos **GitHub Secrets** e só é usada no `eval.yml`. Ela não fica disponível para PRs vindos de forks.
+- A chave do DashScope fica nos **GitHub Secrets** (`DASHSCOPE_API_KEY`) e só é usada no `eval.yml`. Ela não fica disponível para PRs vindos de forks; sem a chave, o `eval.yml` avisa e não roda a avaliação.
 - O `eval.yml` tem um limite de tokens por execução ⚠️ (valor a definir depois da primeira rodada).
 
 ### 6.2 Regras de proteção (rulesets)
@@ -341,5 +342,5 @@ O harness cresce junto com o produto:
 
 - [ ] Limite de tokens por execução do `eval.yml` (depois da primeira rodada completa).
 - [ ] Se o `deepseek-v4.1-flash-1017` aceita temperatura 0 e funciona bem como juiz (primeira rodada da F3).
-- [ ] Se o Archi 5 roda na CI do GitHub (imagem Linux, sem tela) — depende da verificação da F1.
+- [x] Se o Archi 5 roda na CI do GitHub (imagem Linux, sem tela): roda, com Xvfb no container `tool-archi`.
 - [ ] Regra de aprovação de revisor quando entrar mais alguém no projeto.
