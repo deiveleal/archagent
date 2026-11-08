@@ -23,6 +23,11 @@ class ArchiFalso:
             raise ArchiIndisponivel("fora")
         return {"status": "ok", "archi_versao": "5.10.0"}
 
+    def converter(self, exchange: bytes) -> tuple[bytes | None, list[object]]:
+        if not self.ok:
+            raise ArchiIndisponivel("fora")
+        return b"<archimate:model/>", []
+
 
 def settings(tmp: Path, **kw: object) -> ArchimateSettings:
     return ArchimateSettings(_env_file=None, kb_dir=KB, sessions_dir=tmp, **kw)  # type: ignore[call-arg]

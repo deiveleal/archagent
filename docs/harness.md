@@ -129,6 +129,9 @@ registro no acompanhamento.
 
 - **Nomes:** comparação depois de normalizar (minúsculas, sem acento, sem pontuação, sem plural), mais uma lista de sinônimos aceitos por caso (ex.: "PostgreSQL" = "Banco PostgreSQL"). Também conta quando um nome contém o outro (palavra inteira, 4+ letras) ou quando 80% das palavras significativas coincidem (frases de decisão e requisito).
 - **Ligações:** origem e destino pelo nome; o caso pode listar ligações alternativas aceitas (ex.: "Loja Virtual → API REST de pagamentos").
+- **Elementos do modelo:** cada elemento esperado é ligado ao elemento gerado de melhor nome (igual > sinônimo > contenção), com o mesmo tipo como desempate.
+- **Relações do modelo:** tipo exato + origem e destino; vale também a relação **derivada** pelas regras do ArchiMate: uma cadeia de relações estruturais (Realization, Assignment, Composition, Aggregation) seguida de uma dependência do mesmo tipo (ex.: componente —Realization→ serviço —Serving→ processo equivale a componente —Serving→ processo).
+- **Viabilidade na avaliação:** precisa do `tool-archi` (V5); informe `TOOL_ARCHI_URL`.
 - **Origem correta:** o local citado existe na entrada e contém o trecho (ou ao menos 60% das palavras dele), aceitando que o trecho continue na linha seguinte.
 - **Tipos ArchiMate:** comparação exata.
 - **Relações:** tipo exato + origem e destino pelo nome normalizado.

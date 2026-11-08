@@ -196,3 +196,52 @@ def test_llm_fora_do_esquema_vira_502(
     b.add("interpretar", "isto não é json")
     r = c.post(f"/sessions/{sid}/inputs", data={"texto": "x"})
     assert r.status_code == 502
+
+
+MODELO = {
+    "elementos": [
+        {"ref": "e1", "tipo": "BusinessActor", "nome": "Cliente", "origens": ["B-001"]},
+        {"ref": "e2", "tipo": "ApplicationComponent", "nome": "Portal Web", "origens": ["B-002"]},
+    ],
+    "relacoes": [{"tipo": "Serving", "origem": "e2", "destino": "e1", "origens": ["B-002"]}],
+}
+
+
+def test_geracao_de_modelo_eventos_e_downloads(
+    ctx: tuple[TestClient, ScriptedBackend, ArchimateSettings],
+) -> None:
+    import time
+
+    c, b, _ = ctx
+    sid = criar(c)
+    b.add("interpretar", {"itens": INTERP["itens"][:2]})
+    c.post(f"/sessions/{sid}/inputs", data={"texto": "O cliente usa o Portal Web."})
+    r = c.post(f"/sessions/{sid}/models")
+    assert r.status_code == 409
+    assert r.json()["erro"]["codigo"] == "briefing_nao_confirmado"
+    c.post(f"/sessions/{sid}/briefing/confirm")
+    b.add("modelar", MODELO)
+    r = c.post(f"/sessions/{sid}/models")
+    assert r.status_code == 202, r.text
+    job, mid = r.json()["job_id"], r.json()["modelo"]
+    for _ in range(100):
+        if c.get(f"/sessions/{sid}/jobs/{job}").json()["status"] != "em_andamento":
+            break
+        time.sleep(0.05)
+    assert c.get(f"/sessions/{sid}/jobs/{job}").json()["status"] == "concluido"
+    sse = c.get(f"/sessions/{sid}/events").text
+    assert "event: fim" in sse and '"etapa": "relatorio"' in sse
+    modelo = c.get(f"/sessions/{sid}/models/{mid}").json()["modelo"]
+    assert modelo["validacao"]["viavel"] is True
+    assert c.get(f"/sessions/{sid}/models").json()["modelos"][0]["id"] == mid
+    for tipo, trecho in (
+        ("exchange", b"<model"),
+        ("archimate", b"archimate:model"),
+        ("relatorio", "Relatório de viabilidade".encode()),
+    ):
+        r = c.get(f"/sessions/{sid}/models/{mid}/files/{tipo}")
+        assert r.status_code == 200 and trecho in r.content
+        assert "attachment" in r.headers["content-disposition"]
+    assert c.get(f"/sessions/{sid}/models/{mid}/files/pdf").status_code == 404
+    assert c.get(f"/sessions/{sid}/models/M-999").status_code == 404
+    assert c.get(f"/sessions/{sid}/jobs/J-nada").status_code == 404

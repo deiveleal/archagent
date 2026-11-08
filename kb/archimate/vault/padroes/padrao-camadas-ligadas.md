@@ -15,10 +15,12 @@ revisado_em: null
 
 **Quando usar:** sempre que o modelo tiver mais de uma camada.
 
-**Forma:** cada camada serve a de cima por meio de serviços.
+**Forma simples (padrão do MVP):** ligue as camadas diretamente, sem inventar elementos.
 
-- Tecnologia → Aplicação: [[elemento-system-software]] ou [[elemento-node]] servem (Serving) o [[elemento-application-component]], ou realizam um [[elemento-technology-service]] que o serve.
-- Aplicação → Negócio: o [[elemento-application-component]] realiza (Realization) um [[elemento-application-service]], que serve (Serving) o [[elemento-business-process]].
+- Tecnologia → Aplicação: [[elemento-system-software]], [[elemento-node]] ou [[elemento-device]] servem (Serving) o [[elemento-application-component]].
+- Aplicação → Negócio: o [[elemento-application-component]] serve (Serving) o [[elemento-business-process]].
 - Negócio: o [[elemento-business-actor]] é atribuído (Assignment) ao processo.
 
-**Por quê:** é o que os critérios COE-04 a COE-08 verificam.
+**Forma detalhada (só quando a entrada cita os serviços):** o componente realiza (Realization) um [[elemento-application-service]], que serve o processo; a tecnologia realiza um [[elemento-technology-service]], que serve o componente. Pelas regras de derivação do ArchiMate, as duas formas são equivalentes.
+
+**Por quê:** é o que os critérios COE-05, COE-07 e COE-08 verificam; inventar serviços aumenta as premissas sem trazer informação da entrada.

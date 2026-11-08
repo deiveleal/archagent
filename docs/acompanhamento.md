@@ -34,8 +34,8 @@
 | --- | --- | --- | --- | --- | --- |
 | F0 — Fundação | Concluída | 2026-11-08 | 2026-11-08 | Sim, exceto tornar a CI obrigatória no ruleset (P-10) | #2, #3 |
 | F1 — Base de conhecimento, modelo ArchiMate e validação | Em andamento | 2026-11-08 | — | — | — |
-| F2 — Entrada por texto e transcrição | Em andamento | 2026-11-08 | — | — | — |
-| F3 — Modelagem a partir do briefing | Não iniciada | — | — | — | — |
+| F2 — Entrada por texto e transcrição | Concluída | 2026-11-08 | 2026-11-08 | Sim: briefing correto nos 5 exemplos ouro e metas N3 atingidas | #7, #11 |
+| F3 — Modelagem a partir do briefing | Em andamento | 2026-11-08 | — | Os 5 exemplos geram modelos que passam em V1–V5 | — |
 | F4 — Entrada por desenho | Não iniciada | — | — | — | — |
 | F5 — Refinamento pela conversa e avaliação | Não iniciada | — | — | — | — |
 
@@ -57,6 +57,7 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | Sincronização `main` → `agent/archimate` | `sync/main-para-agent-archimate` | PR #10 (substitui o #8, que tinha conflito) |
 | 2026-11-08 | Núcleo: `LLM_ENABLE_THINKING` (modo de raciocínio do Qwen3 desligado por padrão) | `core/llm-sem-raciocinio` | PR #9 |
 | 2026-11-08 | F2 — agente: interpretação das entradas pelo LLM (com origem conferida), perguntas de esclarecimento, grafo de entrada no LangGraph, endpoints de sessão, entrada, briefing, perguntas e uso; 13 casos N3 e executor da avaliação | `task/archimate/f2-briefing` | PR #11 |
+| 2026-11-08 | F3 — agente: modelagem com guia de tipos do vault, ciclo validar → corrigir (até 3 rodadas), premissas, visões, exportação, V5, relatório de viabilidade, geração em segundo plano com eventos (SSE) e downloads; métricas de modelagem na avaliação N3 | `task/archimate/f3-modelagem` | PR #12 |
 
 ## 5. Pendências
 
@@ -74,6 +75,7 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | P-10 | Adicionar as verificações obrigatórias (`N0`, `N1 + N2`, depois `eval` e `kb`) ao ruleset. **Precisa ser feito pelo responsável:** o agente de IA não tem permissão para mudar a proteção das branches | Decisão D-02 | Agora |
 | P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`) | Critério de saída da F1 | Antes de fechar a F1 |
 | P-13 | Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual) | Critério de saída da F1 | Antes de fechar a F1 |
+| P-15 | O `eval.yml` precisa subir o `tool-archi` para medir a viabilidade (V5) na CI | Avaliação da F3 | Próximo PR do núcleo |
 | P-14 | Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml` (o agente de IA não lê o `.env`) | Harness §6.1 | Antes da 1ª avaliação na CI |
 | P-11 | Chave SSH desta máquina não está cadastrada no GitHub; o envio está sendo feito por HTTPS com o login do `gh` | Decisão D-03 | Quando conveniente |
 
@@ -114,6 +116,10 @@ aqui.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 2026-11-08 | `task/archimate/f2-briefing` | 13 (1 repetição) | 100% | 1% | 100% | 100% | 100% | 100% | 100% | 2.764 | 29 s |
 
+| Data | Branch | Casos | Viabilidade | Tipo correto | Relações esperadas | Premissas | Rodadas | Tokens/caso | p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-11-08 | `task/archimate/f3-modelagem` | 5 ouro com modelo (13 no total) | 100% | 100% | 95% | 0% | 0,40 | 6.225 (média dos 13) | 74 s |
+
 ## 8. Decisões
 
 As decisões até o plano v1.0 estão na seção 6 do plano. As decisões seguintes
@@ -131,6 +137,8 @@ ficam aqui.
 | D-09 | 2026-11-08 | Modo de raciocínio do `qwen3.8-max` desligado por padrão (`LLM_ENABLE_THINKING=false`) | Medido na extração do EX-001: ligado, 203 s e 9.162 tokens de saída (estoura o limite de 60 s); desligado, 19 s e 1.129 tokens. Reavaliar se a qualidade do briefing ficar abaixo da meta |
 | D-10 | 2026-11-08 | Sem checkpointer do LangGraph: cada chamada da API roda um grafo curto; as pausas são o estado da sessão no volume | Mais simples e sobrevive ao reinício do container; os grafos não ficam parados esperando o arquiteto |
 | D-11 | 2026-11-08 | O prompt de interpretação define quando usar `sistema` × `interface` × `servico` e pede nomes no singular | Na 1ª avaliação, "Portal Web", "API de Pedidos" e "Serviço de Pagamentos" foram classificados como interface/serviço; depois do ajuste, cobertura de 79–87% para 100% |
+| D-12 | 2026-11-08 | Camadas ligadas diretamente (`Serving`); serviços e interfaces intermediários só quando o briefing os cita | Na 1ª avaliação da F3, o agente inventava serviços para ligar camadas: premissas em 20% (meta ≤ 15%) e relações diretas ausentes; depois do ajuste, premissas 0% e relações 91–95% |
+| D-13 | 2026-11-08 | A avaliação aceita relações derivadas pelas regras do ArchiMate | Um modelo com serviço intermediário é equivalente ao com relação direta; sem isso, a métrica punia modelagem correta e mais detalhada |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
 ## 9. Backlog
