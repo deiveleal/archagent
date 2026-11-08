@@ -1,0 +1,417 @@
+<mxfile host="65bd71144e">
+    <diagram id="ctx" name="1. Contexto">
+        <mxGraphModel dx="755" dy="776" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="ctx-1" parent="1" style="text;html=1;fontSize=18;fontStyle=1;align=left;verticalAlign=middle;" value="ArchAgent — Contexto (Etapa 1)" vertex="1">
+                    <mxGeometry height="40" width="600" x="40" y="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="ctx-2" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;" value="Arquiteto" vertex="1">
+                    <mxGeometry height="70" width="40" x="80" y="230" as="geometry"/>
+                </mxCell>
+                <mxCell id="ctx-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#1f5c99;strokeColor=#1f5c99;fontColor=#ffffff;fontSize=13;" value="&lt;b&gt;ArchAgent&lt;/b&gt;&lt;br&gt;agente de análise e orientação&lt;br&gt;de arquitetura (MVP ArchiMate)" vertex="1">
+                    <mxGeometry height="120" width="280" x="330" y="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="ctx-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=12;" value="&lt;b&gt;Alibaba Cloud Model Studio&lt;/b&gt;&lt;br&gt;(DashScope, Token Plan, Singapura)&lt;br&gt;qwen3.8-max — texto e visão" vertex="1">
+                    <mxGeometry height="90" width="300" x="800" y="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="ctx-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=12;" value="&lt;b&gt;Archi 5&lt;/b&gt; (desktop)&lt;br&gt;abre o .archimate entregue" vertex="1">
+                    <mxGeometry height="80" width="300" x="800" y="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="ctx-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=12;" value="&lt;b&gt;GitHub&lt;/b&gt;&lt;br&gt;código, docs, base de conhecimento,&lt;br&gt;CI (Actions) e proteção de branches" vertex="1">
+                    <mxGeometry height="90" width="300" x="800" y="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="ctx-7" edge="1" parent="1" source="ctx-2" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="ctx-3" value="envia desenhos, transcrições e mensagens;&lt;br&gt;recebe briefing, modelo e relatório&lt;br&gt;(navegador)">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ctx-8" edge="1" parent="1" source="ctx-3" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.25;entryX=0;entryY=0.5;" target="ctx-4" value="interpretação, modelagem e visão&lt;br&gt;(HTTPS, API compatível com OpenAI)">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ctx-9" edge="1" parent="1" source="ctx-3" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="ctx-5" value="entrega .archimate + Exchange Format">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ctx-10" edge="1" parent="1" source="ctx-3" style="endArrow=block;html=1;dashed=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.8;entryX=0;entryY=0.5;" target="ctx-6" value="versionado e verificado em">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="ctx-11" edge="1" parent="1" source="ctx-2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;exitDx=0;exitDy=20;entryX=0.5;entryY=1;" target="ctx-5" value="abre e revisa o modelo">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="100" y="560"/>
+                            <mxPoint x="950" y="560"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="ctx-12" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=12;fillColor=#fffbe6;strokeColor=#999999;fontSize=11;align=left;spacingLeft=6;" value="O agente &lt;b&gt;não escreve nem altera código&lt;/b&gt;.&lt;br&gt;Entrega modelos, análises e recomendações.&lt;br&gt;Entradas do arquiteto vão para a API do DashScope." vertex="1">
+                    <mxGeometry height="70" width="420" x="40" y="600" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="cnt" name="2. Containers">
+        <mxGraphModel dx="1183" dy="1215" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="cnt-1" parent="1" style="text;html=1;fontSize=18;fontStyle=1;align=left;verticalAlign=middle;" value="ArchAgent — Containers e implantação (Docker Compose)" vertex="1">
+                    <mxGeometry height="40" width="800" x="40" y="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;strokeColor=#666666;fontStyle=1;fontSize=12;" value="Rede interna do Docker Compose" vertex="1">
+                    <mxGeometry height="560" width="640" x="220" y="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-3" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;fontSize=12;" value="Arquiteto&lt;br&gt;(navegador)" vertex="1">
+                    <mxGeometry height="70" width="40" x="70" y="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;ui&lt;/b&gt;&lt;br&gt;Streamlit&lt;br&gt;porta 8501 — única exposta" vertex="1">
+                    <mxGeometry height="80" width="220" x="280" y="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;agent-archimate&lt;/b&gt;&lt;br&gt;FastAPI + LangGraph&lt;br&gt;porta 8000 (interna)" vertex="1">
+                    <mxGeometry height="100" width="220" x="280" y="270" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;tool-archi&lt;/b&gt;&lt;br&gt;Archi 5 pela linha de comando&lt;br&gt;+ API mínima (interna)" vertex="1">
+                    <mxGeometry height="90" width="200" x="640" y="370" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-7" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="&lt;b&gt;volume sessions&lt;/b&gt;&lt;br&gt;sessões, briefing, modelos,&lt;br&gt;checkpoints (SQLite)" vertex="1">
+                    <mxGeometry height="100" width="200" x="260" y="490" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-8" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=10;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=11;" value="&lt;b&gt;volume kb&lt;/b&gt;&lt;br&gt;regras e vault: só leitura&lt;br&gt;propostas/: escrita" vertex="1">
+                    <mxGeometry height="100" width="220" x="530" y="490" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=12;" value="&lt;b&gt;DashScope&lt;/b&gt;&lt;br&gt;Token Plan, Singapura&lt;br&gt;qwen3.8-max" vertex="1">
+                    <mxGeometry height="80" width="220" x="940" y="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-10" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=12;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;align=left;spacingLeft=6;" value="&lt;b&gt;.env&lt;/b&gt; (fora do git)&lt;br&gt;DASHSCOPE_API_KEY, BASE_URL,&lt;br&gt;modelos e limites" vertex="1">
+                    <mxGeometry height="80" width="220" x="940" y="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-11" edge="1" parent="1" source="cnt-3" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;entryX=0;entryY=0.5;" target="cnt-4" value="HTTP :8501">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-12" edge="1" parent="1" source="cnt-4" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="cnt-5" value="HTTP/JSON + SSE&lt;br&gt;(API da spec §13)">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-13" edge="1" parent="1" source="cnt-5" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.8;entryX=0;entryY=0.5;" target="cnt-6" value="POST /convert&lt;br&gt;(V5)">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-14" edge="1" parent="1" source="cnt-5" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.15;entryX=0;entryY=0.5;" target="cnt-9" value="HTTPS">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-15" edge="1" parent="1" source="cnt-10" style="endArrow=block;html=1;dashed=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=0.9;entryY=0;" target="cnt-5" value="variáveis de ambiente">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-16" edge="1" parent="1" source="cnt-5" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.25;exitY=1;entryX=0.5;entryY=0;" target="cnt-7" value="lê e grava">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-17" edge="1" parent="1" source="cnt-5" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.75;exitY=1;entryX=0.4;entryY=0;" target="cnt-8" value="consulta / propõe">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cnt-18" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=12;fillColor=#fffbe6;strokeColor=#999999;fontSize=11;align=left;spacingLeft=6;" value="Um container por agente e por ferramenta.&lt;br&gt;Próximos agentes: &lt;b&gt;agent-&amp;lt;nome&amp;gt;&lt;/b&gt;; MCPs oficiais: &lt;b&gt;mcp-&amp;lt;nome&amp;gt;&lt;/b&gt;.&lt;br&gt;Experimentos: perfil &lt;b&gt;exp&lt;/b&gt;, isolados." vertex="1">
+                    <mxGeometry height="80" width="300" x="880" y="330" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="cmp" name="3. Componentes do agent-archimate">
+        <mxGraphModel dx="1393" dy="1431" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="cmp-1" parent="1" style="text;html=1;fontSize=18;fontStyle=1;align=left;verticalAlign=middle;" value="agent-archimate — Componentes" vertex="1">
+                    <mxGeometry height="40" width="600" x="40" y="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;strokeColor=#666666;fontStyle=1;fontSize=12;" value="agent-archimate" vertex="1">
+                    <mxGeometry height="520" width="1000" x="20" y="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-3" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;API FastAPI&lt;/b&gt;&lt;br&gt;endpoints da spec §13 + SSE" vertex="1">
+                    <mxGeometry height="70" width="220" x="60" y="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Grafo LangGraph&lt;/b&gt;&lt;br&gt;orquestra o fluxo (página 4)&lt;br&gt;pausas para o arquiteto" vertex="1">
+                    <mxGeometry height="70" width="260" x="380" y="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Checkpointer&lt;/b&gt;&lt;br&gt;estado do grafo (SQLite)" vertex="1">
+                    <mxGeometry height="70" width="220" x="760" y="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Leitores de entrada&lt;/b&gt;&lt;br&gt;txt, md, vtt, srt, docx,&lt;br&gt;drawio (sem LLM), imagem" vertex="1">
+                    <mxGeometry height="80" width="200" x="60" y="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-7" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Briefing&lt;/b&gt;&lt;br&gt;itens com origem, confiança&lt;br&gt;e status (superado)" vertex="1">
+                    <mxGeometry height="80" width="200" x="300" y="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Conversa e esclarecimento&lt;/b&gt;&lt;br&gt;classifica mensagens,&lt;br&gt;perguntas, alternativas" vertex="1">
+                    <mxGeometry height="80" width="200" x="540" y="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Modelagem&lt;/b&gt;&lt;br&gt;briefing → elementos e&lt;br&gt;relações (saída estruturada)" vertex="1">
+                    <mxGeometry height="80" width="200" x="780" y="220" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-10" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Validadores&lt;/b&gt;&lt;br&gt;V2 tipos e relações&lt;br&gt;V3 coerência · V4 cobertura" vertex="1">
+                    <mxGeometry height="80" width="200" x="60" y="340" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-11" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Layout das visões&lt;/b&gt;&lt;br&gt;viewpoints, faixas&lt;br&gt;por camada" vertex="1">
+                    <mxGeometry height="80" width="200" x="300" y="340" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-12" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Exportador&lt;/b&gt;&lt;br&gt;Exchange Format&lt;br&gt;+ XSD (V1)" vertex="1">
+                    <mxGeometry height="80" width="200" x="540" y="340" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-13" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Cliente tool-archi&lt;/b&gt;&lt;br&gt;conversão e V5" vertex="1">
+                    <mxGeometry height="80" width="200" x="780" y="340" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-14" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Relatório&lt;/b&gt;&lt;br&gt;viabilidade, rastreabilidade,&lt;br&gt;premissas, consumo" vertex="1">
+                    <mxGeometry height="90" width="200" x="60" y="460" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-15" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Logs e consumo&lt;/b&gt;&lt;br&gt;JSON, request_id,&lt;br&gt;tokens por sessão" vertex="1">
+                    <mxGeometry height="90" width="200" x="300" y="460" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-16" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Ferramentas do agente&lt;/b&gt;&lt;br&gt;buscar_vault, ficha_elemento,&lt;br&gt;relacoes_permitidas, validar_modelo,&lt;br&gt;consultar_briefing" vertex="1">
+                    <mxGeometry height="90" width="200" x="540" y="460" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-17" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Cliente LLM&lt;/b&gt;&lt;br&gt;DashScope, timeout,&lt;br&gt;novas tentativas" vertex="1">
+                    <mxGeometry height="90" width="200" x="780" y="460" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-18" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;strokeColor=#666666;fontStyle=1;fontSize=12;" value="Base de conhecimento (kb/core + kb/archimate)" vertex="1">
+                    <mxGeometry height="130" width="1000" x="20" y="620" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-19" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="&lt;b&gt;Regras&lt;/b&gt;&lt;br&gt;elementos, relações (do Archi),&lt;br&gt;coerência, XSDs" vertex="1">
+                    <mxGeometry height="65" width="200" x="60" y="665" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-20" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="&lt;b&gt;Vault&lt;/b&gt;&lt;br&gt;fichas, padrões,&lt;br&gt;anti-padrões, convenções" vertex="1">
+                    <mxGeometry height="65" width="200" x="300" y="665" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="&lt;b&gt;Exemplos ouro&lt;/b&gt;&lt;br&gt;entrada → resultado&lt;br&gt;(também no harness)" vertex="1">
+                    <mxGeometry height="65" width="200" x="540" y="665" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" value="&lt;b&gt;Propostas&lt;/b&gt;&lt;br&gt;aprendizados do agente,&lt;br&gt;aprovados por PR" vertex="1">
+                    <mxGeometry height="65" width="200" x="780" y="665" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-23" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=12;" value="&lt;b&gt;DashScope&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="60" width="160" x="1080" y="475" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-24" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=12;" value="&lt;b&gt;tool-archi&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="60" width="160" x="1080" y="350" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-25" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;dashed=1;fontSize=12;" value="&lt;b&gt;ui&lt;/b&gt; (Streamlit)" vertex="1">
+                    <mxGeometry height="60" width="160" x="1080" y="105" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-26" edge="1" parent="1" source="cmp-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=0.5;entryY=0;" target="cmp-3" value="HTTP">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1060" y="135"/>
+                            <mxPoint x="1060" y="80"/>
+                            <mxPoint x="170" y="80"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="cmp-27" edge="1" parent="1" source="cmp-3" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="cmp-4" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-28" edge="1" parent="1" source="cmp-4" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="cmp-5" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-29" edge="1" parent="1" source="cmp-4" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="cmp-6" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-30" edge="1" parent="1" source="cmp-4" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="cmp-7" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-31" edge="1" parent="1" source="cmp-4" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="cmp-8" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-32" edge="1" parent="1" source="cmp-4" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="cmp-9" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-33" edge="1" parent="1" source="cmp-13" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="cmp-24" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-34" edge="1" parent="1" source="cmp-17" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="cmp-23" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-35" edge="1" parent="1" source="cmp-16" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.64;entryY=0;" target="cmp-18" value="consulta">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="cmp-36" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=12;fillColor=#fffbe6;strokeColor=#999999;fontSize=11;align=left;spacingLeft=6;" value="O grafo chama todos os componentes; só as ligações principais aparecem.&lt;br&gt;O agente lê regras, vault e exemplos; escreve apenas em &lt;b&gt;propostas/&lt;/b&gt;." vertex="1">
+                    <mxGeometry height="90" width="300" x="1060" y="620" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="flx" name="4. Fluxo do agente">
+        <mxGraphModel grid="1" page="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" pageScale="1" pageWidth="1400" pageHeight="900" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="flx-1" parent="1" style="text;html=1;fontSize=18;fontStyle=1;align=left;verticalAlign=middle;" value="agent-archimate — Fluxo (spec §9)" vertex="1">
+                    <mxGeometry height="40" width="600" x="40" y="10" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-2" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;strokeColor=#666666;fontStyle=1;fontSize=12;" value="Entrada → briefing" vertex="1">
+                    <mxGeometry height="210" width="1260" x="20" y="55" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-3" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" value="Entrada&lt;br&gt;(arquivo ou texto)" vertex="1">
+                    <mxGeometry height="60" width="140" x="40" y="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-4" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Ler entrada&lt;/b&gt;&lt;br&gt;LLM só para imagem" vertex="1">
+                    <mxGeometry height="60" width="160" x="220" y="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-5" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Interpretar&lt;/b&gt;&lt;br&gt;extrai itens" vertex="1">
+                    <mxGeometry height="60" width="150" x="420" y="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-6" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Atualizar briefing&lt;/b&gt;&lt;br&gt;origem, confiança,&lt;br&gt;superados" vertex="1">
+                    <mxGeometry height="70" width="170" x="610" y="95" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-7" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="Precisa&lt;br&gt;esclarecer?" vertex="1">
+                    <mxGeometry height="80" width="130" x="820" y="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-8" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" value="&lt;b&gt;Pausa&lt;/b&gt;&lt;br&gt;perguntas ao arquiteto&lt;br&gt;(até 5 por rodada)" vertex="1">
+                    <mxGeometry height="60" width="160" x="805" y="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-9" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=11;" value="&lt;b&gt;Pausa&lt;/b&gt;&lt;br&gt;arquiteto confirma&lt;br&gt;o briefing" vertex="1">
+                    <mxGeometry height="60" width="160" x="1010" y="100" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-10" edge="1" parent="1" source="flx-3" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="flx-4" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-11" edge="1" parent="1" source="flx-4" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="flx-5" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-12" edge="1" parent="1" source="flx-5" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="flx-6" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-13" edge="1" parent="1" source="flx-6" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="flx-7" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-14" edge="1" parent="1" source="flx-7" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="flx-8" value="sim">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-15" edge="1" parent="1" source="flx-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=0.5;entryY=1;" target="flx-6" value="respostas">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="695" y="220"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="flx-16" edge="1" parent="1" source="flx-7" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="flx-9" value="não">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-17" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;strokeColor=#666666;fontStyle=1;fontSize=12;" value="Modelagem → entrega" vertex="1">
+                    <mxGeometry height="230" width="1260" x="20" y="285" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-18" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Modelar&lt;/b&gt;&lt;br&gt;elementos e relações&lt;br&gt;(saída estruturada)" vertex="1">
+                    <mxGeometry height="70" width="160" x="40" y="330" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-19" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="&lt;b&gt;Validar&lt;/b&gt;&lt;br&gt;V2 · V3 · V4" vertex="1">
+                    <mxGeometry height="80" width="130" x="250" y="325" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-20" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Corrigir&lt;/b&gt;&lt;br&gt;erro volta ao LLM" vertex="1">
+                    <mxGeometry height="55" width="150" x="240" y="440" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-21" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Gerar visões&lt;/b&gt;&lt;br&gt;viewpoints" vertex="1">
+                    <mxGeometry height="60" width="140" x="430" y="335" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-22" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Exportar&lt;/b&gt;&lt;br&gt;Exchange + XSD (V1)" vertex="1">
+                    <mxGeometry height="60" width="150" x="610" y="335" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-23" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Converter no Archi&lt;/b&gt;&lt;br&gt;tool-archi (V5)" vertex="1">
+                    <mxGeometry height="60" width="150" x="800" y="335" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-24" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Relatório&lt;/b&gt;&lt;br&gt;de viabilidade" vertex="1">
+                    <mxGeometry height="60" width="130" x="990" y="335" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-25" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" value="Entrega&lt;br&gt;.archimate, XML,&lt;br&gt;relatório" vertex="1">
+                    <mxGeometry height="70" width="110" x="1150" y="330" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-26" edge="1" parent="1" source="flx-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="flx-18" value="confirmado">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="1090" y="275"/>
+                            <mxPoint x="120" y="275"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="flx-27" edge="1" parent="1" source="flx-18" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="flx-19" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-28" edge="1" parent="1" source="flx-19" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" target="flx-20" value="erro e rodada &amp;lt; 3">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-29" edge="1" parent="1" source="flx-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0;exitY=0.5;entryX=0;entryY=0.5;" target="flx-19" value="">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="225" y="467"/>
+                            <mxPoint x="225" y="365"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="flx-30" edge="1" parent="1" source="flx-19" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="flx-21" value="ok ou 3ª rodada">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-31" edge="1" parent="1" source="flx-21" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="flx-22" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-32" edge="1" parent="1" source="flx-22" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="flx-23" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-33" edge="1" parent="1" source="flx-23" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="flx-24" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-34" edge="1" parent="1" source="flx-24" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="flx-25" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-35" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=12;fillColor=#fffbe6;strokeColor=#999999;fontSize=11;align=left;spacingLeft=6;" value="Na 3ª rodada com erro, o modelo é entregue como &lt;b&gt;não viável&lt;/b&gt;, com a lista de erros." vertex="1">
+                    <mxGeometry height="50" width="330" x="430" y="430" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-36" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;dashed=1;verticalAlign=top;align=left;spacingLeft=8;spacingTop=4;strokeColor=#666666;fontStyle=1;fontSize=12;" value="Conversa" vertex="1">
+                    <mxGeometry height="290" width="1260" x="20" y="535" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-37" parent="1" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=11;" value="Mensagem&lt;br&gt;do arquiteto" vertex="1">
+                    <mxGeometry height="60" width="140" x="40" y="640" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-38" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="&lt;b&gt;Classificar&lt;/b&gt;" vertex="1">
+                    <mxGeometry height="80" width="130" x="230" y="630" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-39" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Responder&lt;/b&gt;&lt;br&gt;com base na sessão e no vault,&lt;br&gt;citando itens e elementos" vertex="1">
+                    <mxGeometry height="65" width="220" x="650" y="565" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-40" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Avaliar alternativa&lt;/b&gt;&lt;br&gt;prós, contras, impacto,&lt;br&gt;conflitos" vertex="1">
+                    <mxGeometry height="60" width="180" x="420" y="645" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-41" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Atualizar briefing&lt;/b&gt;&lt;br&gt;correção marca o item&lt;br&gt;antigo como superado" vertex="1">
+                    <mxGeometry height="60" width="180" x="420" y="720" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-42" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;" value="&lt;b&gt;Executar comando&lt;/b&gt;&lt;br&gt;confirmar, gerar, regenerar" vertex="1">
+                    <mxGeometry height="50" width="220" x="650" y="735" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-43" edge="1" parent="1" source="flx-37" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;" target="flx-38" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-44" edge="1" parent="1" source="flx-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=0;entryX=0;entryY=0.5;" target="flx-39" value="pergunta">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="295" y="597"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="flx-45" edge="1" parent="1" source="flx-38" style="endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" target="flx-40" value="alternativa">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-46" edge="1" parent="1" source="flx-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=1;exitY=0.5;entryX=0.5;entryY=1;" target="flx-39" value="">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="flx-47" edge="1" parent="1" source="flx-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" target="flx-41" value="informação / correção">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="295" y="750"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="flx-48" edge="1" parent="1" source="flx-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;endArrow=block;html=1;fontSize=10;labelBackgroundColor=#ffffff;exitX=0.5;exitY=1;entryX=0.5;entryY=1;" target="flx-42" value="comando">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="295" y="800"/>
+                            <mxPoint x="760" y="800"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="flx-49" parent="1" style="shape=note;whiteSpace=wrap;html=1;size=12;fillColor=#fffbe6;strokeColor=#999999;fontSize=11;align=left;spacingLeft=6;" value="O agente nunca só concorda: toda alternativa traz prós e contras." vertex="1">
+                    <mxGeometry height="50" width="300" x="920" y="650" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

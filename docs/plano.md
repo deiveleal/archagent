@@ -43,6 +43,7 @@ num agente não quebra outro, e nada chega à `main` sem passar pelas verificaç
 | `agent/<nome>` (ex.: `agent/archimate`) | Integração de um agente | As mesmas regras da `main`; só recebe PR das branches de tarefa daquele agente |
 | `task/<nome>/<descricao>` (ex.: `task/archimate/f1-tabela-relacoes`) | Trabalho do dia a dia num agente | Livre; apagada depois do merge |
 | `core/<descricao>` | Mudanças no núcleo compartilhado (provedor LLM, leitura das entradas, briefing) | Livre; PR direto para a `main` |
+| `docs/<descricao>` | Mudanças só de documentação (`docs/`, README, `CLAUDE.md`) | Livre; PR direto para a `main` |
 | `exp/<AAAA-MM-DD>-<assunto>` | Experimentos para validar hipóteses (seção 2.5) | Livre; **nunca** recebe merge em `main` nem em `agent/*`; não é apagada |
 
 #### Regras das branches
