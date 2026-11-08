@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns="http://www.opengroup.org/xsd/archimate/3.0/"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.opengroup.org/xsd/archimate/3.0/ http://www.opengroup.org/xsd/archimate/3.1/archimate3_Diagram.xsd"
+       identifier="id-modelo-minimo">
+  <name xml:lang="pt">Modelo mínimo</name>
+  <elements>
+    <element identifier="id-a" xsi:type="ApplicationComponent"><name xml:lang="pt">API de Pedidos</name></element>
+    <element identifier="id-b" xsi:type="ApplicationService"><name xml:lang="pt">Registrar pedido</name></element>
+  </elements>
+  <relationships>
+    <relationship identifier="id-r1" source="id-a" target="id-b" xsi:type="Realization"/>
+  </relationships>
+  <views>
+    <diagrams>
+      <view identifier="id-v1" xsi:type="Diagram">
+        <name xml:lang="pt">Visão</name>
+        <node identifier="id-n1" elementRef="id-a" xsi:type="Element" x="40" y="40" w="120" h="55"/>
+        <node identifier="id-n2" elementRef="id-b" xsi:type="Element" x="240" y="40" w="120" h="55"/>
+        <connection identifier="id-c1" relationshipRef="id-r1" xsi:type="Relationship" source="id-n1" target="id-n2"/>
+      </view>
+    </diagrams>
+  </views>
+</model>

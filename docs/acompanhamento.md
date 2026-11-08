@@ -33,7 +33,7 @@
 | Fase | Status | Início | Fim | Critério de saída atingido? | PR |
 | --- | --- | --- | --- | --- | --- |
 | F0 — Fundação | Em andamento | 2026-11-08 | — | — | — |
-| F1 — Base de conhecimento, modelo ArchiMate e validação | Não iniciada | — | — | — | — |
+| F1 — Base de conhecimento, modelo ArchiMate e validação | Em andamento | 2026-11-08 | — | — | — |
 | F2 — Entrada por texto e transcrição | Não iniciada | — | — | — | — |
 | F3 — Modelagem a partir do briefing | Não iniciada | — | — | — | — |
 | F4 — Entrada por desenho | Não iniciada | — | — | — | — |
@@ -55,7 +55,7 @@ Critérios de saída de cada fase: plano, seção 3.7.
 
 | Id | Pendência | Origem | Quando resolver |
 | --- | --- | --- | --- |
-| P-01 | Comando exato da linha de comando do Archi 5 e necessidade de Xvfb | Spec §19 | Início da F1 |
+| P-01 | ~~Comando exato da linha de comando do Archi 5 e necessidade de Xvfb~~ **Resolvida:** precisa de Xvfb; comando na spec §14 | Spec §19 | F1 (2026-11-08) |
 | P-02 | Algoritmo de layout das visões | Spec §19 | F1 |
 | P-03 | Checkpointer do LangGraph em SQLite no volume `sessions` | Spec §19 | F0/F2 |
 | P-04 | Modelo de embeddings para a busca no vault (o Token Plan não lista modelo de embeddings; alternativa: só busca por palavra no MVP) | Spec §19 | F1 |

@@ -522,14 +522,19 @@ Base: `http://agent-archimate:8000` (rede interna). Respostas em JSON, com
 | GET | `/health` | Archi disponível e versão |
 | POST | `/convert` | Recebe o Exchange Format; devolve o `.archimate` ou o erro do Archi |
 
-Comando previsto do Archi (⚠️ verificar no início da F1):
+Comando verificado na F1 (Archi **5.10.0**, Linux 64, com tela virtual Xvfb):
 
 ```bash
-Archi -application com.archimatetool.commandline.app -consoleLog -nosplash \
+xvfb-run -a -s "-screen 0 1280x1024x24" /opt/Archi/Archi \
+  -application com.archimatetool.commandline.app -consoleLog -nosplash \
   --xmlexchange.import entrada.xml --saveModel saida.archimate
 ```
 
-Se o Archi precisar de tela no container, usar Xvfb (risco registrado no plano).
+- O Archi precisa de GTK e de uma tela, mesmo pela linha de comando: o container instala `libgtk-3-0` e `xvfb`.
+- Ao importar, o Archi também valida o XML contra os XSDs; um erro de validação aparece no log e o `.archimate` não é gerado.
+- Uma conversão leva cerca de 7 s. As conversões são feitas uma por vez, porque o Archi usa uma única pasta de configuração.
+- Em caso de falha, `/convert` devolve `422` com `{"erro": {"codigo": "archi_falhou", "mensagem", "log"}}`; o log vem sem as linhas de pilha Java e sem o ruído do GTK.
+- O arquivo do Archi é baixado no build da imagem e conferido por SHA-256.
 
 ## 15. Interface (Streamlit)
 
@@ -600,7 +605,7 @@ archagent/
 
 ## 19. Pontos a verificar ou decidir ⚠️
 
-- [ ] Comando exato da linha de comando do Archi 5 e necessidade de Xvfb (início da F1).
+- [x] Comando exato da linha de comando do Archi 5 e necessidade de Xvfb (F1: verificado, seção 14).
 - [ ] Algoritmo de layout das visões (F1).
 - [ ] Checkpointer do LangGraph em SQLite no volume `sessions`.
 - [ ] Modelo de embeddings para a busca no vault (verificar o que o Token Plan oferece; a lista de modelos atual não mostra modelo de embeddings).
