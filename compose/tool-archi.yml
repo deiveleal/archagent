@@ -1,0 +1,12 @@
+services:
+  tool-archi:
+    image: archagent/tool-archi:${VERSION:-dev}
+    build:
+      context: ..
+      dockerfile: tools/archi/Dockerfile
+      args:
+        VERSION: ${VERSION:-dev}
+    environment:
+      ARCHI_TIMEOUT_SECONDS: "150"
+    # Sem portas publicadas: só o agente fala com o tool-archi.
+    restart: unless-stopped

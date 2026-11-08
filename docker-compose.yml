@@ -5,3 +5,4 @@ name: archagent
 include:
   - compose/ui.yml
   - compose/tests.yml
+  - compose/tool-archi.yml
