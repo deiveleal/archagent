@@ -88,7 +88,7 @@ with st.sidebar:
 
     with st.form("nova", clear_on_submit=True):
         titulo = st.text_input("Nova sessão", placeholder="Ex.: Portal de pedidos")
-        if st.form_submit_button("Criar sessão", use_container_width=True) and titulo.strip():
+        if st.form_submit_button("Criar sessão", width="stretch") and titulo.strip():
             nova = api.criar_sessao(titulo)
             st.session_state["sid"] = nova["id"]
 
@@ -182,7 +182,7 @@ with aba_briefing:
     if col2.button(
         "Confirmar briefing",
         disabled=not ativos or bool(dados["confirmado_em"]),
-        use_container_width=True,
+        width="stretch",
     ):
         api.confirmar(sid)
         st.rerun()
@@ -215,7 +215,7 @@ with aba_briefing:
                     }
                     for i in lista
                 ],
-                use_container_width=True,
+                width="stretch",
                 hide_index=True,
             )
 
@@ -231,8 +231,8 @@ with aba_perguntas:
             st.markdown(p["texto"])
             resposta = st.text_input("Resposta", key=f"r-{p['id']}")
             c1, c2 = st.columns(2)
-            responder = c1.form_submit_button("Responder", use_container_width=True)
-            pular = c2.form_submit_button("Pular", use_container_width=True)
+            responder = c1.form_submit_button("Responder", width="stretch")
+            pular = c2.form_submit_button("Pular", width="stretch")
             if responder or pular:
                 try:
                     with st.spinner("Atualizando o briefing…"):
@@ -297,10 +297,10 @@ with aba_modelo:
                     f"Baixar {rot}",
                     api.arquivo(sid, mid, tipo),
                     file_name=nome,
-                    use_container_width=True,
+                    width="stretch",
                 )
             except ErroApi:
-                col.button(f"{rot} indisponível", disabled=True, use_container_width=True)
+                col.button(f"{rot} indisponível", disabled=True, width="stretch")
         if v["erros"]:
             with st.expander(f"Erros ({len(v['erros'])})", expanded=True):
                 for a in v["erros"]:
