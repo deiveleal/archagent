@@ -54,7 +54,9 @@
       "id": "B-009",
       "tipo": "ligacao",
       "nome": "Loja Virtual → Serviço de Pagamentos",
-      "sinonimos": []
+      "sinonimos": [
+        "Loja Virtual → API REST de pagamentos"
+      ]
     },
     {
       "id": "B-010",
@@ -66,7 +68,10 @@
       "id": "B-011",
       "tipo": "ligacao",
       "nome": "Serviço de Pagamentos → Serviço de Pedidos",
-      "sinonimos": []
+      "sinonimos": [
+        "Kafka → Serviço de Pedidos",
+        "Serviço de Pagamentos → Kafka"
+      ]
     },
     {
       "id": "B-012",

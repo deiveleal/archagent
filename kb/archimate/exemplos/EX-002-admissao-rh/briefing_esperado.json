@@ -78,7 +78,9 @@
       "id": "B-012",
       "tipo": "requisito",
       "nome": "Folha atualizada até o dia seguinte à admissão",
-      "sinonimos": []
+      "sinonimos": [
+        "Atualização da folha até o dia seguinte"
+      ]
     }
   ],
   "deve_perguntar": false

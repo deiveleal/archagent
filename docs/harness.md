@@ -91,6 +91,11 @@ conhecimento (`kb/archimate/exemplos/`), mais casos difíceis feitos de propósi
 | **Injeção** | Transcrição ou desenho com texto do tipo "ignore as instruções e…"; o agente deve tratar como conteúdo, não como ordem | 2 |
 | **Conversa** | Perguntas, correções e alternativas sobre uma sessão pronta | 5 |
 
+Na F2 já existem 13 casos: 5 ouro, 3 ambíguos, 2 contraditórios, 2 de injeção e 1 ilegível.
+O executor é `python -m evals.archimate.run` (`make eval` roda só os casos `rapido: true`).
+Cada execução grava o relatório em `evals/archimate/reports/AAAA-MM-DD-<branch>.md`; o resultado
+bruto da última execução fica em `evals/archimate/reports/ultimo.json`, fora do git.
+
 Cada caso tem um arquivo `caso.yaml` com: entradas, itens esperados no briefing,
 elementos e relações esperados, perguntas esperadas (se houver), mensagens da
 conversa e o que se espera de cada resposta, e a marca `rapido: true` quando o
@@ -122,7 +127,9 @@ registro no acompanhamento.
 
 ### 5.3 Como comparar o gerado com o esperado
 
-- **Nomes:** comparação depois de normalizar (minúsculas, sem acento, sem pontuação), mais uma lista de sinônimos aceitos por caso (ex.: "PostgreSQL" = "Banco PostgreSQL").
+- **Nomes:** comparação depois de normalizar (minúsculas, sem acento, sem pontuação, sem plural), mais uma lista de sinônimos aceitos por caso (ex.: "PostgreSQL" = "Banco PostgreSQL"). Também conta quando um nome contém o outro (palavra inteira, 4+ letras) ou quando 80% das palavras significativas coincidem (frases de decisão e requisito).
+- **Ligações:** origem e destino pelo nome; o caso pode listar ligações alternativas aceitas (ex.: "Loja Virtual → API REST de pagamentos").
+- **Origem correta:** o local citado existe na entrada e contém o trecho (ou ao menos 60% das palavras dele), aceitando que o trecho continue na linha seguinte.
 - **Tipos ArchiMate:** comparação exata.
 - **Relações:** tipo exato + origem e destino pelo nome normalizado.
 - **Itens do briefing:** pelo tipo + nome normalizado.
@@ -164,7 +171,7 @@ O `qwen3.8-max` não tem versão datada. Por isso:
 
 ### 5.8 Relatório da avaliação
 
-Gerado em `evals/reports/AAAA-MM-DD-<branch>.md` e anexado ao PR pela CI:
+Gerado em `evals/archimate/reports/AAAA-MM-DD-<branch>.md` e anexado ao PR pela CI:
 resultado por métrica e por caso, comparação com a linha de base, casos que
 pioraram, tokens e custo estimado, tempo por caso.
 

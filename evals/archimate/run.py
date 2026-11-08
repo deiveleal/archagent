@@ -36,7 +36,7 @@ from archagent.core.sessions import SessionStore
 RAIZ = Path(__file__).resolve().parents[2]
 CASOS = RAIZ / "evals" / "casos" / "archimate"
 EXEMPLOS = RAIZ / "kb" / "archimate" / "exemplos"
-RELATORIOS = RAIZ / "evals" / "reports"
+RELATORIOS = RAIZ / "evals" / "archimate" / "reports"
 BASELINE = RAIZ / "evals" / "baseline.json"
 
 METAS = {
@@ -54,10 +54,35 @@ METAS = {
 # ------------------------------------------------------------------ comparação
 
 
+VAZIAS = {
+    "a",
+    "o",
+    "as",
+    "os",
+    "de",
+    "da",
+    "do",
+    "das",
+    "dos",
+    "e",
+    "em",
+    "no",
+    "na",
+    "por",
+    "para",
+    "com",
+}
+
+
+def _singular(texto: str) -> str:
+    return " ".join(p[:-1] if len(p) > 3 and p.endswith("s") else p for p in texto.split())
+
+
 def nomes_equivalem(esperado: str, sinonimos: list[str], gerado: str) -> bool:
-    g = normalizar_nome(gerado)
+    """Igualdade normalizada (sem acento, sem plural), contenção ou 80% das palavras."""
+    g = _singular(normalizar_nome(gerado))
     for alvo in [esperado, *sinonimos]:
-        a = normalizar_nome(alvo)
+        a = _singular(normalizar_nome(alvo))
         if not a or not g:
             continue
         if a == g:
@@ -65,22 +90,29 @@ def nomes_equivalem(esperado: str, sinonimos: list[str], gerado: str) -> bool:
         menor, maior = sorted((a, g), key=len)
         if len(menor) >= 4 and f" {menor} " in f" {maior} ":
             return True
+        pa, pg = set(a.split()) - VAZIAS, set(g.split()) - VAZIAS
+        if len(pa) >= 3 and len(pa & pg) >= 0.8 * len(pa):
+            return True
     return False
 
 
 def encontra(esp: dict[str, Any], itens: list[ItemBriefing], todos: list[ItemBriefing]) -> bool:
     sin = list(esp.get("sinonimos", []))
     if esp["tipo"] == "ligacao":
-        de_esp, _, para_esp = esp["nome"].partition(" → ")
         por_id = {i.id: i for i in todos}
-        for i in itens:
-            if i.tipo != "ligacao" or not i.de or not i.para:
-                continue
-            de, para = por_id.get(i.de), por_id.get(i.para)
-            if de and para and nomes_equivalem(de_esp, [], de.nome) and nomes_equivalem(
-                para_esp, [], para.nome
-            ):
-                return True
+        for alternativa in [esp["nome"], *sin]:
+            de_esp, _, para_esp = alternativa.partition(" → ")
+            for i in itens:
+                if i.tipo != "ligacao" or not i.de or not i.para:
+                    continue
+                de, para = por_id.get(i.de), por_id.get(i.para)
+                if (
+                    de
+                    and para
+                    and nomes_equivalem(de_esp, [], de.nome)
+                    and nomes_equivalem(para_esp, [], para.nome)
+                ):
+                    return True
         return False
     return any(i.tipo == esp["tipo"] and nomes_equivalem(esp["nome"], sin, i.nome) for i in itens)
 
@@ -95,6 +127,11 @@ def origem_correta(item: ItemBriefing, linhas_por_entrada: dict[str, dict[str, s
         texto = linhas.get(o.local)
         if texto is None:
             return False
+        # o trecho pode continuar na linha seguinte (texto quebrado no meio da frase)
+        locais = list(linhas)
+        i = locais.index(o.local)
+        if i + 1 < len(locais):
+            texto = f"{texto} {linhas[locais[i + 1]]}"
         t = normalizar_nome(o.trecho)
         if t and t not in normalizar_nome(texto):
             palavras = set(t.split())
@@ -121,7 +158,7 @@ class Caso:
 def imagem_borrada() -> bytes:
     from PIL import Image, ImageFilter
 
-    rnd = random.Random(42)
+    rnd = random.Random(42)  # noqa: S311 - ruído de imagem, não criptografia
     img = Image.new("RGB", (800, 600), (240, 240, 240))
     px = img.load()
     assert px is not None
@@ -159,13 +196,33 @@ def carregar_caso(pasta: Path) -> Caso:
 # ------------------------------------------------------------------ execução
 
 
+def branch_atual() -> str:
+    try:
+        saida = subprocess.run(
+            ["git", "rev-parse", "--abbrev-ref", "HEAD"],  # noqa: S607
+            cwd=RAIZ,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        return "local"
+    return saida.stdout.strip() or "local"
+
+
 def rodar_caso(caso: Caso, settings: ArchimateSettings) -> dict[str, Any]:
     regras = carregar_regras(settings.kb_dir)
     vault = Vault.carregar(settings.kb_dir / "archimate" / "vault", True)
     with tempfile.TemporaryDirectory() as tmp:
         store = SessionStore(Path(tmp))
-        svc = ArchimateService(settings, build_llm(settings), store, regras, vault,
-                               ArchiClient(settings.tool_archi_url))  # fmt: skip
+        svc = ArchimateService(
+            settings,
+            build_llm(settings),
+            store,
+            regras,
+            vault,
+            ArchiClient(settings.tool_archi_url),
+        )
         sid = store.criar(caso.nome).id
         inicio = time.monotonic()
         falhou = None
@@ -191,26 +248,39 @@ def rodar_caso(caso: Caso, settings: ArchimateSettings) -> dict[str, Any]:
         uso = store.uso(sid)
 
     ativos = briefing.ativos()
-    m: dict[str, Any] = {"caso": caso.nome, "grupo": caso.grupo, "tokens": uso.total,
-                         "segundos": round(duracao, 1), "perguntas": len(perguntas),
-                         "itens": len(ativos)}  # fmt: skip
+    m: dict[str, Any] = {
+        "caso": caso.nome,
+        "grupo": caso.grupo,
+        "tokens": uso.total,
+        "segundos": round(duracao, 1),
+        "perguntas": len(perguntas),
+        "itens": len(ativos),
+        "gerados": [f"{i.id} {i.tipo}:{i.nome}" for i in ativos],
+    }
     if caso.esperados:
         achados = [e for e in caso.esperados if encontra(e, ativos, briefing.itens)]
         m["briefing.cobertura"] = len(achados) / len(caso.esperados)
         m["faltando"] = [f"{e['tipo']}:{e['nome']}" for e in caso.esperados if e not in achados]
     if caso.grupo == "ouro":
         considerados = [i for i in ativos if i.tipo in TIPOS_COBERTOS | {"decisao", "requisito"}]
-        inventados = [i for i in considerados
-                      if not any(nomes_equivalem(e["nome"], e.get("sinonimos", []), i.nome)
-                                 or (i.tipo == "ligacao" and encontra(e, [i], briefing.itens))
-                                 for e in caso.esperados)]  # fmt: skip
+        inventados = [
+            i
+            for i in considerados
+            if not any(
+                nomes_equivalem(e["nome"], e.get("sinonimos", []), i.nome)
+                or (i.tipo == "ligacao" and encontra(e, [i], briefing.itens))
+                for e in caso.esperados
+            )
+        ]
         m["briefing.inventados"] = len(inventados) / max(len(considerados), 1)
         m["inventados"] = [f"{i.tipo}:{i.nome}" for i in inventados]
         m["esclarecimento.nao_pergunta_sem_motivo"] = 1.0 if not perguntas else 0.0
     if ativos:
-        m["briefing.origem_correta"] = sum(origem_correta(i, linhas) for i in ativos) / len(
-            ativos
-        )
+        ruins = [i for i in ativos if not origem_correta(i, linhas)]
+        m["briefing.origem_correta"] = 1 - len(ruins) / len(ativos)
+        m["origem_ruim"] = [
+            f"{i.tipo}:{i.nome} @ {[(o.local, o.trecho) for o in i.origens]}" for i in ruins
+        ]
     if caso.dados.get("deve_perguntar"):
         m["esclarecimento.pergunta_quando_deve"] = 1.0 if perguntas else 0.0
     if caso.dados.get("deve_conflitar"):
@@ -232,16 +302,22 @@ def agregar(resultados: list[dict[str, Any]]) -> dict[str, dict[str, float]]:
     for metrica in METAS:
         valores = [r[metrica] for r in resultados if metrica in r]
         if valores:
-            agg[metrica] = {"media": statistics.mean(valores), "pior": min(valores)
-                            if METAS[metrica][1] == "≥" else max(valores), "n": len(valores)}  # fmt: skip
+            agg[metrica] = {
+                "media": statistics.mean(valores),
+                "pior": min(valores) if METAS[metrica][1] == "≥" else max(valores),
+                "n": len(valores),
+            }
     agg["custo.tokens_por_caso"] = {
-        "media": statistics.mean(r["tokens"] for r in resultados), "pior": 0, "n": len(resultados)
+        "media": statistics.mean(r["tokens"] for r in resultados),
+        "pior": 0,
+        "n": len(resultados),
     }
     tempos = sorted(r["segundos"] for r in resultados)
     agg["desempenho.segundos_p95"] = {
-        "media": tempos[min(len(tempos) - 1, int(0.95 * len(tempos)))], "pior": 0,
+        "media": tempos[min(len(tempos) - 1, int(0.95 * len(tempos)))],
+        "pior": 0,
         "n": len(tempos),
-    }  # fmt: skip
+    }
     return agg
 
 
@@ -250,13 +326,14 @@ def atingiu(metrica: str, valor: float) -> bool:
     return valor >= meta - 1e-9 if sentido == "≥" else valor <= meta + 1e-9
 
 
-def relatorio(resultados: list[dict[str, Any]], agg: dict[str, dict[str, float]],
-              settings: ArchimateSettings, rapido: bool, repeticoes: int) -> str:  # fmt: skip
-    try:
-        branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=RAIZ,  # noqa: S607
-                                capture_output=True, text=True, check=False).stdout.strip()  # fmt: skip
-    except OSError:
-        branch = "?"
+def relatorio(
+    resultados: list[dict[str, Any]],
+    agg: dict[str, dict[str, float]],
+    settings: ArchimateSettings,
+    rapido: bool,
+    repeticoes: int,
+) -> str:
+    branch = branch_atual()
     base = json.loads(BASELINE.read_text()) if BASELINE.exists() else {}
     linhas = [
         f"# Avaliação N3 — agente ArchiMate — {date.today().isoformat()}",
@@ -275,13 +352,20 @@ def relatorio(resultados: list[dict[str, Any]], agg: dict[str, dict[str, float]]
             meta, sentido = METAS[metrica]
             ok = atingiu(metrica, v["media"])
             lb = base.get(metrica, {}).get("media")
-            linhas.append(f"| {metrica} | {v['media']:.0%} | {v['pior']:.0%} | {sentido} "
-                          f"{meta:.0%} | {'sim' if ok else '**não**'} | "
-                          f"{'—' if lb is None else f'{lb:.0%}'} |")  # fmt: skip
+            linhas.append(
+                f"| {metrica} | {v['media']:.0%} | {v['pior']:.0%} | {sentido} "
+                f"{meta:.0%} | {'sim' if ok else '**não**'} | "
+                f"{'—' if lb is None else f'{lb:.0%}'} |"
+            )
         else:
             linhas.append(f"| {metrica} | {v['media']:.0f} | — | registrar | — | — |")
-    linhas += ["", "## Casos", "", "| Caso | Grupo | Itens | Perguntas | Tokens | s | Notas |",
-               "| --- | --- | --- | --- | --- | --- | --- |"]  # fmt: skip
+    linhas += [
+        "",
+        "## Casos",
+        "",
+        "| Caso | Grupo | Itens | Perguntas | Tokens | s | Notas |",
+        "| --- | --- | --- | --- | --- | --- | --- |",
+    ]
     for r in resultados:
         notas = []
         if r.get("faltando"):
@@ -293,8 +377,10 @@ def relatorio(resultados: list[dict[str, Any]], agg: dict[str, dict[str, float]]
         for k in METAS:
             if k in r and not atingiu(k, r[k]):
                 notas.append(f"{k}={r[k]:.0%}")
-        linhas.append(f"| {r['caso']} | {r['grupo']} | {r['itens']} | {r['perguntas']} | "
-                      f"{r['tokens']} | {r['segundos']} | {'; '.join(notas) or '—'} |")  # fmt: skip
+        linhas.append(
+            f"| {r['caso']} | {r['grupo']} | {r['itens']} | {r['perguntas']} | "
+            f"{r['tokens']} | {r['segundos']} | {'; '.join(notas) or '—'} |"
+        )
     return "\n".join(linhas) + "\n"
 
 
@@ -308,7 +394,7 @@ def main(argv: list[str] | None = None) -> int:
     args = p.parse_args(argv)
 
     RELATORIOS.mkdir(parents=True, exist_ok=True)
-    bruto = RELATORIOS / "ultimo.json"
+    bruto = RELATORIOS / "ultimo.json"  # resultado bruto da última execução (não versionado)
     settings = ArchimateSettings(llm_temperature=0, vault_incluir_rascunhos=True)
     if args.so_relatorio:
         dados = json.loads(bruto.read_text())
@@ -316,27 +402,34 @@ def main(argv: list[str] | None = None) -> int:
     else:
         filtro = {c for c in args.casos.split(",") if c}
         casos = [carregar_caso(d) for d in sorted(CASOS.iterdir()) if (d / "caso.yaml").exists()]
-        casos = [c for c in casos if (not filtro or c.nome in filtro)
-                 and (not args.rapido or c.dados.get("rapido"))]  # fmt: skip
+        casos = [
+            c
+            for c in casos
+            if (not filtro or c.nome in filtro) and (not args.rapido or c.dados.get("rapido"))
+        ]
         resultados = []
         for caso in casos:
             for rep in range(args.repeticoes):
                 print(f"→ {caso.nome} ({rep + 1}/{args.repeticoes})", flush=True)
                 try:
                     resultados.append(rodar_caso(caso, settings))
-                except Exception as exc:  # noqa: BLE001 - registra e segue
+                except Exception as exc:
                     print(f"  ERRO: {type(exc).__name__}: {exc}", flush=True)
-                    resultados.append({"caso": caso.nome, "grupo": caso.grupo, "tokens": 0,
-                                       "segundos": 0, "perguntas": 0, "itens": 0,
-                                       "erro": f"{type(exc).__name__}: {exc}"[:300]})  # fmt: skip
+                    resultados.append(
+                        {
+                            "caso": caso.nome,
+                            "grupo": caso.grupo,
+                            "tokens": 0,
+                            "segundos": 0,
+                            "perguntas": 0,
+                            "itens": 0,
+                            "erro": f"{type(exc).__name__}: {exc}"[:300],
+                        }
+                    )
         bruto.write_text(json.dumps({"resultados": resultados}, ensure_ascii=False, indent=2))
     agg = agregar(resultados)
     texto = relatorio(resultados, agg, settings, args.rapido, args.repeticoes)
-    try:
-        branch = subprocess.run(["git", "rev-parse", "--abbrev-ref", "HEAD"], cwd=RAIZ,  # noqa: S607
-                                capture_output=True, text=True, check=False).stdout.strip()  # fmt: skip
-    except OSError:
-        branch = "local"
+    branch = branch_atual()
     destino = RELATORIOS / f"{date.today().isoformat()}-{branch.replace('/', '-')}.md"
     destino.write_text(texto, encoding="utf-8")
     print(texto)

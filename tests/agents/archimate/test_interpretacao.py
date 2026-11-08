@@ -176,3 +176,25 @@ def test_imagem_sem_linhas_mantem_origem() -> None:
     aplicar(b, Interpretacao(itens=[it("sistema", "API", local="imagem, centro")]), "E-1", img)
     assert b.itens[0].origens[0].local == "imagem, centro"
     assert b.itens[0].confianca == "media"
+
+
+def test_trecho_que_atravessa_a_quebra_de_linha() -> None:
+    texto = ler_mensagem("Precisamos de um sistema que tem que conversar\ncom o outro sistema.")
+    b = Briefing()
+    aplicar(
+        b,
+        Interpretacao(
+            itens=[
+                it(
+                    "pendencia",
+                    "Qual sistema?",
+                    local="",
+                    trecho="tem que conversar com o outro sistema",
+                )
+            ]
+        ),
+        "E-001",
+        texto,
+    )
+    assert b.itens[0].origens[0].local == "linha 1"
+    assert b.itens[0].confianca == "media"

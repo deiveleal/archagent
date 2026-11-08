@@ -149,6 +149,11 @@ def _ajustar_origem(it: ItemExtraido, entrada_id: str, lida: EntradaLida) -> tup
         for ln in lida.linhas:
             if trecho_norm in normalizar_nome(ln.texto):
                 return Origem(entrada=entrada_id, local=ln.local, trecho=it.trecho), True
+        # Trecho que atravessa a quebra de linha: cita a linha onde ele começa.
+        for atual, seguinte in zip(lida.linhas, lida.linhas[1:], strict=False):
+            if trecho_norm in normalizar_nome(f"{atual.texto} {seguinte.texto}"):
+                mesmo = atual.local == local
+                return Origem(entrada=entrada_id, local=atual.local, trecho=it.trecho), not mesmo
     nome_norm = normalizar_nome(it.nome)
     for ln in lida.linhas:
         if nome_norm and nome_norm in normalizar_nome(ln.texto):
