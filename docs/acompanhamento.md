@@ -54,6 +54,8 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | F1 — agente: regras, modelo interno, validadores V1–V4, exportação, layout, vault, exemplos ouro, `kb-check` | `task/archimate/f1-kb-validacao` | PR #5 |
 | 2026-11-08 | Sincronização `main` → `agent/archimate` | `main` | PR #6 |
 | 2026-11-08 | F2 — núcleo: leitores de entrada (txt, md, vtt, srt, docx, drawio, imagem) com validação e proteção XXE, briefing, sessões em arquivo, `kb/core`, workflows `kb.yml` e `eval.yml` | `core/f2-entradas-briefing` | PR #7 |
+| 2026-11-08 | Sincronização `main` → `agent/archimate` | `main` | PR #8 |
+| 2026-11-08 | Núcleo: `LLM_ENABLE_THINKING` (modo de raciocínio do Qwen3 desligado por padrão) | `core/llm-sem-raciocinio` | PR #9 |
 
 ## 5. Pendências
 
@@ -113,6 +115,7 @@ ficam aqui.
 | D-01 | 2026-11-08 | Repositório **público** no GitHub (`deiveleal/archagent`) | Escolha do responsável; permite usar regras de proteção na conta gratuita |
 | D-02 | 2026-11-08 | Ruleset inicial em `main` e `agent/*`: só PR, sem force push, sem exclusão, sem aprovação obrigatória. Verificações obrigatórias entram na F0 | Ainda não existem workflows de CI para exigir |
 | D-03 | 2026-11-08 | Envio ao GitHub por HTTPS, com o login do `gh` | A chave SSH desta máquina não está cadastrada no GitHub |
+| D-09 | 2026-11-08 | Modo de raciocínio do `qwen3.8-max` desligado por padrão (`LLM_ENABLE_THINKING=false`) | Medido na extração do EX-001: ligado, 203 s e 9.162 tokens de saída (estoura o limite de 60 s); desligado, 19 s e 1.129 tokens. Reavaliar se a qualidade do briefing ficar abaixo da meta |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
 ## 9. Backlog

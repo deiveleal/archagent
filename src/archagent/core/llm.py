@@ -90,6 +90,7 @@ class DashScopeBackend:
             kwargs["response_format"] = {"type": "json_object"}
         if self._settings.llm_temperature is not None:
             kwargs["temperature"] = self._settings.llm_temperature
+        kwargs["extra_body"] = {"enable_thinking": self._settings.llm_enable_thinking}
         tentativas = max(1, self._settings.llm_max_retries)
         ultimo_erro: Exception | None = None
         for tentativa in range(1, tentativas + 1):
