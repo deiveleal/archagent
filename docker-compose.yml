@@ -1,9 +1,10 @@
 # Compose principal: cada serviço tem o seu arquivo em compose/ (plano §2.3).
-# Só a `ui` publica porta; os demais ficam na rede interna padrão do projeto.
+# Só a `ui` e o `mcp` (este em 127.0.0.1) publicam porta; os demais ficam na rede interna.
 name: archagent
 
 include:
   - compose/ui.yml
+  - compose/mcp.yml
   - compose/tests.yml
   - compose/tool-archi.yml
   - compose/agent-archimate.yml

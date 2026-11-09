@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "archagent": {
+      "type": "http",
+      "url": "http://localhost:${MCP_PORT:-8700}/mcp"
+    }
+  }
+}
