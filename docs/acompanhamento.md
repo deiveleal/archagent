@@ -66,7 +66,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | 2026-11-08 | F3 — agente: modelagem com guia de tipos do vault, ciclo validar → corrigir (até 3 rodadas), premissas, visões, exportação, V5, relatório de viabilidade, geração em segundo plano com eventos (SSE) e downloads; métricas de modelagem na avaliação N3 | `task/archimate/f3-modelagem` | PR #12 |
 | 2026-11-08 | F5 — agente: conversa (classificar, responder, corrigir, avaliar alternativa, comandos), propostas de aprendizado após 3 sessões, juiz LLM, 5 casos de conversa, avaliação completa e linha de base | `task/archimate/f5-conversa` | PR #15 |
 | 2026-11-09 | Etapa 1 mesclada na `main` (agente ArchiMate F0–F5). F1 segue aberta até P-12 e P-13; a avaliação N3 na CI segue pulada até P-14 | `agent/archimate` | PR #16 |
-| 2026-11-09 | Núcleo: servidor MCP (`src/archagent/mcp/`, container `mcp` em `127.0.0.1:8700`) com 13 ferramentas sobre a API do agente; cliente HTTP movido para `core/cliente.py`; `.mcp.json` para o Claude Code; testes N1 e N2 | `core/mcp` | PR a abrir |
+| 2026-11-09 | Núcleo: servidor MCP (`src/archagent/mcp/`, container `mcp` em `127.0.0.1:8700`) com 13 ferramentas sobre a API do agente; cliente HTTP movido para `core/cliente.py`; `.mcp.json` para o Claude Code; testes N1 e N2 | `core/mcp` | PR #19 |
 
 ## 5. Pendências
 
