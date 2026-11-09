@@ -66,6 +66,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | 2026-11-08 | F3 — agente: modelagem com guia de tipos do vault, ciclo validar → corrigir (até 3 rodadas), premissas, visões, exportação, V5, relatório de viabilidade, geração em segundo plano com eventos (SSE) e downloads; métricas de modelagem na avaliação N3 | `task/archimate/f3-modelagem` | PR #12 |
 | 2026-11-08 | F5 — agente: conversa (classificar, responder, corrigir, avaliar alternativa, comandos), propostas de aprendizado após 3 sessões, juiz LLM, 5 casos de conversa, avaliação completa e linha de base | `task/archimate/f5-conversa` | PR #15 |
 | 2026-11-09 | Etapa 1 mesclada na `main` (agente ArchiMate F0–F5). F1 segue aberta até P-12 e P-13; a avaliação N3 na CI segue pulada até P-14 | `agent/archimate` | PR #16 |
+| 2026-11-09 | Núcleo: servidor MCP (`src/archagent/mcp/`, container `mcp` em `127.0.0.1:8700`) com 13 ferramentas sobre a API do agente; cliente HTTP movido para `core/cliente.py`; `.mcp.json` para o Claude Code; testes N1 e N2 | `core/mcp` | PR #19 |
 
 ## 5. Pendências
 
@@ -85,6 +86,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | P-13 | Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual) | Critério de saída da F1 | Antes de fechar a F1 |
 | P-15 | ~~O `eval.yml` precisa subir o `tool-archi`~~ **Resolvida** no PR #13 | Avaliação da F3 | 2026-11-08 |
 | P-14 | ~~Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml`~~ **Resolvida:** secret cadastrado; avaliação rápida na `main` (execução 42592506378) atingiu todas as metas | Harness §6.1 | 2026-11-09 |
+| P-16 | Incluir o container `mcp` na página de containers de `docs/arquitetura.drawio` | Servidor MCP (D-15) | Na próxima revisão do desenho |
 | P-11 | Chave SSH desta máquina não está cadastrada no GitHub; o envio está sendo feito por HTTPS com o login do `gh` | Decisão D-03 | Quando conveniente |
 
 ## 6. Referências científicas (arXiv)
@@ -162,6 +164,7 @@ ficam aqui.
 | D-12 | 2026-11-08 | Camadas ligadas diretamente (`Serving`); serviços e interfaces intermediários só quando o briefing os cita | Na 1ª avaliação da F3, o agente inventava serviços para ligar camadas: premissas em 20% (meta ≤ 15%) e relações diretas ausentes; depois do ajuste, premissas 0% e relações 91–95% |
 | D-13 | 2026-11-08 | A avaliação aceita relações derivadas pelas regras do ArchiMate | Um modelo com serviço intermediário é equivalente ao com relação direta; sem isso, a métrica punia modelagem correta e mais detalhada |
 | D-14 | 2026-11-08 | Linha de base em `evals/<agente>/baseline.json` (não em `evals/baseline.json`) | Fica dentro das pastas que a branch do agente pode alterar; gravada uma vez, na F5, como pede o plano |
+| D-15 | 2026-11-09 | Servidor MCP como adaptador fino da API do agente (SDK oficial `mcp` 2.3, *streamable HTTP*), num container próprio publicado só em `127.0.0.1`, sem autenticação | Permite usar o ArchAgent pelo Claude Code sem mudar o agente validado; o LLM do agente escolhendo ferramentas sozinho fica para experimento (Etapa 2) |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
 ## 9. Backlog

@@ -585,9 +585,31 @@ xvfb-run -a -s "-screen 0 1280x1024x24" /opt/Archi/Archi \
 | Aba Modelo | Progresso da geração; resultado V1–V5; elementos por camada; downloads (`.archimate`, Exchange Format, relatório); versões anteriores |
 
 A interface não tem lógica de agente: tudo passa pela API da seção 13
-(`src/archagent/ui/cliente.py`). A conversa usa `POST /sessions/{id}/messages`; enquanto o
+(`src/archagent/core/cliente.py`). A conversa usa `POST /sessions/{id}/messages`; enquanto o
 agente não tiver esse endpoint, a mensagem vai como entrada de texto
 (`POST /sessions/{id}/inputs`). O progresso da geração do modelo vem do fluxo SSE.
+
+### 15.1 Servidor MCP
+
+O container `mcp` expõe a mesma API como ferramentas MCP, para que um cliente como o
+Claude Code conduza a sessão. Também não tem lógica de agente: cada ferramenta usa o
+cliente `src/archagent/core/cliente.py`. Transporte *streamable HTTP* em `/mcp`, publicado
+só em `127.0.0.1:${MCP_PORT}` (sem autenticação), com proteção contra *DNS rebinding*; ou
+stdio, rodando `archagent-mcp` na máquina local.
+
+| Ferramenta | Endpoint (seção 13) |
+| --- | --- |
+| `listar_sessoes`, `criar_sessao`, `ver_sessao` | `GET/POST /sessions`, `GET /sessions/{id}`, `/usage` |
+| `enviar_texto` | `POST /sessions/{id}/inputs` (campo `texto`) |
+| `enviar_arquivo` | `POST /sessions/{id}/inputs` (arquivo: `conteudo`, `conteudo_base64` ou `caminho` dentro de `MCP_PASTA_ARQUIVOS`) |
+| `enviar_mensagem` | `POST /sessions/{id}/messages` |
+| `ver_briefing`, `confirmar_briefing` | `GET /briefing`, `POST /briefing/confirm` |
+| `listar_perguntas`, `responder_pergunta` | `GET /questions`, `POST /questions/{q}/answer` |
+| `gerar_modelo` | `POST /models` e consulta a `GET /jobs/{job}` até terminar (`MCP_TIMEOUT_MODELO_SEGUNDOS`) |
+| `ver_modelo` | `GET /models`, `GET /models/{m}` (resumo: validação, elementos, relações por nome, visões) |
+| `baixar_arquivo` | `GET /models/{m}/files/{tipo}`; devolve o conteúdo ou grava em `MCP_PASTA_SAIDA` |
+
+Erros da API chegam ao cliente como erro da ferramenta, com a mensagem e o código.
 
 ## 16. Configuração
 
@@ -602,7 +624,12 @@ agente não tiver esse endpoint, a mensagem vai como entrada de texto
 | `LLM_MAX_RETRIES` | Novas tentativas | `agent-archimate` |
 | `LLM_MAX_TOKENS_PER_SESSION` | Limite de tokens por sessão | `agent-archimate` |
 | `EMBEDDING_MODEL` | Modelo de embeddings para o vault ⚠️ | `agent-archimate` |
-| `AGENT_ARCHIMATE_URL` | Endereço do agente | `ui` |
+| `AGENT_ARCHIMATE_URL` | Endereço do agente | `ui`, `mcp` |
+| `MCP_PORT` | Porta local do servidor MCP (padrão 8700, só `127.0.0.1`) | `mcp` |
+| `MCP_TRANSPORT` | `stdio` (padrão fora do container) ou `streamable-http` | `mcp` |
+| `MCP_ALLOWED_HOSTS` | Cabeçalhos `Host` aceitos (lista JSON) | `mcp` |
+| `MCP_PASTA_ARQUIVOS` / `MCP_PASTA_SAIDA` | Pastas para ler entradas por caminho e gravar os arquivos do modelo (vazias = desligado) | `mcp` |
+| `MCP_TIMEOUT_MODELO_SEGUNDOS` | Quanto `gerar_modelo` espera o job | `mcp` |
 | `TOOL_ARCHI_URL` | Endereço do `tool-archi` | `agent-archimate` |
 | `LOG_LEVEL` | Nível de log | todos |
 
@@ -613,12 +640,14 @@ archagent/
 ├── docker-compose.yml            # inclui os arquivos de compose/
 ├── compose/
 │   ├── ui.yml
+│   ├── mcp.yml
 │   ├── agent-archimate.yml
 │   └── tool-archi.yml
 ├── src/archagent/
 │   ├── core/                     # LLM (DashScope), leitores de entrada, briefing, logs
 │   ├── agents/archimate/         # grafo, nós, ferramentas, modelagem, validadores, exportação, API
-│   └── ui/                       # app Streamlit
+│   ├── ui/                       # app Streamlit
+│   └── mcp/                      # servidor MCP (API do agente como ferramentas)
 ├── tools/archi/                  # Dockerfile e API mínima do tool-archi
 ├── kb/                           # base de conhecimento (seção 10)
 ├── scripts/                      # ex.: extrair relacoes.json do Archi

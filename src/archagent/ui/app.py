@@ -11,7 +11,7 @@ from typing import Any
 
 import streamlit as st
 
-from archagent.ui.cliente import AgenteCliente, ErroApi
+from archagent.core.cliente import AgenteCliente, ErroApi
 
 AGENT_URL = os.environ.get("AGENT_ARCHIMATE_URL", "http://agent-archimate:8000")
 TIPOS_ARQUIVO = ["txt", "md", "vtt", "srt", "docx", "drawio", "xml", "png", "jpg", "jpeg"]

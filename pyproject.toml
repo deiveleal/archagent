@@ -15,6 +15,9 @@ dependencies = [
     "pillow>=13.0",
 ]
 
+[project.scripts]
+archagent-mcp = "archagent.mcp.server:main"
+
 [project.optional-dependencies]
 # Imagem do agente ArchiMate: API, grafo e cliente LLM.
 agent = [
@@ -28,6 +31,8 @@ agent = [
 ui = ["streamlit>=1.67"]
 # Imagem do tool-archi: só a API mínima.
 tool = ["fastapi>=0.162", "uvicorn>=0.54", "python-multipart>=0.0.33"]
+# Imagem do servidor MCP (expõe a API do agente a clientes como o Claude Code).
+mcp = ["mcp>=2.3"]
 
 [dependency-groups]
 dev = [
