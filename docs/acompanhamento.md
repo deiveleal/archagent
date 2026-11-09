@@ -41,6 +41,8 @@
 
 Critérios de saída de cada fase: plano, seção 3.7.
 
+O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa faltam P-10, P-12, P-13 e P-14.
+
 ## 4. Entregas
 
 | Data | Tarefa | Branch | Commit / PR |
@@ -63,6 +65,7 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | F2 — agente: interpretação das entradas pelo LLM (com origem conferida), perguntas de esclarecimento, grafo de entrada no LangGraph, endpoints de sessão, entrada, briefing, perguntas e uso; 13 casos N3 e executor da avaliação | `task/archimate/f2-briefing` | PR #11 |
 | 2026-11-08 | F3 — agente: modelagem com guia de tipos do vault, ciclo validar → corrigir (até 3 rodadas), premissas, visões, exportação, V5, relatório de viabilidade, geração em segundo plano com eventos (SSE) e downloads; métricas de modelagem na avaliação N3 | `task/archimate/f3-modelagem` | PR #12 |
 | 2026-11-08 | F5 — agente: conversa (classificar, responder, corrigir, avaliar alternativa, comandos), propostas de aprendizado após 3 sessões, juiz LLM, 5 casos de conversa, avaliação completa e linha de base | `task/archimate/f5-conversa` | PR #15 |
+| 2026-11-09 | Etapa 1 mesclada na `main` (agente ArchiMate F0–F5). F1 segue aberta até P-12 e P-13; a avaliação N3 na CI segue pulada até P-14 | `agent/archimate` | PR #16 |
 
 ## 5. Pendências
 
