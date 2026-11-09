@@ -1,0 +1,91 @@
+grupo: reuniao
+descricao: >-
+  Kickoff técnico real (7 KB) do Sistema de Gestão de Frota. Mede a cobertura do sistema
+  discutido e se a logística da reunião (participantes, tarefas do time, ferramentas de
+  entrega) fica fora do briefing. Também cobre o tempo limite do LLM (D-16).
+rapido: true
+entradas:
+  - arquivo: reuniao_frota.txt
+    conteudo: |
+      [14:00:05] Carlos (Product Owner): Bom dia, pessoal. Todos me ouvem bem?
+
+      [14:00:12] Ana (Tech Lead): Bom dia, Carlos. Escuto sim, alto e claro.
+
+      [14:00:15] Bruno (Engenheiro de Infra/DevOps): Bom dia! Tudo certo por aqui também.
+
+      [14:00:20] Carlos (PO): Maravilha. Bom, o objetivo da nossa call de hoje é fazer o kickoff técnico do novo Sistema de Gestão de Frota. A ideia é que a gente saia daqui em uns 30 minutos com uma visão clara dos requisitos principais, o que vamos precisar de infraestrutura e quais serão os nossos próximos passos para a sprint zero. Podemos começar pelos requisitos funcionais?
+
+      [14:01:05] Ana (Tech Lead): Claro, manda bala. Eu li o documento de visão que você mandou ontem, mas seria bom repassar os pontos críticos. Pelo que entendi, o core do sistema é o rastreamento em tempo real dos caminhões, certo?
+
+      [14:01:22] Carlos (PO): Exatamente, Ana. O aplicativo do motorista precisa enviar a geolocalização a cada 10 segundos para o nosso back-end. Além disso, o motorista vai usar o app para dar "check-in" e "check-out" nas entregas, tirar fotos dos canhotos de nota fiscal e reportar problemas na rota.
+
+      [14:02:10] Ana (Tech Lead): Entendi. Uma dúvida sobre o app do motorista: a gente sabe que conexão em estrada é péssima. Qual é o requisito de funcionamento offline?
+
+      [14:02:25] Carlos (PO): Excelente ponto. O modo offline é requisito crítico. Se ele ficar sem sinal, o app precisa armazenar os dados de rota e os comprovantes localmente e, assim que o 4G voltar, fazer a sincronização automática com o servidor sem que o motorista precise apertar nenhum botão.
+
+      [14:03:50] Ana (Tech Lead): Ok, isso impacta bastante a arquitetura do front-end mobile. Vamos precisar usar algo como SQLite ou Realm no dispositivo para persistência local, e desenhar um mecanismo de fila para o back-end receber essa enxurrada de dados quando um caminhão recuperar o sinal. Bruno, pensando no back-end, como você vê a recepção desses dados?
+
+      [14:05:15] Bruno (Infra): Bom, se vamos ter picos de sincronização (vários caminhões voltando a ter sinal ao mesmo tempo e enviando pacotes grandes de dados acumulados), eu não colocaria isso direto numa API síncrona. Sugiro colocarmos um API Gateway na frente, jogando esses payloads para um serviço de mensageria. Talvez um Kafka ou um Amazon SQS. Assim a gente absorve o pico sem derrubar o banco de dados principal.
+
+      [14:07:30] Ana (Tech Lead): Concordo plenamente com o SQS, Bruno. Simplifica muito e a gente já tem familiaridade na stack da AWS. Carlos, qual é a volumetria esperada para o lançamento e para o final do ano?
+
+      [14:08:12] Carlos (PO): Para o MVP, no mês que vem, vamos rodar com uma frota de 200 caminhões. Mas a meta é integrar as frotas terceirizadas até novembro, o que deve bater uns 2.500 caminhões rodando simultaneamente. O painel web da transportadora vai ser acessado por uns 50 operadores logísticos ao mesmo tempo.
+
+      [14:10:05] Bruno (Infra): Subir de 200 para 2.500 veículos mandando ping de GPS a cada 10 segundos é um salto considerável. Estamos falando de 250 requests por segundo só de tracking. A infraestrutura vai precisar escalar horizontalmente.
+
+      [14:11:40] Ana (Tech Lead): Para suportar isso no back-end, estou pensando em uma arquitetura de microsserviços usando Node.js ou Go para o serviço de tracking, que precisa de alta concorrência e baixo uso de memória, e talvez um serviço em Python ou Java para a parte de relatórios consolidados e emissão de faturas no painel web. O que acha?
+
+      [14:13:20] Bruno (Infra): Gosto da ideia. Para a infra, recomendo enveloparmos tudo em containers Docker e orquestrar usando Kubernetes (o EKS da AWS). Eu posso configurar o HPA (Horizontal Pod Autoscaler) para que o serviço de tracking crie novas instâncias automaticamente baseado no uso de CPU. Se o tráfego aumentar na Black Friday, a infra cresce sozinha.
+
+      [14:15:55] Carlos (PO): Isso me tranquiliza bastante. Um ponto que os diretores bateram muito na tecla ontem foi segurança. Como as notas fiscais têm dados de clientes finais e valores das cargas, precisamos estar 100% aderentes à LGPD.
+
+      [14:17:10] Ana (Tech Lead): Sobre isso, podemos garantir que todos os dados em trânsito usem TLS 1.3. Para os dados em repouso, o Bruno pode configurar criptografia nos discos dos bancos de dados. Falando em banco, Bruno, o que sugere?
+
+      [14:18:45] Bruno (Infra): Para os dados relacionais e transacionais (cadastros, faturas, motoristas), o Amazon RDS com PostgreSQL é a escolha mais segura. Eu ativo a criptografia KMS nativa dele. Agora, para as coordenadas de GPS em tempo real, salvar tudo no Postgres pode ser um gargalo de I/O muito rápido.
+
+      [14:20:30] Ana (Tech Lead): Exato. Para o dado "quente" de localização, a gente pode usar um banco NoSQL ou até manter em cache usando Redis para o painel de monitoramento web ler rápido. O histórico de rotas antigas a gente joga para um armazenamento mais frio e barato, como um S3 ou um banco de série temporal.
+
+      [14:23:15] Carlos (PO): Pessoal, tecnicamente faz muito sentido. Como o painel web precisa mostrar os caminhões se movendo no mapa quase em tempo real, essa solução de cache rápido resolve o problema da lentidão que tínhamos no sistema antigo, certo?
+
+      [14:24:00] Ana (Tech Lead): Com certeza. O front-end web vai se conectar via WebSockets com a nossa API, que vai ler os dados atualizados do Redis. Vai parecer "mágica" para o operador, o caminhão vai andar no mapa de forma bem fluida.
+
+      [14:25:20] Bruno (Infra): Só precisamos garantir que a pipeline de CI/CD esteja bem azeitada desde o dia zero. Vou preparar scripts no Terraform para subir essa infra (RDS, EKS, Redis, SQS) como código. Assim, conseguimos criar um ambiente de "Homologação" idêntico ao de "Produção" em minutos. Para os deploys contínuos, vou configurar o GitHub Actions.
+
+      [14:27:40] Carlos (PO): Perfeito. Acho que cobrimos os principais pontos da arquitetura e infra. De requisitos funcionais faltou falarmos dos alertas geofence (cerca eletrônica), mas acho que isso pode entrar na Sprint 2, certo?
+
+      [14:28:15] Ana (Tech Lead): Melhor deixarmos para a Sprint 2 sim, Carlos. Na Sprint 1 (o MVP), a gente foca em estabilizar o app mobile offline-first, a ingestão de dados via SQS e o painel de rastreamento básico em tempo real.
+
+      [14:29:30] Carlos (PO): Acordo feito. Vou atualizar o Jira com essa quebra de épicos hoje à tarde.
+
+      [14:30:10] Bruno (Infra): E eu vou desenhar o diagrama de arquitetura da nuvem inicial e mando no Slack para vocês validarem até amanhã de manhã.
+
+      [14:30:45] Ana (Tech Lead): Combinado. Da minha parte, vou começar a definir os contratos das APIs (Swagger) para que o time de mobile já possa começar a trabalhar mockado.
+
+      [14:31:10] Carlos (PO): Excelente, pessoal. Reunião muito produtiva. Muito obrigado pelo tempo de vocês e vamos nos falando. Um abraço!
+
+      [14:31:25] Ana / Bruno: Abraço, até mais!
+itens_esperados:
+  - {tipo: ator, nome: Motorista}
+  - {tipo: ator, nome: Operador logístico, sinonimos: [Operador]}
+  - {tipo: sistema, nome: App do motorista, sinonimos: [Aplicativo do motorista, App mobile]}
+  - {tipo: sistema, nome: Painel web, sinonimos: [Painel web da transportadora]}
+  - {tipo: sistema, nome: Serviço de tracking, sinonimos: [Serviço de rastreamento]}
+  - {tipo: sistema, nome: Serviço de relatórios}
+  - {tipo: processo, nome: Enviar geolocalização}
+  - {tipo: processo, nome: Registrar check-in e check-out, sinonimos: [Fazer check-in e check-out]}
+  - {tipo: processo, nome: Reportar problema na rota}
+  - {tipo: infraestrutura, nome: Amazon SQS, sinonimos: [SQS]}
+  - {tipo: infraestrutura, nome: Amazon RDS PostgreSQL, sinonimos: [PostgreSQL, Amazon RDS]}
+  - {tipo: infraestrutura, nome: Redis}
+  - {tipo: infraestrutura, nome: Kubernetes, sinonimos: [Amazon EKS, EKS]}
+# Logística da reunião: não deve virar ator, processo nem infraestrutura.
+itens_fora:
+  - {tipo: ator, nome: Carlos}
+  - {tipo: ator, nome: Ana}
+  - {tipo: ator, nome: Bruno}
+  - {tipo: ator, nome: Time de mobile}
+  - {tipo: processo, nome: Atualizar Jira}
+  - {tipo: processo, nome: Desenhar diagrama de arquitetura}
+  - {tipo: processo, nome: Definir contratos de API}
+  - {tipo: infraestrutura, nome: Terraform}
+  - {tipo: infraestrutura, nome: GitHub Actions}

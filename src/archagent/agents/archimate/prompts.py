@@ -62,6 +62,14 @@ Regras:
 10. Se a entrada resolve uma pendência ou conflito existente, crie o item que resolve com
     "substitui" igual ao id da pendência/conflito. Itens que a entrada mostra serem errados
     vão em "descartar" (ids).
+11. Extraia a arquitetura do sistema discutido, não a logística da reunião ou do projeto:
+    - quem só participa da reunião (ex.: PO, tech lead, engenheiro) não é ator, a menos que
+      a entrada diga que usa ou opera o sistema;
+    - tarefas do time (atualizar o Jira, desenhar diagramas, definir contratos de API,
+      planejar sprints, mandar algo no Slack) não são processos;
+    - ferramentas de desenvolvimento e entrega (Jira, Slack, Swagger, Terraform, GitHub
+      Actions) não são infraestrutura do sistema; se a escolha delas for relevante,
+      registre-a como "decisao".
 
 {GUARDA}
 
@@ -140,6 +148,9 @@ Regras:
    Sistemas externos citados como software também são ApplicationComponent.
 9. Os itens decisao e requisito orientam as escolhas (ex.: decisão de usar um banco
    gerenciado) e podem ser citados em "origens" dos elementos que influenciam.
+10. Uma parte e o todo que a contém (Composition ou Aggregation) não recebem outra relação
+    entre si (ex.: se "Back-end" agrega "Serviço de tracking", não crie "Serviço de
+    tracking --Serving--> Back-end").
 
 {GUARDA}
 

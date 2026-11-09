@@ -162,3 +162,22 @@ def test_archi_fora_reprova_v5(tmp_path: Path, regras: Regras) -> None:
     m = svc.gerar_modelo(sid)
     assert m.validacao.criterios["V5"] is False
     assert not m.validacao.viavel
+
+
+def test_relatorio_separa_entradas_nao_usadas(regras: Regras) -> None:
+    from archagent.agents.archimate.relatorio import gerar_relatorio
+    from archagent.core.briefing import Briefing
+    from archagent.core.sessions import Entrada, Uso
+
+    from .conftest import modelo_portal
+
+    entradas = [
+        Entrada(id="E-001", tipo="transcricao", formato="txt", nome_arquivo="a.txt",
+                status="falhou", observacao="Interpretação falhou (LLMError); envie de novo."),
+        Entrada(id="E-002", tipo="transcricao", formato="txt", nome_arquivo="a.txt",
+                status="interpretada"),
+    ]  # fmt: skip
+    rel = gerar_relatorio(modelo_portal(), regras, Briefing(), entradas, [], Uso(), 1.0, 0)
+    usadas, _, resto = rel.partition("Não usadas:")
+    assert "E-002" in usadas and "E-001" not in usadas
+    assert "E-001 — a.txt (falhou: Interpretação falhou" in resto
