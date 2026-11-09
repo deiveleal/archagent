@@ -1,0 +1,7 @@
+grupo: ilegivel
+descricao: Foto de quadro totalmente borrada
+rapido: false
+entradas:
+  - arquivo: quadro-borrado.png
+    gerar: borrado
+deve_falhar: true

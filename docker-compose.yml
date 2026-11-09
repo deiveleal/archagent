@@ -6,3 +6,4 @@ include:
   - compose/ui.yml
   - compose/tests.yml
   - compose/tool-archi.yml
+  - compose/agent-archimate.yml

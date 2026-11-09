@@ -1,0 +1,164 @@
+{
+  "elementos": [
+    {
+      "tipo": "BusinessActor",
+      "nome": "Analista de RH",
+      "origens": [
+        "B-001"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "BusinessActor",
+      "nome": "Novo colaborador",
+      "origens": [
+        "B-002"
+      ],
+      "sinonimos": [
+        "Colaborador"
+      ]
+    },
+    {
+      "tipo": "BusinessProcess",
+      "nome": "Admitir colaborador",
+      "origens": [
+        "B-003"
+      ],
+      "sinonimos": [
+        "Fazer admissão",
+        "Admissão",
+        "Realizar admissão"
+      ]
+    },
+    {
+      "tipo": "BusinessProcess",
+      "nome": "Assinar contrato de trabalho",
+      "origens": [
+        "B-004"
+      ],
+      "sinonimos": [
+        "Assinar contrato"
+      ]
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Sistema de RH",
+      "origens": [
+        "B-005"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Folha de Pagamento",
+      "origens": [
+        "B-006"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "ApplicationComponent",
+      "nome": "Portal do Colaborador",
+      "origens": [
+        "B-007"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "DataObject",
+      "nome": "Cadastro do colaborador",
+      "origens": [
+        "B-008"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "Contract",
+      "nome": "Contrato de trabalho",
+      "origens": [
+        "B-009"
+      ],
+      "sinonimos": []
+    },
+    {
+      "tipo": "Node",
+      "nome": "Servidor on-premise",
+      "origens": [
+        "B-010"
+      ],
+      "sinonimos": []
+    }
+  ],
+  "relacoes": [
+    {
+      "tipo": "Assignment",
+      "origem": "Analista de RH",
+      "destino": "Admitir colaborador",
+      "origens": [
+        "B-003"
+      ]
+    },
+    {
+      "tipo": "Assignment",
+      "origem": "Novo colaborador",
+      "destino": "Assinar contrato de trabalho",
+      "origens": [
+        "B-004"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Sistema de RH",
+      "destino": "Admitir colaborador",
+      "origens": [
+        "B-003",
+        "B-005"
+      ]
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Portal do Colaborador",
+      "destino": "Assinar contrato de trabalho",
+      "origens": [
+        "B-004",
+        "B-007"
+      ]
+    },
+    {
+      "tipo": "Flow",
+      "origem": "Sistema de RH",
+      "destino": "Folha de Pagamento",
+      "origens": [
+        "B-011",
+        "B-012"
+      ],
+      "nome": "Arquivo diário"
+    },
+    {
+      "tipo": "Access",
+      "origem": "Sistema de RH",
+      "destino": "Cadastro do colaborador",
+      "origens": [
+        "B-008"
+      ],
+      "acesso": "Write"
+    },
+    {
+      "tipo": "Access",
+      "origem": "Assinar contrato de trabalho",
+      "destino": "Contrato de trabalho",
+      "origens": [
+        "B-009"
+      ],
+      "acesso": "Write"
+    },
+    {
+      "tipo": "Serving",
+      "origem": "Servidor on-premise",
+      "destino": "Folha de Pagamento",
+      "origens": [
+        "B-010"
+      ]
+    }
+  ]
+}

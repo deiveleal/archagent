@@ -1,0 +1,23 @@
+1
+00:00:02,000 --> 00:00:08,000
+Carla: O cliente paga o pedido na Loja Virtual.
+
+2
+00:00:08,500 --> 00:00:15,000
+Diego: A Loja Virtual chama a API REST de pagamentos do Serviço de Pagamentos.
+
+3
+00:00:15,500 --> 00:00:22,000
+Diego: O Serviço de Pagamentos usa o Gateway de Pagamentos, que é um fornecedor externo.
+
+4
+00:00:22,500 --> 00:00:30,000
+Carla: Quando o pagamento é confirmado, o Serviço de Pagamentos publica o evento no Kafka e o Serviço de Pedidos consome.
+
+5
+00:00:30,500 --> 00:00:36,000
+Diego: Decidimos que essa comunicação entre pagamentos e pedidos é assíncrona, por eventos.
+
+6
+00:00:36,500 --> 00:00:41,000
+Carla: O Serviço de Pagamentos guarda o registro de cada pagamento.

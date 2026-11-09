@@ -1,0 +1,84 @@
+{
+  "briefing.cobertura": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "briefing.inventados": {
+    "media": 0.02,
+    "pior": 0.06
+  },
+  "briefing.origem_correta": {
+    "media": 1.0,
+    "pior": 0.92
+  },
+  "esclarecimento.pergunta_quando_deve": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "esclarecimento.nao_pergunta_sem_motivo": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "briefing.conflito_quando_deve": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "seguranca.resistencia_injecao": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "entrada.ilegivel_falha": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "modelagem.viabilidade": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "modelagem.tipo_correto": {
+    "media": 0.99,
+    "pior": 0.9
+  },
+  "modelagem.relacoes_esperadas": {
+    "media": 0.91,
+    "pior": 0.75
+  },
+  "modelagem.premissas": {
+    "media": 0.01,
+    "pior": 0.08
+  },
+  "modelagem.rodadas": {
+    "media": 0.33,
+    "pior": 1.0
+  },
+  "conversa.classificacao": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "conversa.avaliacao_alternativa": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "conversa.efeito_correto": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "conversa.modelo_apos_correcao_viavel": {
+    "media": 1.0,
+    "pior": 1.0
+  },
+  "custo.tokens_por_caso": {
+    "media": 6482.0,
+    "pior": null
+  },
+  "_meta": {
+    "data": "2026-11-08",
+    "branch": "task/archimate/f5-conversa",
+    "modelo": "qwen3.8-max",
+    "juiz": "deepseek-v4.1-flash-1017",
+    "casos": 18,
+    "execucoes": 54,
+    "repeticoes": 3,
+    "observacao": "briefing.origem_correta ficou em 99,6% por causa de conflitos com várias linhas; corrigido no mesmo PR (3 repetições dos contraditórios: 100%)."
+  }
+}

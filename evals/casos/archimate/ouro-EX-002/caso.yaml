@@ -1,0 +1,5 @@
+grupo: ouro
+descricao: Exemplo ouro EX-002-admissao-rh
+rapido: true
+exemplo: EX-002-admissao-rh          # entradas e esperados vêm de kb/archimate/exemplos/
+deve_perguntar: false

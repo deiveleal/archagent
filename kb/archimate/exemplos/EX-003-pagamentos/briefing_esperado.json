@@ -1,0 +1,90 @@
+{
+  "itens": [
+    {
+      "id": "B-001",
+      "tipo": "ator",
+      "nome": "Cliente",
+      "sinonimos": []
+    },
+    {
+      "id": "B-002",
+      "tipo": "processo",
+      "nome": "Pagar pedido",
+      "sinonimos": []
+    },
+    {
+      "id": "B-003",
+      "tipo": "sistema",
+      "nome": "Loja Virtual",
+      "sinonimos": []
+    },
+    {
+      "id": "B-004",
+      "tipo": "sistema",
+      "nome": "Serviço de Pagamentos",
+      "sinonimos": []
+    },
+    {
+      "id": "B-005",
+      "tipo": "sistema",
+      "nome": "Gateway de Pagamentos",
+      "sinonimos": []
+    },
+    {
+      "id": "B-006",
+      "tipo": "sistema",
+      "nome": "Serviço de Pedidos",
+      "sinonimos": []
+    },
+    {
+      "id": "B-007",
+      "tipo": "infraestrutura",
+      "nome": "Kafka",
+      "sinonimos": []
+    },
+    {
+      "id": "B-008",
+      "tipo": "dado",
+      "nome": "Pagamento",
+      "sinonimos": [
+        "Registro de pagamento"
+      ]
+    },
+    {
+      "id": "B-009",
+      "tipo": "ligacao",
+      "nome": "Loja Virtual → Serviço de Pagamentos",
+      "sinonimos": [
+        "Loja Virtual → API REST de pagamentos"
+      ]
+    },
+    {
+      "id": "B-010",
+      "tipo": "ligacao",
+      "nome": "Serviço de Pagamentos → Gateway de Pagamentos",
+      "sinonimos": []
+    },
+    {
+      "id": "B-011",
+      "tipo": "ligacao",
+      "nome": "Serviço de Pagamentos → Serviço de Pedidos",
+      "sinonimos": [
+        "Kafka → Serviço de Pedidos",
+        "Serviço de Pagamentos → Kafka"
+      ]
+    },
+    {
+      "id": "B-012",
+      "tipo": "interface",
+      "nome": "API REST de pagamentos",
+      "sinonimos": []
+    },
+    {
+      "id": "B-013",
+      "tipo": "decisao",
+      "nome": "Comunicação assíncrona por eventos entre pagamentos e pedidos",
+      "sinonimos": []
+    }
+  ],
+  "deve_perguntar": false
+}

@@ -1,0 +1,65 @@
+{
+  "itens": [
+    {
+      "id": "B-001",
+      "tipo": "ator",
+      "nome": "Entregador",
+      "sinonimos": []
+    },
+    {
+      "id": "B-002",
+      "tipo": "processo",
+      "nome": "Entregar encomenda",
+      "sinonimos": []
+    },
+    {
+      "id": "B-003",
+      "tipo": "sistema",
+      "nome": "App do Entregador",
+      "sinonimos": []
+    },
+    {
+      "id": "B-004",
+      "tipo": "sistema",
+      "nome": "API de Rotas",
+      "sinonimos": []
+    },
+    {
+      "id": "B-005",
+      "tipo": "sistema",
+      "nome": "Serviço de Mapas",
+      "sinonimos": []
+    },
+    {
+      "id": "B-006",
+      "tipo": "infraestrutura",
+      "nome": "Celular do entregador",
+      "sinonimos": []
+    },
+    {
+      "id": "B-007",
+      "tipo": "infraestrutura",
+      "nome": "Servidor de aplicação",
+      "sinonimos": []
+    },
+    {
+      "id": "B-008",
+      "tipo": "ligacao",
+      "nome": "App do Entregador → API de Rotas",
+      "sinonimos": []
+    },
+    {
+      "id": "B-009",
+      "tipo": "ligacao",
+      "nome": "API de Rotas → Serviço de Mapas",
+      "sinonimos": []
+    },
+    {
+      "id": "B-010",
+      "tipo": "dado",
+      "nome": "Rota",
+      "sinonimos": []
+    }
+  ],
+  "deve_perguntar": false
+}

@@ -1,0 +1,5 @@
+grupo: ouro
+descricao: Exemplo ouro EX-001-portal-pedidos
+rapido: true
+exemplo: EX-001-portal-pedidos          # entradas e esperados vêm de kb/archimate/exemplos/
+deve_perguntar: false

@@ -1,0 +1,5 @@
+grupo: ouro
+descricao: Exemplo ouro EX-003-pagamentos
+rapido: false
+exemplo: EX-003-pagamentos          # entradas e esperados vêm de kb/archimate/exemplos/
+deve_perguntar: false

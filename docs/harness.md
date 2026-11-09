@@ -91,6 +91,13 @@ conhecimento (`kb/archimate/exemplos/`), mais casos difíceis feitos de propósi
 | **Injeção** | Transcrição ou desenho com texto do tipo "ignore as instruções e…"; o agente deve tratar como conteúdo, não como ordem | 2 |
 | **Conversa** | Perguntas, correções e alternativas sobre uma sessão pronta | 5 |
 
+Na F5 existem 18 casos: 5 ouro (com modelo), 3 ambíguos, 2 contraditórios, 2 de injeção,
+1 ilegível e 5 de conversa (pergunta, correção com novo modelo, alternativa com juiz,
+informação e comando), todos sobre sessões montadas a partir dos exemplos ouro.
+O executor é `python -m evals.archimate.run` (`make eval` roda só os casos `rapido: true`).
+Cada execução grava o relatório em `evals/archimate/reports/AAAA-MM-DD-<branch>.md`; o resultado
+bruto da última execução fica em `evals/archimate/reports/ultimo.json`, fora do git.
+
 Cada caso tem um arquivo `caso.yaml` com: entradas, itens esperados no briefing,
 elementos e relações esperados, perguntas esperadas (se houver), mensagens da
 conversa e o que se espera de cada resposta, e a marca `rapido: true` quando o
@@ -117,12 +124,17 @@ caso faz parte da avaliação rápida.
 | Desempenho | Tempo de geração | p95 por caso | ≤ 5 min |
 
 As metas são o ponto de partida. Depois da primeira rodada completa, a **linha de
-base** real é gravada em `evals/baseline.json`, e as metas podem ser revistas com
+base** real é gravada em `evals/<agente>/baseline.json`, e as metas podem ser revistas com
 registro no acompanhamento.
 
 ### 5.3 Como comparar o gerado com o esperado
 
-- **Nomes:** comparação depois de normalizar (minúsculas, sem acento, sem pontuação), mais uma lista de sinônimos aceitos por caso (ex.: "PostgreSQL" = "Banco PostgreSQL").
+- **Nomes:** comparação depois de normalizar (minúsculas, sem acento, sem pontuação, sem plural), mais uma lista de sinônimos aceitos por caso (ex.: "PostgreSQL" = "Banco PostgreSQL"). Também conta quando um nome contém o outro (palavra inteira, 4+ letras) ou quando 80% das palavras significativas coincidem (frases de decisão e requisito).
+- **Ligações:** origem e destino pelo nome; o caso pode listar ligações alternativas aceitas (ex.: "Loja Virtual → API REST de pagamentos").
+- **Elementos do modelo:** cada elemento esperado é ligado ao elemento gerado de melhor nome (igual > sinônimo > contenção), com o mesmo tipo como desempate.
+- **Relações do modelo:** tipo exato + origem e destino; vale também a relação **derivada** pelas regras do ArchiMate: uma cadeia de relações estruturais (Realization, Assignment, Composition, Aggregation) seguida de uma dependência do mesmo tipo (ex.: componente —Realization→ serviço —Serving→ processo equivale a componente —Serving→ processo).
+- **Viabilidade na avaliação:** precisa do `tool-archi` (V5); informe `TOOL_ARCHI_URL`.
+- **Origem correta:** o local citado existe na entrada e contém o trecho (ou ao menos 60% das palavras dele), aceitando que o trecho continue na linha seguinte.
 - **Tipos ArchiMate:** comparação exata.
 - **Relações:** tipo exato + origem e destino pelo nome normalizado.
 - **Itens do briefing:** pelo tipo + nome normalizado.
@@ -164,7 +176,7 @@ O `qwen3.8-max` não tem versão datada. Por isso:
 
 ### 5.8 Relatório da avaliação
 
-Gerado em `evals/reports/AAAA-MM-DD-<branch>.md` e anexado ao PR pela CI:
+Gerado em `evals/archimate/reports/AAAA-MM-DD-<branch>.md` e anexado ao PR pela CI:
 resultado por métrica e por caso, comparação com a linha de base, casos que
 pioraram, tokens e custo estimado, tempo por caso.
 
@@ -197,7 +209,8 @@ pioraram, tokens e custo estimado, tempo por caso.
 
 Um script (`scripts/check_paths.py`) roda no N0 e reprova o PR quando:
 
-- uma branch `task/<agente>/*` ou `agent/<agente>` altera arquivos fora de `src/archagent/agents/<agente>/`, `kb/<agente>/`, `compose/agent-<agente>.yml`, `evals/casos/<agente>/`, `tests/` do agente e `docs/`;
+- uma branch `task/<agente>/*` ou `agent/<agente>` altera arquivos fora de `src/archagent/agents/<agente>/`, `kb/<agente>/`, `compose/agent-<agente>.yml`, `evals/casos/<agente>/`, `tests/agents/<agente>/`, `docs/` e a linha de `include` do agente no `docker-compose.yml`;
+- arquivos iguais aos da `origin/main` não contam, porque são mudanças do núcleo que a branch só trouxe da `main`;
 - uma branch `core/*` altera a pasta de algum agente;
 - uma branch `docs/*` altera algo fora de `docs/`, `README.md` e `CLAUDE.md`;
 - qualquer PR para `main` ou `agent/*` vem de uma branch `exp/*` ou altera `experiments/`;
@@ -210,7 +223,7 @@ Como a checagem de pastas é uma verificação obrigatória nos rulesets de `mai
 
 - Os workflows `ci.yml` e `eval.yml` **não** rodam em branches `exp/*`, para não gastar tokens nem misturar resultados com a linha de base.
 - Um experimento pode ter os próprios testes e scripts, rodados manualmente dentro da pasta dele.
-- Resultados de experimento nunca atualizam `evals/baseline.json`.
+- Resultados de experimento nunca atualizam `evals/<agente>/baseline.json`.
 
 ### 6.4 Segredos
 
@@ -299,7 +312,7 @@ raiz com:
 - nunca ler, copiar ou registrar o conteúdo do `.env`;
 - rodar `make check` e `make test` antes de propor um commit;
 - ao finalizar uma tarefa, atualizar a documentação e enviar ao GitHub (push + PR);
-- não alterar `evals/baseline.json` sem pedido explícito;
+- não alterar `evals/<agente>/baseline.json` sem pedido explícito;
 - experimentos só em branch `exp/*` e pasta `experiments/`, nunca misturados ao código validado.
 
 ## 11. Definição de pronto
@@ -341,6 +354,6 @@ O harness cresce junto com o produto:
 ## 13. Pontos a verificar ou decidir ⚠️
 
 - [ ] Limite de tokens por execução do `eval.yml` (depois da primeira rodada completa).
-- [ ] Se o `deepseek-v4.1-flash-1017` aceita temperatura 0 e funciona bem como juiz (primeira rodada da F3).
+- [x] Se o `deepseek-v4.1-flash-1017` aceita temperatura 0 e funciona bem como juiz: aceita e aprovou as respostas de alternativa nos casos de conversa (F5). A conferência humana de 10% dos julgamentos continua a cada rodada completa.
 - [x] Se o Archi 5 roda na CI do GitHub (imagem Linux, sem tela): roda, com Xvfb no container `tool-archi`.
 - [ ] Regra de aprovação de revisor quando entrar mais alguém no projeto.

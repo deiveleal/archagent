@@ -34,10 +34,10 @@
 | --- | --- | --- | --- | --- | --- |
 | F0 — Fundação | Concluída | 2026-11-08 | 2026-11-08 | Sim, exceto tornar a CI obrigatória no ruleset (P-10) | #2, #3 |
 | F1 — Base de conhecimento, modelo ArchiMate e validação | Em andamento | 2026-11-08 | — | — | — |
-| F2 — Entrada por texto e transcrição | Em andamento | 2026-11-08 | — | — | — |
-| F3 — Modelagem a partir do briefing | Não iniciada | — | — | — | — |
-| F4 — Entrada por desenho | Não iniciada | — | — | — | — |
-| F5 — Refinamento pela conversa e avaliação | Não iniciada | — | — | — | — |
+| F2 — Entrada por texto e transcrição | Concluída | 2026-11-08 | 2026-11-08 | Sim: briefing correto nos 5 exemplos ouro e metas N3 atingidas | #7, #11 |
+| F3 — Modelagem a partir do briefing | Concluída | 2026-11-08 | 2026-11-08 | Sim: os 5 exemplos geram modelos viáveis em V1–V5 | #12 |
+| F4 — Entrada por desenho | Concluída | 2026-11-08 | 2026-11-08 | Sim: EX-004 (`.drawio`) e EX-005 (imagem) geram briefing e modelo viáveis; leitor `.drawio` com XXE recusado; imagem ilegível vira falha | Entregue dentro de #7, #11 e #12 |
+| F5 — Refinamento pela conversa e avaliação | Concluída | 2026-11-08 | 2026-11-08 | Sim: correção incorporada com novo modelo viável; avaliação completa e linha de base gravadas. Na CI, a avaliação depende do secret (P-14) | #15 |
 
 Critérios de saída de cada fase: plano, seção 3.7.
 
@@ -52,26 +52,35 @@ Critérios de saída de cada fase: plano, seção 3.7.
 | 2026-11-08 | F0 — agente: API FastAPI (`/health`, `/health/llm`), formato de erro com `request_id`, container `agent-archimate` sem porta publicada | `task/archimate/f0-api` | PR #3 |
 | 2026-11-08 | F1 — container `tool-archi`: Archi 5.10.0 + Xvfb + API `/health` e `/convert`; erro do Archi legível; testes N1 e N2 | `core/f1-tool-archi` | PR #4 |
 | 2026-11-08 | F1 — agente: regras, modelo interno, validadores V1–V4, exportação, layout, vault, exemplos ouro, `kb-check` | `task/archimate/f1-kb-validacao` | PR #5 |
+| 2026-11-08 | F1 — agente: regras (elementos, relações do Archi 5.10, coerência, XSDs), modelo interno, validadores V1–V4, exportação Exchange Format, layout por viewpoint, cliente do `tool-archi` (V5), vault (35 fichas + padrões, anti-padrões e convenções, em rascunho), busca BM25, 5 exemplos ouro, `kb-check` | `task/archimate/f1-kb-validacao` | PR #5 |
 | 2026-11-08 | Sincronização `main` → `agent/archimate` | `main` | PR #6 |
 | 2026-11-08 | F2 — núcleo: leitores de entrada (txt, md, vtt, srt, docx, drawio, imagem) com validação e proteção XXE, briefing, sessões em arquivo, `kb/core`, workflows `kb.yml` e `eval.yml` | `core/f2-entradas-briefing` | PR #7 |
 | 2026-11-08 | Sincronização `main` → `agent/archimate` | `main` | PR #8 |
+| 2026-11-08 | Sincronização `main` → `agent/archimate` | `sync/main-para-agent-archimate` | PR #10 (substitui o #8, que tinha conflito) |
 | 2026-11-08 | Núcleo: `LLM_ENABLE_THINKING` (modo de raciocínio do Qwen3 desligado por padrão) | `core/llm-sem-raciocinio` | PR #9 |
 | 2026-11-08 | Interface Streamlit completa (sessões, conversa com anexos, entradas, briefing, perguntas, modelo com progresso e downloads); `eval.yml` sobe o `tool-archi` | `core/ui-streamlit` | PR #13 |
+| 2026-11-08 | Sincronização `main` → `agent/archimate` | `sync/main-para-agent-archimate-2` | PR #14 |
+| 2026-11-08 | F2 — agente: interpretação das entradas pelo LLM (com origem conferida), perguntas de esclarecimento, grafo de entrada no LangGraph, endpoints de sessão, entrada, briefing, perguntas e uso; 13 casos N3 e executor da avaliação | `task/archimate/f2-briefing` | PR #11 |
+| 2026-11-08 | F3 — agente: modelagem com guia de tipos do vault, ciclo validar → corrigir (até 3 rodadas), premissas, visões, exportação, V5, relatório de viabilidade, geração em segundo plano com eventos (SSE) e downloads; métricas de modelagem na avaliação N3 | `task/archimate/f3-modelagem` | PR #12 |
+| 2026-11-08 | F5 — agente: conversa (classificar, responder, corrigir, avaliar alternativa, comandos), propostas de aprendizado após 3 sessões, juiz LLM, 5 casos de conversa, avaliação completa e linha de base | `task/archimate/f5-conversa` | PR #15 |
 
 ## 5. Pendências
 
 | Id | Pendência | Origem | Quando resolver |
 | --- | --- | --- | --- |
 | P-01 | ~~Comando exato da linha de comando do Archi 5 e necessidade de Xvfb~~ **Resolvida:** precisa de Xvfb; comando na spec §14 | Spec §19 | F1 (2026-11-08) |
-| P-02 | Algoritmo de layout das visões | Spec §19 | F1 |
-| P-03 | Checkpointer do LangGraph em SQLite no volume `sessions` | Spec §19 | F0/F2 |
-| P-04 | Modelo de embeddings para a busca no vault (o Token Plan não lista modelo de embeddings; alternativa: só busca por palavra no MVP) | Spec §19 | F1 |
-| P-05 | Versões dos XSDs do Exchange Format compatíveis com o Archi 5 | Spec §19 | F1 |
+| P-02 | ~~Algoritmo de layout das visões~~ **Resolvida:** spec §8.4 | Spec §19 | F1 (2026-11-08) |
+| P-03 | ~~Checkpointer do LangGraph em SQLite~~ **Resolvida:** não é necessário; estado na sessão (D-10) | Spec §19 | F2 (2026-11-08) |
+| P-04 | ~~Modelo de embeddings para a busca no vault~~ **Resolvida:** só busca por palavra (BM25) no MVP; spec §10.6 | Spec §19 | F1 (2026-11-08) |
+| P-05 | ~~Versões dos XSDs do Exchange Format~~ **Resolvida:** XSDs do Archi 5.10.0 | Spec §19 | F1 (2026-11-08) |
 | P-06 | Limite de tokens por execução do `eval.yml` | Harness §13 | Depois da 1ª avaliação completa |
-| P-07 | Se o `deepseek-v4.1-flash-1017` funciona bem como juiz com temperatura 0 | Harness §13 | F3 |
+| P-07 | ~~Se o `deepseek-v4.1-flash-1017` funciona bem como juiz~~ **Resolvida:** funciona, com temperatura 0 e rubrica fechada | Harness §13 | F5 (2026-11-08) |
 | P-08 | ~~Se o Archi 5 roda na CI do GitHub~~ **Resolvida:** roda; os testes N2 com o `tool-archi` passam no `ubuntu-latest` | Harness §13 | F1 (2026-11-08) |
 | P-09 | Regra de aprovação de revisor quando entrar mais alguém | Harness §13 | Quando houver segunda pessoa |
 | P-10 | Adicionar as verificações obrigatórias (`N0`, `N1 + N2`, depois `eval` e `kb`) ao ruleset. **Precisa ser feito pelo responsável:** o agente de IA não tem permissão para mudar a proteção das branches | Decisão D-02 | Agora |
+| P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`) | Critério de saída da F1 | Antes de fechar a F1 |
+| P-13 | Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual) | Critério de saída da F1 | Antes de fechar a F1 |
+| P-15 | ~~O `eval.yml` precisa subir o `tool-archi`~~ **Resolvida** no PR #13 | Avaliação da F3 | 2026-11-08 |
 | P-14 | Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml` (o agente de IA não lê o `.env`) | Harness §6.1 | Antes da 1ª avaliação na CI |
 | P-11 | Chave SSH desta máquina não está cadastrada no GitHub; o envio está sendo feito por HTTPS com o login do `gh` | Decisão D-03 | Quando conveniente |
 
@@ -106,6 +115,30 @@ aqui.
 | --- | --- | --- | --- | --- | --- |
 | EXP-001 | 2026-11-08 | Algum modelo do Token Plan faz bem as três tarefas do agente: chamada de ferramenta, saída JSON e leitura de imagem | 6 modelos testados. `qwen3.8-max`: melhor modelagem e leitura de imagem perfeita (17–20 s). `deepseek-v4.1-flash-1017`: bom e rápido (6–8 s). `qwen3.8-flash`: falhou na ferramenta. `deepseek-v4-pro-0813`: respondeu vazio à imagem sem dar erro. `glm-5.3`: não aceita imagem | `qwen3.8-max` para texto e visão; `deepseek-v4.1-flash-1017` como alternativa rápida e juiz | Feito antes da regra de isolamento, em pasta temporária fora do repositório; rodada única, entrada pequena |
 
+### Resultados da avaliação
+
+| Data | Branch | Casos | Cobertura | Inventados | Origem correta | Pergunta quando deve | Conflito | Injeção | Ilegível | Tokens/caso | p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-11-08 | `task/archimate/f2-briefing` | 13 (1 repetição) | 100% | 1% | 100% | 100% | 100% | 100% | 100% | 2.764 | 29 s |
+
+| Data | Branch | Casos | Viabilidade | Tipo correto | Relações esperadas | Premissas | Rodadas | Tokens/caso | p95 |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 2026-11-08 | `task/archimate/f3-modelagem` | 5 ouro com modelo (13 no total) | 100% | 100% | 95% | 0% | 0,40 | 6.225 (média dos 13) | 74 s |
+
+**Avaliação completa da F5 (linha de base, `evals/archimate/baseline.json`)** — 18 casos × 3 repetições = 54 execuções, `qwen3.8-max` (agente) e `deepseek-v4.1-flash-1017` (juiz):
+
+| Área | Métrica | Média | Pior | Meta |
+| --- | --- | --- | --- | --- |
+| Briefing | Cobertura / inventados / origem correta | 100% / 2% / 99,6%¹ | 100% / 6% / 92% | ≥ 90% / ≤ 10% / 100% |
+| Esclarecimento | Pergunta quando deve / não pergunta sem motivo | 100% / 100% | 100% / 100% | ≥ 90% / ≥ 80% |
+| Briefing | Conflito quando deve | 100% | 100% | 100% |
+| Segurança | Resistência a injeção / imagem ilegível vira falha | 100% / 100% | 100% / 100% | 100% / 100% |
+| Modelagem | Viabilidade / tipo correto / relações / premissas / rodadas | 100% / 99% / 91% / 1% / 0,33 | 100% / 90% / 75% / 8% / 1 | 100% / ≥ 85% / ≥ 80% / ≤ 15% / ≤ 1,5 |
+| Conversa | Classificação / alternativa (juiz) / efeito / modelo após correção | 100% / 100% / 100% / 100% | 100% em todas | ≥ 90% / ≥ 90% / ≥ 90% / 100% |
+| Custo e tempo | Tokens por caso / p95 | 6.482 / 69 s | — | registrar / ≤ 5 min |
+
+¹ Conflitos que citavam várias linhas num só local. Corrigido no mesmo PR: cada trecho vira uma origem; 3 repetições dos casos contraditórios depois da correção: 100%.
+
 ## 8. Decisões
 
 As decisões até o plano v1.0 estão na seção 6 do plano. As decisões seguintes
@@ -116,7 +149,16 @@ ficam aqui.
 | D-01 | 2026-11-08 | Repositório **público** no GitHub (`deiveleal/archagent`) | Escolha do responsável; permite usar regras de proteção na conta gratuita |
 | D-02 | 2026-11-08 | Ruleset inicial em `main` e `agent/*`: só PR, sem force push, sem exclusão, sem aprovação obrigatória. Verificações obrigatórias entram na F0 | Ainda não existem workflows de CI para exigir |
 | D-03 | 2026-11-08 | Envio ao GitHub por HTTPS, com o login do `gh` | A chave SSH desta máquina não está cadastrada no GitHub |
+| D-05 | 2026-11-08 | Regras de relação e XSDs tirados do Archi **5.10.0**, com a fonte guardada em `kb/archimate/regras/fonte/` | Garante que o validador V2 e o Archi concordem; o `kb-check` confere a extração |
+| D-06 | 2026-11-08 | Busca no vault só por palavra (BM25) no MVP | O Token Plan não oferece embeddings; base pequena (arXiv 2506.05690) |
+| D-07 | 2026-11-08 | Fichas do vault criadas como `rascunho`; rascunhos em uso por configuração até a revisão | Permite seguir com as fases sem esconder que a revisão está pendente |
+| D-08 | 2026-11-08 | Faixas de camada exportadas como containers; o Archi as converte em grupos | Visões legíveis; o Archi converte as coordenadas absolutas em relativas |
 | D-09 | 2026-11-08 | Modo de raciocínio do `qwen3.8-max` desligado por padrão (`LLM_ENABLE_THINKING=false`) | Medido na extração do EX-001: ligado, 203 s e 9.162 tokens de saída (estoura o limite de 60 s); desligado, 19 s e 1.129 tokens. Reavaliar se a qualidade do briefing ficar abaixo da meta |
+| D-10 | 2026-11-08 | Sem checkpointer do LangGraph: cada chamada da API roda um grafo curto; as pausas são o estado da sessão no volume | Mais simples e sobrevive ao reinício do container; os grafos não ficam parados esperando o arquiteto |
+| D-11 | 2026-11-08 | O prompt de interpretação define quando usar `sistema` × `interface` × `servico` e pede nomes no singular | Na 1ª avaliação, "Portal Web", "API de Pedidos" e "Serviço de Pagamentos" foram classificados como interface/serviço; depois do ajuste, cobertura de 79–87% para 100% |
+| D-12 | 2026-11-08 | Camadas ligadas diretamente (`Serving`); serviços e interfaces intermediários só quando o briefing os cita | Na 1ª avaliação da F3, o agente inventava serviços para ligar camadas: premissas em 20% (meta ≤ 15%) e relações diretas ausentes; depois do ajuste, premissas 0% e relações 91–95% |
+| D-13 | 2026-11-08 | A avaliação aceita relações derivadas pelas regras do ArchiMate | Um modelo com serviço intermediário é equivalente ao com relação direta; sem isso, a métrica punia modelagem correta e mais detalhada |
+| D-14 | 2026-11-08 | Linha de base em `evals/<agente>/baseline.json` (não em `evals/baseline.json`) | Fica dentro das pastas que a branch do agente pode alterar; gravada uma vez, na F5, como pede o plano |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
 ## 9. Backlog

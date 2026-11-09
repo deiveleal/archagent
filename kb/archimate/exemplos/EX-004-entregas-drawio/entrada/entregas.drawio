@@ -1,0 +1,23 @@
+<mxfile host="app.diagrams.net">
+  <diagram id="p1" name="Entregas">
+    <mxGraphModel><root>
+      <mxCell id="0"/><mxCell id="1" parent="0"/>
+      <mxCell id="ator" value="Entregador" style="shape=umlActor;verticalLabelPosition=bottom;" vertex="1" parent="1"><mxGeometry x="40" y="60" width="30" height="60" as="geometry"/></mxCell>
+      <mxCell id="proc" value="Entregar encomenda" style="rounded=1;" vertex="1" parent="1"><mxGeometry x="140" y="60" width="140" height="50" as="geometry"/></mxCell>
+      <mxCell id="app" value="App do Entregador" style="rounded=0;" vertex="1" parent="1"><mxGeometry x="140" y="200" width="140" height="50" as="geometry"/></mxCell>
+      <mxCell id="cel" value="Celular do entregador" style="shape=mxgraph.android.phone2;" vertex="1" parent="1"><mxGeometry x="140" y="340" width="140" height="50" as="geometry"/></mxCell>
+      <mxCell id="nuvem" value="Nuvem" style="swimlane;" vertex="1" parent="1"><mxGeometry x="380" y="160" width="360" height="260" as="geometry"/></mxCell>
+      <mxCell id="api" value="API de Rotas" style="rounded=0;" vertex="1" parent="nuvem"><mxGeometry x="20" y="40" width="140" height="50" as="geometry"/></mxCell>
+      <mxCell id="srv" value="Servidor de aplicação" style="shape=cube;" vertex="1" parent="nuvem"><mxGeometry x="20" y="180" width="140" height="50" as="geometry"/></mxCell>
+      <mxCell id="rota" value="Rota" style="shape=note;" vertex="1" parent="nuvem"><mxGeometry x="200" y="180" width="120" height="50" as="geometry"/></mxCell>
+      <mxCell id="mapas" value="Serviço de Mapas&lt;br&gt;(externo)" style="rounded=0;dashed=1;" vertex="1" parent="1"><mxGeometry x="800" y="200" width="140" height="50" as="geometry"/></mxCell>
+      <mxCell id="e1" value="executa" edge="1" parent="1" source="ator" target="proc"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e2" value="apoia" edge="1" parent="1" source="app" target="proc"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e3" value="REST" edge="1" parent="1" source="app" target="api"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e4" value="consulta mapas" edge="1" parent="1" source="api" target="mapas"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e5" value="roda em" edge="1" parent="1" source="app" target="cel"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e6" value="roda em" edge="1" parent="nuvem" source="api" target="srv"><mxGeometry relative="1" as="geometry"/></mxCell>
+      <mxCell id="e7" value="grava" edge="1" parent="nuvem" source="api" target="rota"><mxGeometry relative="1" as="geometry"/></mxCell>
+    </root></mxGraphModel>
+  </diagram>
+</mxfile>

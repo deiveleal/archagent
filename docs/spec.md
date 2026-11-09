@@ -130,6 +130,16 @@ Negócio, Aplicação e Tecnologia, valida o modelo (V1–V5) e entrega o
 | RF-CON-05 | `comando`: ações explícitas (confirmar briefing, gerar modelo, regenerar) |
 | RF-CON-06 | Quando o agente não souber, diz que não sabe e indica o que falta |
 
+Implementação (F5): `POST /sessions/{id}/messages` roda o grafo
+`classificar → responder | atualizar_briefing | avaliar_alternativa | comando`.
+A pergunta é respondida com o briefing, o último modelo e até 3 notas do vault no contexto.
+Informação e correção entram como nova entrada de texto (a correção usa `substitui` e deixa
+o item antigo `superado`); se já existe modelo, o agente avisa que é preciso confirmar de
+novo e gerar outra versão. A alternativa devolve prós, contras, impacto no modelo,
+conflitos e recomendação, sem mudar o briefing. Os comandos aceitos são
+`confirmar_briefing` e `gerar_modelo`. Mensagens do arquiteto e respostas do agente ficam
+em `conversa.jsonl`.
+
 ### 4.9 Base de conhecimento
 
 | Id | Requisito |
@@ -137,7 +147,7 @@ Negócio, Aplicação e Tecnologia, valida o modelo (V1–V5) e entrega o
 | RF-KB-01 | As regras (seção 10.2) são carregadas na inicialização; se estiverem ausentes ou inválidas, o agente não sobe |
 | RF-KB-02 | O agente busca notas do vault por busca híbrida (palavra + embeddings) e segue os links `[[...]]` até 1 nível |
 | RF-KB-03 | O agente **nunca** altera regras ou vault; ele grava propostas em `kb/archimate/propostas/` |
-| RF-KB-04 | Uma correção do mesmo tipo feita pelo arquiteto em **3 sessões diferentes** gera uma proposta de nota |
+| RF-KB-04 | Uma correção do mesmo tipo feita pelo arquiteto em **3 sessões diferentes** gera uma proposta de nota. O "tipo" é o `tema` que o classificador dá à correção; o registro fica em `propostas/registro-correcoes.json` e a proposta em `propostas/AAAA-MM-DD-<tema>.md` |
 
 ## 5. Requisitos não funcionais
 
@@ -328,9 +338,14 @@ ajustar sem mudar código.
 | Application Cooperation | Componentes, interfaces, serviços e objetos de dados de aplicação, e as relações entre eles | Há elementos de Aplicação |
 | Technology Usage | Componentes de aplicação e os elementos de Tecnologia que os apoiam | Há elementos de Aplicação e de Tecnologia |
 
-**Layout:** em faixas por camada, de cima para baixo; dentro da faixa, em grade
-seguindo a ordem das ligações; tamanho padrão de elemento 120 × 55; espaço mínimo
-de 40 entre elementos. ⚠️ O algoritmo exato é definido na F1.
+**Layout** (definido na F1, `agents/archimate/layout.py`):
+
+1. Cada viewpoint escolhe os seus elementos.
+2. Os elementos são ordenados por percurso em largura pelas ligações, para que elementos ligados fiquem perto.
+3. Acima de 20 elementos, a visão é dividida em partes ("(1/2)", "(2/2)").
+4. Cada camada vira uma faixa (grupo no Archi), de cima para baixo: Negócio, Aplicação, Tecnologia. Dentro da faixa, grade de até 6 colunas, elemento 120 × 55, espaço de 40.
+
+Os limites ficam em `coerencia.yaml` (`limites`).
 
 ## 9. Fluxo do agente (LangGraph)
 
@@ -356,9 +371,20 @@ mensagem ─► classificar ─┬─ pergunta     ─► responder
                          └─ comando      ─► ação correspondente
 ```
 
-- As **pausas** usam o mecanismo de interrupção do LangGraph; a sessão espera a resposta do arquiteto sem ocupar recursos.
-- O estado do grafo é salvo por um checkpointer em SQLite, no volume `sessions` ⚠️.
+- As **pausas** (perguntas, confirmação do briefing) são o próprio estado da sessão, guardado no volume `sessions`. Cada chamada da API roda um grafo curto do LangGraph (ex.: `ler_entrada → interpretar → atualizar_briefing → esclarecer`) e termina; a próxima chamada retoma a partir do estado salvo. Assim, a sessão sobrevive ao reinício do container sem checkpointer (decisão D-10).
+- O LLM só propõe itens; o código aplica as regras do briefing (união, conflito, correção) e confere a origem: se o local citado não existe ou não contém o trecho, o agente procura o trecho na entrada (inclusive atravessando uma quebra de linha); sem achar, o item fica com confiança `baixa`.
+- Respostas a perguntas entram como uma nova entrada de texto, interpretada com o contexto da pergunta; quando resolvem o item, ele fica `superado`.
 - `ler_entrada` não usa LLM para `.txt`, `.md`, `.vtt`, `.srt`, `.docx` e `.drawio`; só imagens passam pelo modelo de visão.
+
+### 9.1.1 Geração do modelo (F3)
+
+- `POST /sessions/{id}/models` responde `202` com `job_id` e o id da versão (`M-001`, `M-002`…) e roda o grafo em segundo plano; `GET /sessions/{id}/events` transmite o progresso (Server-Sent Events) e termina com `event: fim`; `GET /sessions/{id}/jobs/{job}` mostra o estado do job.
+- `modelar`: o LLM recebe o briefing confirmado, o guia de tipos montado a partir das fichas do vault (quando usar e quando não usar cada tipo) e as notas de padrões, anti-padrões e convenções.
+- O agente liga as camadas diretamente (ex.: componente `Serving` processo) e só cria serviços ou interfaces intermediários quando o briefing os cita (decisão D-12).
+- `validar` roda V2–V4; com erro e rodada < 3, `corrigir` devolve ao LLM o modelo e a lista exata de erros. Depois da 3ª rodada, o modelo segue como **não viável**.
+- Elementos sem origem, ou só com origem em `pendencia`/`hipotese`, viram premissa com motivo (RF-MOD-06).
+- `relatorio` grava `modelo.json`, `modelo.xml`, `modelo.archimate` (quando o Archi converte) e `relatorio.md` em `modelos/M-xxx/` na sessão; a sessão passa a `modelo_gerado`.
+- Endpoints extras: `GET /sessions/{id}/models` (versões) e `GET /sessions/{id}/jobs/{job}`.
 
 ### 9.2 Ferramentas do agente
 
@@ -467,6 +493,17 @@ Arquivo `kb/archimate/propostas/AAAA-MM-DD-<assunto>.md` com: correção observa
 sessões em que ocorreu, nota proposta (no formato 10.3, `status: rascunho`) e
 justificativa. A aprovação é feita por PR para a branch `agent/archimate`.
 
+### 10.6 Busca no vault
+
+- Busca por palavra (BM25), sem acento e sem diferenciar maiúsculas, separando nomes em CamelCase; segue os links `[[...]]` até 1 nível.
+- Não há busca por embeddings no MVP: o Token Plan não oferece modelo de embeddings, e uma base pequena não precisa (arXiv 2506.05690).
+- Enquanto as fichas não forem revisadas, `VAULT_INCLUIR_RASCUNHOS=true` permite usar os rascunhos. Com `false`, só notas `revisado` são usadas.
+
+### 10.7 Origem das regras
+
+- `relacoes.json` é extraído de `regras/fonte/relationships.xml`, copiado do Archi **5.10.0** (licença MIT, em `fonte/LICENSE-Archi.txt`), com o comando `python -m archagent.agents.archimate.kb_tools extract-relations`.
+- `make kb-check` (ou `python -m archagent.agents.archimate.kb_tools check`) refaz a extração e compara.
+
 ## 11. Relatório de viabilidade
 
 Markdown, uma seção por item:
@@ -504,7 +541,7 @@ Base: `http://agent-archimate:8000` (rede interna). Respostas em JSON, com
 | GET | `/sessions` | Lista sessões |
 | GET | `/sessions/{id}` | Detalhe da sessão |
 | POST | `/sessions/{id}/inputs` | Envia entrada (multipart: arquivo, ou `texto`) |
-| POST | `/sessions/{id}/messages` | Envia mensagem do chat `{texto}`; resposta do agente |
+| POST | `/sessions/{id}/messages` | Envia mensagem do chat `{texto}`; devolve `classe`, `acao`, `resposta` e `detalhes` |
 | GET | `/sessions/{id}/briefing` | Briefing atual (filtros: `status`, `tipo`) |
 | GET | `/sessions/{id}/questions` | Perguntas de esclarecimento pendentes |
 | POST | `/sessions/{id}/questions/{qid}/answer` | Responde ou pula `{resposta}` / `{pular: true}` |
@@ -610,7 +647,7 @@ archagent/
 ## 19. Pontos a verificar ou decidir ⚠️
 
 - [x] Comando exato da linha de comando do Archi 5 e necessidade de Xvfb (F1: verificado, seção 14).
-- [ ] Algoritmo de layout das visões (F1).
-- [ ] Checkpointer do LangGraph em SQLite no volume `sessions`.
-- [ ] Modelo de embeddings para a busca no vault (verificar o que o Token Plan oferece; a lista de modelos atual não mostra modelo de embeddings).
-- [ ] Versões exatas dos XSDs do Exchange Format compatíveis com o Archi 5.
+- [x] Algoritmo de layout das visões (F1: seção 8.4).
+- [x] Checkpointer do LangGraph em SQLite no volume `sessions`: não é necessário; o estado fica na sessão (seção 9.1, decisão D-10).
+- [x] Modelo de embeddings para a busca no vault: no MVP, só busca por palavra (BM25), seção 10.6.
+- [x] Versões exatas dos XSDs do Exchange Format: os que vêm no Archi 5.10.0 (namespace `archimate/3.0`, `schemaLocation` 3.1), em `kb/archimate/regras/xsd/`.

@@ -1,0 +1,9 @@
+grupo: contraditorio
+descricao: Texto que se contradiz sobre onde a aplicação roda
+rapido: false
+entradas:
+  - texto: |
+      O Portal do Cliente roda na AWS, num cluster Kubernetes.
+      A equipe de infraestrutura disse que o Portal do Cliente roda no data center próprio, em máquinas virtuais.
+      Ninguém confirmou qual das duas informações está certa.
+deve_conflitar: true
