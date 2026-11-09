@@ -41,7 +41,7 @@
 
 Critérios de saída de cada fase: plano, seção 3.7.
 
-O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa faltam P-10, P-12, P-13 e P-14.
+O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa faltam P-10, P-12 e P-13.
 
 ## 4. Entregas
 
@@ -84,7 +84,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`) | Critério de saída da F1 | Antes de fechar a F1 |
 | P-13 | Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual) | Critério de saída da F1 | Antes de fechar a F1 |
 | P-15 | ~~O `eval.yml` precisa subir o `tool-archi`~~ **Resolvida** no PR #13 | Avaliação da F3 | 2026-11-08 |
-| P-14 | Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml` (o agente de IA não lê o `.env`) | Harness §6.1 | Antes da 1ª avaliação na CI |
+| P-14 | ~~Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml`~~ **Resolvida:** secret cadastrado; avaliação rápida na `main` (execução 42592506378) atingiu todas as metas | Harness §6.1 | 2026-11-09 |
 | P-11 | Chave SSH desta máquina não está cadastrada no GitHub; o envio está sendo feito por HTTPS com o login do `gh` | Decisão D-03 | Quando conveniente |
 
 ## 6. Referências científicas (arXiv)
