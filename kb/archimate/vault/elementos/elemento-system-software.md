@@ -24,6 +24,6 @@ revisado_em: null
 
 **Como nomear:** nome do produto e papel. Ex.: "PostgreSQL", "Kafka de eventos".
 
-**Relações típicas:** é atribuído a [[elemento-node]] (o nó compõe ou recebe Assignment); realiza [[elemento-technology-service]]; serve [[elemento-application-component]].
+**Relações típicas:** recebe Assignment de [[elemento-node]] ou de [[elemento-device]] onde roda (ou é parte do nó, por Composition); realiza [[elemento-technology-service]]; serve [[elemento-application-component]].
 
 **Exemplo:** "PostgreSQL" servindo a "API de Pedidos".

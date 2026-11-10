@@ -24,6 +24,6 @@ revisado_em: null
 
 **Como nomear:** substantivo do recurso. Ex.: "Cluster Kubernetes de produção".
 
-**Relações típicas:** compõe [[elemento-system-software]] e [[elemento-device]]; realiza [[elemento-technology-service]]; serve [[elemento-application-component]]; é ligado por [[elemento-communication-network]].
+**Relações típicas:** é composto por (Composition) [[elemento-system-software]] e [[elemento-device]]; é atribuído (Assignment) a [[elemento-system-software]] e [[elemento-artifact]] que nele rodam; realiza [[elemento-technology-service]]; serve [[elemento-application-component]]; é ligado por [[elemento-communication-network]].
 
 **Exemplo:** "Servidor de aplicação" servindo a "API de Pedidos".

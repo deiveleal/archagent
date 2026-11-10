@@ -19,5 +19,5 @@ revisado_em: null
 
 - O cluster ou a conta de nuvem vira [[elemento-node]].
 - Kubernetes, Docker e bancos gerenciados viram [[elemento-system-software]] ou [[elemento-technology-service]].
-- A imagem do contêiner vira [[elemento-artifact]], que realiza o [[elemento-application-component]] e é atribuída ao nó.
+- A imagem do contêiner vira [[elemento-artifact]], que realiza o [[elemento-application-component]]; o nó recebe a imagem por Assignment (nó → artefato).
 - A rede (VPC, sub-rede) vira [[elemento-communication-network]].
