@@ -1,6 +1,6 @@
 # Acompanhamento — ArchAgent
 
-> Atualizado em: 2026-11-08 · Responsável: Deive Leal
+> Atualizado em: 2026-11-09 · Responsável: Deive Leal
 >
 > Documento vivo. É atualizado **ao fim de toda tarefa**, no mesmo PR que a
 > entrega (plano, seção 2.1).
@@ -25,7 +25,7 @@
 | Plano | [`docs/plano.md`](plano.md) | v1.0 | Concluído | Atualizado com novas regras sem mudar de versão maior |
 | Spec | [`docs/spec.md`](spec.md) | v0.1 | Em revisão | 5 pontos a verificar (seção 5 deste documento) |
 | Harness | [`docs/harness.md`](harness.md) | v0.1 | Em revisão | 4 pontos a verificar (seção 5 deste documento) |
-| Desenho de arquitetura | [`docs/arquitetura.drawio`](arquitetura.drawio) | v1.0 | Concluído | 4 páginas: contexto, containers, componentes do agente, fluxo do agente |
+| Desenho de arquitetura | [`docs/arquitetura.drawio`](arquitetura.drawio) | v1.1 | Concluído | 4 páginas: contexto, containers, componentes do agente, fluxo do agente |
 | Acompanhamento | `docs/acompanhamento.md` | — | Ativo | Este documento |
 
 ## 3. Fases da Etapa 1 (MVP ArchiMate)
@@ -68,6 +68,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | 2026-11-09 | Etapa 1 mesclada na `main` (agente ArchiMate F0–F5). F1 segue aberta até P-12 e P-13; a avaliação N3 na CI segue pulada até P-14 | `agent/archimate` | PR #16 |
 | 2026-11-09 | Núcleo: servidor MCP (`src/archagent/mcp/`, container `mcp` em `127.0.0.1:8700`) com 13 ferramentas sobre a API do agente; cliente HTTP movido para `core/cliente.py`; `.mcp.json` para o Claude Code; testes N1 e N2 | `core/mcp` | PR #19 |
 | 2026-11-09 | Núcleo: tempo limite padrão do LLM de 60 s para 180 s (D-16) | `core/llm-timeout-180` | PR #20 |
+| 2026-11-09 | Desenho de arquitetura v1.1: container `mcp` e cliente MCP na página de containers (P-16) | `docs/p16-mcp-no-desenho` | PR #24 |
 
 ## 5. Pendências
 
@@ -87,7 +88,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | P-13 | Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual) | Critério de saída da F1 | Antes de fechar a F1 |
 | P-15 | ~~O `eval.yml` precisa subir o `tool-archi`~~ **Resolvida** no PR #13 | Avaliação da F3 | 2026-11-08 |
 | P-14 | ~~Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml`~~ **Resolvida:** secret cadastrado; avaliação rápida na `main` (execução 42592506378) atingiu todas as metas | Harness §6.1 | 2026-11-09 |
-| P-16 | Incluir o container `mcp` na página de containers de `docs/arquitetura.drawio` | Servidor MCP (D-15) | Na próxima revisão do desenho |
+| P-16 | ~~Incluir o container `mcp` na página de containers de `docs/arquitetura.drawio`~~ **Resolvida:** container `mcp` e cliente MCP na página 2; volume `sessions` sem a menção ao checkpointer (D-10) | Servidor MCP (D-15) | 2026-11-09 |
 | P-11 | Chave SSH desta máquina não está cadastrada no GitHub; o envio está sendo feito por HTTPS com o login do `gh` | Decisão D-03 | Quando conveniente |
 
 ## 6. Referências científicas (arXiv)
