@@ -67,6 +67,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | 2026-11-08 | F5 — agente: conversa (classificar, responder, corrigir, avaliar alternativa, comandos), propostas de aprendizado após 3 sessões, juiz LLM, 5 casos de conversa, avaliação completa e linha de base | `task/archimate/f5-conversa` | PR #15 |
 | 2026-11-09 | Etapa 1 mesclada na `main` (agente ArchiMate F0–F5). F1 segue aberta até P-12 e P-13; a avaliação N3 na CI segue pulada até P-14 | `agent/archimate` | PR #16 |
 | 2026-11-09 | Núcleo: servidor MCP (`src/archagent/mcp/`, container `mcp` em `127.0.0.1:8700`) com 13 ferramentas sobre a API do agente; cliente HTTP movido para `core/cliente.py`; `.mcp.json` para o Claude Code; testes N1 e N2 | `core/mcp` | PR #19 |
+| 2026-11-09 | Núcleo: tempo limite padrão do LLM de 60 s para 180 s (D-16) | `core/llm-timeout-180` | PR #20 |
 
 ## 5. Pendências
 
@@ -165,6 +166,7 @@ ficam aqui.
 | D-13 | 2026-11-08 | A avaliação aceita relações derivadas pelas regras do ArchiMate | Um modelo com serviço intermediário é equivalente ao com relação direta; sem isso, a métrica punia modelagem correta e mais detalhada |
 | D-14 | 2026-11-08 | Linha de base em `evals/<agente>/baseline.json` (não em `evals/baseline.json`) | Fica dentro das pastas que a branch do agente pode alterar; gravada uma vez, na F5, como pede o plano |
 | D-15 | 2026-11-09 | Servidor MCP como adaptador fino da API do agente (SDK oficial `mcp` 2.3, *streamable HTTP*), num container próprio publicado só em `127.0.0.1`, sem autenticação | Permite usar o ArchAgent pelo Claude Code sem mudar o agente validado; o LLM do agente escolhendo ferramentas sozinho fica para experimento (Etapa 2) |
+| D-16 | 2026-11-09 | Tempo limite padrão do LLM de 60 s para 180 s | Uma transcrição de reunião de 7 KB (kickoff do Sistema de Gestão de Frota) estourou 60 s nas 3 tentativas da interpretação; com 180 s, passou |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
 ## 9. Backlog

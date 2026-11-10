@@ -620,7 +620,7 @@ Erros da API chegam ao cliente como erro da ferramenta, com a mensagem e o códi
 | `LLM_MODEL_TEXT` | Modelo de texto (`qwen3.8-max`) | `agent-archimate` |
 | `LLM_MODEL_VISION` | Modelo de visão (`qwen3.8-max`) | `agent-archimate` |
 | `LLM_ENABLE_THINKING` | Modo de raciocínio do Qwen3 (padrão `false`; ver decisão D-09 do acompanhamento) | `agent-archimate` |
-| `LLM_TIMEOUT_SECONDS` | Tempo limite por chamada | `agent-archimate` |
+| `LLM_TIMEOUT_SECONDS` | Tempo limite por chamada (padrão 180 s; ver D-16 do acompanhamento) | `agent-archimate` |
 | `LLM_MAX_RETRIES` | Novas tentativas | `agent-archimate` |
 | `LLM_MAX_TOKENS_PER_SESSION` | Limite de tokens por sessão | `agent-archimate` |
 | `EMBEDDING_MODEL` | Modelo de embeddings para o vault ⚠️ | `agent-archimate` |
