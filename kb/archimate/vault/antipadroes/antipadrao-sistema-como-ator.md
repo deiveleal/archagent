@@ -17,4 +17,4 @@ revisado_em: null
 
 **Problema:** atores de negócio são pessoas ou organizações. O sistema é software.
 
-**Correção:** use [[elemento-application-component]] para o sistema e ligue ao negócio por um [[elemento-application-service]].
+**Correção:** use [[elemento-application-component]] para o sistema e ligue-o ao negócio por Serving; um [[elemento-application-service]] intermediário só entra quando a entrada o cita (ver [[padrao-camadas-ligadas]]).

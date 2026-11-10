@@ -41,7 +41,7 @@
 
 Critérios de saída de cada fase: plano, seção 3.7.
 
-O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa faltam P-10 e P-12.
+O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa falta a P-12 (a P-13 é resolvida no PR #23, na `agent/archimate`).
 
 ## 4. Entregas
 
@@ -70,6 +70,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | 2026-11-09 | Núcleo: tempo limite padrão do LLM de 60 s para 180 s (D-16) | `core/llm-timeout-180` | PR #20 |
 | 2026-11-09 | Agente: transcrições longas — entrada cuja interpretação falha fica `falhou` e sai do relatório; logística da reunião (participantes, tarefas do time, ferramentas) não vira elemento; parte e todo sem outra relação; compose com 180 s (D-16); caso `reuniao-01` (kickoff de 7 KB) e métrica `briefing.sem_logistica`. Avaliação rápida: todas as metas atingidas | `task/archimate/transcricao-longa` | PR #22 |
 | 2026-11-09 | Agente: layout legível das visões (P-13, D-17): caixas maiores, busca local na grade, dobra nas relações paralelas; testes de linhas que atravessam caixas | `task/archimate/layout-legivel` | PR #23 |
+| 2026-11-09 | Agente: pré-revisão do vault (6 notas com direção de relação corrigida), comando `kb_tools revisar` e roteiro de revisão para a P-12 | `task/archimate/vault-pre-revisao` | PR #25 |
 
 ## 5. Pendências
 
@@ -85,7 +86,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | P-08 | ~~Se o Archi 5 roda na CI do GitHub~~ **Resolvida:** roda; os testes N2 com o `tool-archi` passam no `ubuntu-latest` | Harness §13 | F1 (2026-11-08) |
 | P-09 | Regra de aprovação de revisor quando entrar mais alguém | Harness §13 | Quando houver segunda pessoa |
 | P-10 | Adicionar as verificações obrigatórias (`N0`, `N1 + N2`, depois `eval` e `kb`) ao ruleset. **Precisa ser feito pelo responsável:** o agente de IA não tem permissão para mudar a proteção das branches | Decisão D-02 | Agora |
-| P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`) | Critério de saída da F1 | Antes de fechar a F1 |
+| P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`). Pré-revisão feita em 2026-11-09 (6 notas corrigidas) e roteiro em [`revisao-vault.md`](revisao-vault.md); falta o arquiteto revisar e marcar | Critério de saída da F1 | Antes de fechar a F1 |
 | P-13 | ~~Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual)~~ **Resolvida:** o Archi 5.10 abriu os modelos, mas as visões não estavam legíveis (linhas atravessando caixas, nomes cortados, rótulos sobrepostos). Layout refeito (D-17) e conferido nas imagens que o próprio Archi gera (`--html.createReport`) para 3 modelos de sessões reais | Critério de saída da F1 | 2026-11-09 |
 | P-15 | ~~O `eval.yml` precisa subir o `tool-archi`~~ **Resolvida** no PR #13 | Avaliação da F3 | 2026-11-08 |
 | P-14 | ~~Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml`~~ **Resolvida:** secret cadastrado; avaliação rápida na `main` (execução 42592506378) atingiu todas as metas | Harness §6.1 | 2026-11-09 |

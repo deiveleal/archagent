@@ -500,6 +500,7 @@ justificativa. A aprovação é feita por PR para a branch `agent/archimate`.
 - Busca por palavra (BM25), sem acento e sem diferenciar maiúsculas, separando nomes em CamelCase; segue os links `[[...]]` até 1 nível.
 - Não há busca por embeddings no MVP: o Token Plan não oferece modelo de embeddings, e uma base pequena não precisa (arXiv 2506.05690).
 - Enquanto as fichas não forem revisadas, `VAULT_INCLUIR_RASCUNHOS=true` permite usar os rascunhos. Com `false`, só notas `revisado` são usadas.
+- O arquiteto marca as notas revisadas com `python -m archagent.agents.archimate.kb_tools revisar --por "<nome>" (--todas | <id> ...)`, que preenche `status`, `revisado_por` e `revisado_em`. Roteiro em [`docs/revisao-vault.md`](revisao-vault.md).
 
 ### 10.7 Origem das regras
 

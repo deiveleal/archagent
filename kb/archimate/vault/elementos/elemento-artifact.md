@@ -24,6 +24,6 @@ revisado_em: null
 
 **Como nomear:** nome do arquivo ou pacote. Ex.: "pedidos-api:1.4 (imagem)".
 
-**Relações típicas:** realiza [[elemento-application-component]] ou [[elemento-data-object]]; é atribuído a [[elemento-node]] (Assignment).
+**Relações típicas:** realiza [[elemento-application-component]] ou [[elemento-data-object]]; recebe Assignment do [[elemento-node]] onde é implantado.
 
 **Exemplo:** "Imagem pedidos-api" realiza a "API de Pedidos" e é implantada no cluster.
