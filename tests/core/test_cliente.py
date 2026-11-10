@@ -4,7 +4,7 @@ import httpx
 import pytest
 import respx
 
-from archagent.ui.cliente import AgenteCliente, ErroApi
+from archagent.core.cliente import AgenteCliente, ErroApi
 
 URL = "http://agente:8000"
 

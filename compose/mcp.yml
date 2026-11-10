@@ -1,0 +1,21 @@
+services:
+  mcp:
+    image: archagent/mcp:${VERSION:-dev}
+    build:
+      context: ..
+      dockerfile: src/archagent/mcp/Dockerfile
+      args:
+        VERSION: ${VERSION:-dev}
+    environment:
+      AGENT_ARCHIMATE_URL: http://agent-archimate:8000
+      MCP_TIMEOUT_MODELO_SEGUNDOS: ${MCP_TIMEOUT_MODELO_SEGUNDOS:-600}
+      # `mcp:*` permite o acesso pela rede interna (testes N2).
+      MCP_ALLOWED_HOSTS: '["127.0.0.1:*", "localhost:*", "[::1]:*", "mcp:*"]'
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    # Só na máquina local (127.0.0.1): o servidor MCP não tem autenticação.
+    # Cliente: http://localhost:${MCP_PORT:-8700}/mcp
+    ports:
+      - "127.0.0.1:${MCP_PORT:-8700}:8000"
+    depends_on:
+      - agent-archimate
+    restart: unless-stopped

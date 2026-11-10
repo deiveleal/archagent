@@ -20,7 +20,8 @@ class Settings(BaseSettings):
     llm_model_text: str = "qwen3.8-max"
     llm_model_vision: str = "qwen3.8-max"
     llm_model_judge: str = "deepseek-v4.1-flash-1017"
-    llm_timeout_seconds: float = 60.0
+    # Transcrições longas (≈7 KB) levam mais de 60 s na interpretação (medido em 2026-11-09).
+    llm_timeout_seconds: float = 180.0
     llm_max_retries: int = 3
     llm_max_tokens_per_session: int = 400_000
     llm_temperature: float | None = None
