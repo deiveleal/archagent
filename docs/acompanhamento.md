@@ -32,7 +32,7 @@
 
 | Fase | Status | Início | Fim | Critério de saída atingido? | PR |
 | --- | --- | --- | --- | --- | --- |
-| F0 — Fundação | Concluída | 2026-11-08 | 2026-11-08 | Sim, exceto tornar a CI obrigatória no ruleset (P-10) | #2, #3 |
+| F0 — Fundação | Concluída | 2026-11-08 | 2026-11-08 | Sim; CI obrigatória no ruleset desde 2026-11-09 (P-10) | #2, #3 |
 | F1 — Base de conhecimento, modelo ArchiMate e validação | Em andamento | 2026-11-08 | — | — | — |
 | F2 — Entrada por texto e transcrição | Concluída | 2026-11-08 | 2026-11-08 | Sim: briefing correto nos 5 exemplos ouro e metas N3 atingidas | #7, #11 |
 | F3 — Modelagem a partir do briefing | Concluída | 2026-11-08 | 2026-11-08 | Sim: os 5 exemplos geram modelos viáveis em V1–V5 | #12 |
@@ -41,7 +41,7 @@
 
 Critérios de saída de cada fase: plano, seção 3.7.
 
-O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa faltam P-10, P-12 e P-13.
+O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa faltam P-12 e P-13.
 
 ## 4. Entregas
 
@@ -83,7 +83,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | P-07 | ~~Se o `deepseek-v4.1-flash-1017` funciona bem como juiz~~ **Resolvida:** funciona, com temperatura 0 e rubrica fechada | Harness §13 | F5 (2026-11-08) |
 | P-08 | ~~Se o Archi 5 roda na CI do GitHub~~ **Resolvida:** roda; os testes N2 com o `tool-archi` passam no `ubuntu-latest` | Harness §13 | F1 (2026-11-08) |
 | P-09 | Regra de aprovação de revisor quando entrar mais alguém | Harness §13 | Quando houver segunda pessoa |
-| P-10 | Adicionar as verificações obrigatórias (`N0`, `N1 + N2`, depois `eval` e `kb`) ao ruleset. **Precisa ser feito pelo responsável:** o agente de IA não tem permissão para mudar a proteção das branches | Decisão D-02 | Agora |
+| P-10 | ~~Adicionar as verificações obrigatórias ao ruleset~~ **Resolvida:** `N0` e `N1 + N2` obrigatórios na `main` e nas `agent/*` (D-18) | Decisão D-02 | 2026-11-09 |
 | P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`) | Critério de saída da F1 | Antes de fechar a F1 |
 | P-13 | Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual) | Critério de saída da F1 | Antes de fechar a F1 |
 | P-15 | ~~O `eval.yml` precisa subir o `tool-archi`~~ **Resolvida** no PR #13 | Avaliação da F3 | 2026-11-08 |
@@ -168,6 +168,7 @@ ficam aqui.
 | D-14 | 2026-11-08 | Linha de base em `evals/<agente>/baseline.json` (não em `evals/baseline.json`) | Fica dentro das pastas que a branch do agente pode alterar; gravada uma vez, na F5, como pede o plano |
 | D-15 | 2026-11-09 | Servidor MCP como adaptador fino da API do agente (SDK oficial `mcp` 2.3, *streamable HTTP*), num container próprio publicado só em `127.0.0.1`, sem autenticação | Permite usar o ArchAgent pelo Claude Code sem mudar o agente validado; o LLM do agente escolhendo ferramentas sozinho fica para experimento (Etapa 2) |
 | D-16 | 2026-11-09 | Tempo limite padrão do LLM de 60 s para 180 s | Uma transcrição de reunião de 7 KB (kickoff do Sistema de Gestão de Frota) estourou 60 s nas 3 tentativas da interpretação; com 180 s, passou |
+| D-18 | 2026-11-09 | Verificações obrigatórias no ruleset: só `N0` e `N1 + N2` (do `ci.yml`), sem exigir PR atualizado com a base | O `eval.yml` e o `kb.yml` só rodam quando o PR mexe em certas pastas; obrigatórios, travariam PRs só de documentação. A avaliação segue rodando e comentando nos PRs que mexem no agente |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
 ## 9. Backlog
