@@ -24,6 +24,6 @@ revisado_em: null
 
 **Como nomear:** substantivo de atividade. Ex.: "Gestão de clientes".
 
-**Relações típicas:** recebe Assignment de [[elemento-business-role]]; compõe [[elemento-business-process]]; é servida por [[elemento-application-service]].
+**Relações típicas:** recebe Assignment de [[elemento-business-role]]; é composta por (Composition) [[elemento-business-process]]; é servida por [[elemento-application-service]].
 
 **Exemplo:** "Gestão de estoque" composta pelo processo "Repor produto".

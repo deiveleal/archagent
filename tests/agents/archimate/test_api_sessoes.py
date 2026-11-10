@@ -196,6 +196,10 @@ def test_llm_fora_do_esquema_vira_502(
     b.add("interpretar", "isto não é json")
     r = c.post(f"/sessions/{sid}/inputs", data={"texto": "x"})
     assert r.status_code == 502
+    # A entrada fica como falha, com orientação para reenviar (não fica "recebida").
+    entrada = c.get(f"/sessions/{sid}").json()["entradas"][0]
+    assert entrada["status"] == "falhou"
+    assert "envie de novo" in entrada["observacao"]
 
 
 MODELO = {

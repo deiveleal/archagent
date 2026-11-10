@@ -78,3 +78,27 @@ def test_kb_check_reprova_exemplo_quebrado(tmp_path: Path) -> None:
     texto = "\n".join(erros)
     assert "REL-PERMITIDA" in texto
     assert "sem ficha: Node" in texto
+
+
+def test_revisar_marca_notas_e_passa_no_check(tmp_path: Path) -> None:
+    from datetime import date
+
+    from archagent.agents.archimate.kb_tools import marcar_revisadas
+
+    vault = tmp_path / "vault"
+    shutil.copytree(KB / "archimate" / "vault", vault)
+    feitas = marcar_revisadas(vault, "Arquiteto Teste", ["elemento-node"], date(2026, 11, 9))
+    assert feitas == ["elemento-node"]
+    nota = ler_nota(next(vault.rglob("elemento-node.md")))
+    assert nota.status == "revisado"
+    assert nota.meta["revisado_por"] == "Arquiteto Teste"
+    assert str(nota.meta["revisado_em"]) == "2026-11-09"
+    ids = {ler_nota(a).id for a in vault.rglob("*.md") if a.name != "README.md"}
+    assert validar_nota(nota, ids) == []
+    assert ler_nota(next(vault.rglob("elemento-device.md"))).status == "rascunho"
+
+    assert main(["revisar", "--por", "X", "--vault", str(vault), "nao-existe"]) == 1
+    assert main(["revisar", "--por", "Arquiteto Teste", "--todas", "--vault", str(vault)]) == 0
+    assert all(
+        ler_nota(a).status == "revisado" for a in vault.rglob("*.md") if a.name != "README.md"
+    )

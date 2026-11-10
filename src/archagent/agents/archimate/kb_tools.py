@@ -2,6 +2,7 @@
 
 python -m archagent.agents.archimate.kb_tools check [--kb kb]
 python -m archagent.agents.archimate.kb_tools extract-relations <relationships.xml> "<fonte>"
+python -m archagent.agents.archimate.kb_tools revisar --por "<nome>" (--todas | <id> ...)
 """
 
 from __future__ import annotations
@@ -11,6 +12,7 @@ import json
 import re
 import sys
 from dataclasses import dataclass
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -141,6 +143,37 @@ def checar(kb: Path) -> tuple[list[str], list[str]]:
     return erros, info
 
 
+def marcar_revisadas(
+    vault: Path, por: str, ids: list[str] | None, quando: date | None = None
+) -> list[str]:
+    """Marca notas do vault como revisadas pelo arquiteto (P-12). Devolve os ids marcados.
+
+    `ids=None` marca todas as que estão em rascunho. Id inexistente é erro.
+    """
+    if not por.strip():
+        raise ValueError("informe quem revisou (--por)")
+    dia = (quando or date.today()).isoformat()
+    arquivos = {ler_nota(a).id: a for a in sorted(vault.rglob("*.md")) if a.name != "README.md"}
+    faltando = sorted(set(ids or []) - arquivos.keys())
+    if faltando:
+        raise ValueError(f"notas inexistentes: {', '.join(faltando)}")
+    alvo = (
+        ids
+        if ids is not None
+        else [i for i, a in arquivos.items() if ler_nota(a).status != "revisado"]
+    )
+    nome = json.dumps(por.strip(), ensure_ascii=False)
+    for nid in alvo:
+        arq = arquivos[nid]
+        texto = arq.read_text(encoding="utf-8")
+        _, meta, corpo = texto.split("---", 2)
+        meta = re.sub(r"(?m)^status:.*$", "status: revisado", meta)
+        meta = re.sub(r"(?m)^revisado_por:.*$", f"revisado_por: {nome}", meta)
+        meta = re.sub(r"(?m)^revisado_em:.*$", f"revisado_em: {dia}", meta)
+        arq.write_text(f"---{meta}---{corpo}", encoding="utf-8")
+    return list(alvo)
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="kb_tools")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -150,7 +183,22 @@ def main(argv: list[str] | None = None) -> int:
     e.add_argument("xml", type=Path)
     e.add_argument("fonte")
     e.add_argument("--saida", type=Path, default=Path("kb/archimate/regras/relacoes.json"))
+    r = sub.add_parser("revisar", help="marca notas do vault como revisadas")
+    r.add_argument("ids", nargs="*")
+    r.add_argument("--por", required=True)
+    r.add_argument("--todas", action="store_true")
+    r.add_argument("--vault", type=Path, default=Path("kb/archimate/vault"))
     args = p.parse_args(argv)
+    if args.cmd == "revisar":
+        if bool(args.ids) == args.todas:
+            p.error("informe os ids das notas ou --todas")
+        try:
+            feitas = marcar_revisadas(args.vault, args.por, None if args.todas else args.ids)
+        except ValueError as exc:
+            print(f"ERRO: {exc}")
+            return 1
+        print(f"{len(feitas)} nota(s) marcadas como revisadas por {args.por}")
+        return 0
     if args.cmd == "extract-relations":
         dados: dict[str, Any] = extrair_relacoes(args.xml, args.fonte)
         args.saida.write_text(

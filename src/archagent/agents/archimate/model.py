@@ -60,6 +60,7 @@ class Faixa(BaseModel):
 
 class Conexao(BaseModel):
     relacao: str
+    dobras: list[tuple[int, int]] = Field(default_factory=list)  # pontos absolutos na visão
 
 
 class Visao(BaseModel):

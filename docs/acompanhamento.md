@@ -41,7 +41,7 @@
 
 Critérios de saída de cada fase: plano, seção 3.7.
 
-O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa falta a P-12 (a P-13 é resolvida no PR #23, na `agent/archimate`).
+O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa falta só a P-12 (revisão do vault pelo arquiteto).
 
 ## 4. Entregas
 
@@ -68,7 +68,10 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | 2026-11-09 | Etapa 1 mesclada na `main` (agente ArchiMate F0–F5). F1 segue aberta até P-12 e P-13; a avaliação N3 na CI segue pulada até P-14 | `agent/archimate` | PR #16 |
 | 2026-11-09 | Núcleo: servidor MCP (`src/archagent/mcp/`, container `mcp` em `127.0.0.1:8700`) com 13 ferramentas sobre a API do agente; cliente HTTP movido para `core/cliente.py`; `.mcp.json` para o Claude Code; testes N1 e N2 | `core/mcp` | PR #19 |
 | 2026-11-09 | Núcleo: tempo limite padrão do LLM de 60 s para 180 s (D-16) | `core/llm-timeout-180` | PR #20 |
+| 2026-11-09 | Agente: transcrições longas — entrada cuja interpretação falha fica `falhou` e sai do relatório; logística da reunião (participantes, tarefas do time, ferramentas) não vira elemento; parte e todo sem outra relação; compose com 180 s (D-16); caso `reuniao-01` (kickoff de 7 KB) e métrica `briefing.sem_logistica`. Avaliação rápida: todas as metas atingidas | `task/archimate/transcricao-longa` | PR #22 |
+| 2026-11-09 | Agente: layout legível das visões (P-13, D-17): caixas maiores, busca local na grade, dobra nas relações paralelas; testes de linhas que atravessam caixas | `task/archimate/layout-legivel` | PR #23 |
 | 2026-11-09 | Desenho de arquitetura v1.1: container `mcp` e cliente MCP na página de containers (P-16) | `docs/p16-mcp-no-desenho` | PR #24 |
+| 2026-11-09 | Agente: pré-revisão do vault (6 notas com direção de relação corrigida), comando `kb_tools revisar` e roteiro de revisão para a P-12 | `task/archimate/vault-pre-revisao` | PR #25 |
 
 ## 5. Pendências
 
@@ -84,8 +87,8 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | P-08 | ~~Se o Archi 5 roda na CI do GitHub~~ **Resolvida:** roda; os testes N2 com o `tool-archi` passam no `ubuntu-latest` | Harness §13 | F1 (2026-11-08) |
 | P-09 | Regra de aprovação de revisor quando entrar mais alguém | Harness §13 | Quando houver segunda pessoa |
 | P-10 | ~~Adicionar as verificações obrigatórias ao ruleset~~ **Resolvida:** `N0` e `N1 + N2` obrigatórios na `main` e nas `agent/*` (D-18) | Decisão D-02 | 2026-11-09 |
-| P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`) | Critério de saída da F1 | Antes de fechar a F1 |
-| P-13 | Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual) | Critério de saída da F1 | Antes de fechar a F1 |
+| P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`). Pré-revisão feita em 2026-11-09 (6 notas corrigidas) e roteiro em [`revisao-vault.md`](revisao-vault.md); falta o arquiteto revisar e marcar | Critério de saída da F1 | Antes de fechar a F1 |
+| P-13 | ~~Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual)~~ **Resolvida:** o Archi 5.10 abriu os modelos, mas as visões não estavam legíveis (linhas atravessando caixas, nomes cortados, rótulos sobrepostos). Layout refeito (D-17) e conferido nas imagens que o próprio Archi gera (`--html.createReport`) para 3 modelos de sessões reais | Critério de saída da F1 | 2026-11-09 |
 | P-15 | ~~O `eval.yml` precisa subir o `tool-archi`~~ **Resolvida** no PR #13 | Avaliação da F3 | 2026-11-08 |
 | P-14 | ~~Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml`~~ **Resolvida:** secret cadastrado; avaliação rápida na `main` (execução 42592506378) atingiu todas as metas | Harness §6.1 | 2026-11-09 |
 | P-16 | ~~Incluir o container `mcp` na página de containers de `docs/arquitetura.drawio`~~ **Resolvida:** container `mcp` e cliente MCP na página 2; volume `sessions` sem a menção ao checkpointer (D-10) | Servidor MCP (D-15) | 2026-11-09 |
@@ -168,6 +171,7 @@ ficam aqui.
 | D-14 | 2026-11-08 | Linha de base em `evals/<agente>/baseline.json` (não em `evals/baseline.json`) | Fica dentro das pastas que a branch do agente pode alterar; gravada uma vez, na F5, como pede o plano |
 | D-15 | 2026-11-09 | Servidor MCP como adaptador fino da API do agente (SDK oficial `mcp` 2.3, *streamable HTTP*), num container próprio publicado só em `127.0.0.1`, sem autenticação | Permite usar o ArchAgent pelo Claude Code sem mudar o agente validado; o LLM do agente escolhendo ferramentas sozinho fica para experimento (Etapa 2) |
 | D-16 | 2026-11-09 | Tempo limite padrão do LLM de 60 s para 180 s | Uma transcrição de reunião de 7 KB (kickoff do Sistema de Gestão de Frota) estourou 60 s nas 3 tentativas da interpretação; com 180 s, passou |
+| D-17 | 2026-11-09 | Layout das visões com caixas de 150 × 60, mais espaço e busca local que evita linhas atravessando caixas, rótulos sobre caixas e cruzamentos; dobra nas relações paralelas | Na P-13, o layout em grade pela ordem do percurso deixava as visões ilegíveis no Archi |
 | D-18 | 2026-11-09 | Verificações obrigatórias no ruleset: só `N0` e `N1 + N2` (do `ci.yml`), sem exigir PR atualizado com a base | O `eval.yml` e o `kb.yml` só rodam quando o PR mexe em certas pastas; obrigatórios, travariam PRs só de documentação. A avaliação segue rodando e comentando nos PRs que mexem no agente |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
