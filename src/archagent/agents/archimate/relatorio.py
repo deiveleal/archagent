@@ -71,10 +71,18 @@ def gerar_relatorio(
     # 2. Entradas
     out += ["## 2. Entradas usadas", ""]
     out += [
-        f"- {e.id} — {e.nome_arquivo or 'mensagem'} ({e.tipo}, {e.formato}"
-        f"{', ' + e.status if e.status != 'interpretada' else ''})"
+        f"- {e.id} — {e.nome_arquivo or 'mensagem'} ({e.tipo}, {e.formato})"
         for e in entradas
+        if e.status == "interpretada"
     ]
+    fora = [e for e in entradas if e.status != "interpretada"]
+    if fora:
+        out += ["", "Não usadas:", ""]
+        out += [
+            f"- {e.id} — {e.nome_arquivo or 'mensagem'} ({e.status}"
+            f"{': ' + e.observacao if e.observacao else ''})"
+            for e in fora
+        ]
     out.append("")
 
     # 3. Validação

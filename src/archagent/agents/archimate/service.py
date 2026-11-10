@@ -176,16 +176,23 @@ class ArchimateService:
         return {"entrada": entrada, "lida": lida}
 
     def _no_interpretar(self, st: EstadoEntrada) -> EstadoEntrada:
-        sid = st["sid"]
-        interp = interpretar(
-            self.llm,
-            st["entrada"].id,
-            st["lida"],
-            self.store.briefing(sid),
-            tokens_usados=self.tokens(sid),
-            on_usage=self.hook(sid),
-            contexto=st.get("contexto", ""),
-        )
+        sid, entrada = st["sid"], st["entrada"]
+        try:
+            interp = interpretar(
+                self.llm,
+                entrada.id,
+                st["lida"],
+                self.store.briefing(sid),
+                tokens_usados=self.tokens(sid),
+                on_usage=self.hook(sid),
+                contexto=st.get("contexto", ""),
+            )
+        except Exception as exc:
+            # A entrada fica registrada como falha: não entra no briefing nem no relatório.
+            entrada.status = "falhou"
+            entrada.observacao = f"Interpretação falhou ({type(exc).__name__}); envie de novo."
+            self.store.salvar_entrada(sid, entrada)
+            raise
         return {"interp": interp}
 
     def _no_atualizar_briefing(self, st: EstadoEntrada) -> EstadoEntrada:
