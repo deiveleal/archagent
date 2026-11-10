@@ -1,6 +1,6 @@
-"""Cliente HTTP da API do agente (spec §13), usado pela interface.
+"""Cliente HTTP da API do agente (spec §13), usado pela interface e pelo servidor MCP.
 
-A interface não tem lógica de agente: tudo passa por aqui.
+Nenhum dos dois tem lógica de agente: tudo passa por aqui.
 """
 
 from __future__ import annotations
@@ -101,6 +101,13 @@ class AgenteCliente:
 
     def modelo(self, sid: str, mid: str) -> dict[str, Any]:
         return dict(self._req("GET", f"/sessions/{sid}/models/{mid}")["modelo"])
+
+    def job(self, sid: str, job: str) -> dict[str, Any]:
+        return dict(self._req("GET", f"/sessions/{sid}/jobs/{job}"))
+
+    def enviar_texto(self, sid: str, texto: str) -> dict[str, Any]:
+        """Envia texto como entrada (material a interpretar), sem passar pela conversa."""
+        return dict(self._req("POST", f"/sessions/{sid}/inputs", data={"texto": texto}))
 
     def arquivo(self, sid: str, mid: str, tipo: str) -> bytes:
         dados: bytes = self._req("GET", f"/sessions/{sid}/models/{mid}/files/{tipo}")

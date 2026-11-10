@@ -8,3 +8,4 @@ services:
       LLM_MODE: replay
       AGENT_ARCHIMATE_URL: http://agent-archimate:8000
       TOOL_ARCHI_URL: http://tool-archi:8000
+      MCP_URL: http://mcp:8000/mcp
