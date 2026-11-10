@@ -7,8 +7,8 @@ import pytest
 from lxml import etree
 
 from archagent.agents.archimate.exchange import NS, exportar, parse_seguro, validar_v1
-from archagent.agents.archimate.layout import gerar_visoes
-from archagent.agents.archimate.model import Elemento, Modelo, Relacao
+from archagent.agents.archimate.layout import _atravessa, gerar_visoes
+from archagent.agents.archimate.model import Elemento, Modelo, Relacao, Visao
 from archagent.agents.archimate.rules import (
     Regras,
     RegrasInvalidas,
@@ -93,6 +93,67 @@ def test_layout_divide_acima_do_limite(regras: Regras) -> None:
     layered = [v for v in visoes if v.viewpoint == "Layered"]
     assert [len(v.nos) for v in layered] == [20, 20, 5]
     assert layered[0].nome.endswith("(1/3)")
+
+
+def _linhas_atravessam_caixas(m: Modelo, v: Visao) -> list[str]:
+    centro = {n.elemento: (n.x + n.w / 2, n.y + n.h / 2) for n in v.nos}
+    caixa = {n.elemento: (n.x + 4, n.y + 4, n.x + n.w - 4, n.y + n.h - 4) for n in v.nos}
+    rels = {r.id: r for r in m.relacoes}
+    ruins = []
+    for c in v.conexoes:
+        r = rels[c.relacao]
+        for e, cx in caixa.items():
+            if e not in (r.origem, r.destino) and _atravessa(
+                centro[r.origem], centro[r.destino], cx
+            ):
+                ruins.append(f"{r.origem}->{r.destino} atravessa {e}")
+    return ruins
+
+
+def test_layout_linha_nao_atravessa_caixa(regras: Regras) -> None:
+    # Três componentes ligados ao mesmo: numa só linha da grade, uma linha passaria por dentro.
+    comps = ["api", "portal", "registro", "backoffice"]
+    m = Modelo(
+        elementos=[Elemento(id=f"id-{c}", tipo="ApplicationComponent", nome=c) for c in comps],
+        relacoes=[
+            Relacao(tipo="Serving", origem="id-api", destino="id-portal"),
+            Relacao(tipo="Serving", origem="id-api", destino="id-registro"),
+            Relacao(tipo="Serving", origem="id-api", destino="id-backoffice"),
+            Relacao(tipo="Serving", origem="id-registro", destino="id-backoffice"),
+        ],
+    )
+    for v in gerar_visoes(m, regras):
+        assert _linhas_atravessam_caixas(m, v) == []
+    for v in gerar_visoes(modelo_portal(), regras):
+        assert _linhas_atravessam_caixas(modelo_portal(), v) == []
+
+
+def test_layout_deterministico(regras: Regras) -> None:
+    def posicoes() -> list[tuple[str, int, int]]:
+        return [
+            (n.elemento, n.x, n.y) for v in gerar_visoes(modelo_portal(), regras) for n in v.nos
+        ]
+
+    assert posicoes() == posicoes()
+
+
+def test_relacoes_paralelas_ganham_dobra_e_exportam(regras: Regras) -> None:
+    m = Modelo(
+        elementos=[
+            Elemento(id="id-a", tipo="ApplicationComponent", nome="A"),
+            Elemento(id="id-b", tipo="ApplicationComponent", nome="B"),
+        ],
+        relacoes=[
+            Relacao(id="id-r1", tipo="Serving", origem="id-a", destino="id-b"),
+            Relacao(id="id-r2", tipo="Flow", origem="id-b", destino="id-a", nome="Dados"),
+        ],
+    )
+    m.visoes = gerar_visoes(m, regras)
+    dobras = {c.relacao: c.dobras for c in m.visoes[0].conexoes}
+    assert dobras["id-r1"] == [] and len(dobras["id-r2"]) == 1
+    xml = exportar(m)
+    assert validar_v1(xml, regras.xsd_dir) == []
+    assert len(parse_seguro(xml).findall(f".//{{{NS}}}bendpoint")) == len(m.visoes)
 
 
 # ----------------------------------------------------------------- exportação (V1)

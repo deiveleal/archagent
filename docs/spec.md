@@ -343,7 +343,9 @@ ajustar sem mudar código.
 1. Cada viewpoint escolhe os seus elementos.
 2. Os elementos são ordenados por percurso em largura pelas ligações, para que elementos ligados fiquem perto.
 3. Acima de 20 elementos, a visão é dividida em partes ("(1/2)", "(2/2)").
-4. Cada camada vira uma faixa (grupo no Archi), de cima para baixo: Negócio, Aplicação, Tecnologia. Dentro da faixa, grade de até 6 colunas, elemento 120 × 55, espaço de 40.
+4. Cada camada vira uma faixa (grupo no Archi), de cima para baixo: Negócio, Aplicação, Tecnologia. Dentro da faixa, grade de até 6 colunas, elemento 150 × 60, espaço de 60 na horizontal e 70 na vertical, e uma linha a mais para manobra (tirada se ficar vazia).
+5. Busca local determinística: troca elementos de célula dentro da mesma faixa enquanto o custo cair. O custo soma o comprimento das linhas, 6 por caixa atravessada por uma linha, 6 por nome de relação sobre uma caixa ou sobre outro nome e 1,5 por cruzamento de linhas.
+6. A partir da 2ª relação entre o mesmo par de elementos, a linha ganha um ponto de dobra ao lado, para não ficar sobreposta.
 
 Os limites ficam em `coerencia.yaml` (`limites`).
 
