@@ -41,7 +41,7 @@
 
 Critérios de saída de cada fase: plano, seção 3.7.
 
-O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa faltam P-12 e P-13.
+O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa falta a P-12 (a P-13 é resolvida no PR #23, na `agent/archimate`).
 
 ## 4. Entregas
 
