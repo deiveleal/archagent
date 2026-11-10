@@ -137,6 +137,8 @@ def _visao(pai: etree._Element, v: Visao, m: Modelo) -> None:
             target=no_por_elemento[r.destino],
         )
         con.set(f"{{{XSI}}}type", "Relationship")
+        for bx, by in conexao.dobras:
+            etree.SubElement(con, _q("bendpoint"), x=str(bx), y=str(by))
 
 
 class _LocalResolver(etree.Resolver):
