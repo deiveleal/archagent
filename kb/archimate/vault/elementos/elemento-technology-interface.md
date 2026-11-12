@@ -7,9 +7,9 @@ tags: [estrutura-ativa, porta, protocolo]
 fontes:
   - "ArchiMate 3.2, cap. 10 (Camada de Tecnologia)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Interface de tecnologia (TechnologyInterface)

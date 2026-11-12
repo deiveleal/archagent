@@ -1,6 +1,6 @@
 # Acompanhamento — ArchAgent
 
-> Atualizado em: 2026-11-09 · Responsável: Deive Leal
+> Atualizado em: 2026-11-12 · Responsável: Deive Leal
 >
 > Documento vivo. É atualizado **ao fim de toda tarefa**, no mesmo PR que a
 > entrega (plano, seção 2.1).
@@ -33,7 +33,7 @@
 | Fase | Status | Início | Fim | Critério de saída atingido? | PR |
 | --- | --- | --- | --- | --- | --- |
 | F0 — Fundação | Concluída | 2026-11-08 | 2026-11-08 | Sim; CI obrigatória no ruleset desde 2026-11-09 (P-10) | #2, #3 |
-| F1 — Base de conhecimento, modelo ArchiMate e validação | Em andamento | 2026-11-08 | — | — | — |
+| F1 — Base de conhecimento, modelo ArchiMate e validação | Concluída | 2026-11-08 | 2026-11-12 | Sim: V1–V5 nos exemplos ouro, visões legíveis no Archi (P-13) e 46 notas do vault revisadas (P-12) | #5, #23, #25, #27 |
 | F2 — Entrada por texto e transcrição | Concluída | 2026-11-08 | 2026-11-08 | Sim: briefing correto nos 5 exemplos ouro e metas N3 atingidas | #7, #11 |
 | F3 — Modelagem a partir do briefing | Concluída | 2026-11-08 | 2026-11-08 | Sim: os 5 exemplos geram modelos viáveis em V1–V5 | #12 |
 | F4 — Entrada por desenho | Concluída | 2026-11-08 | 2026-11-08 | Sim: EX-004 (`.drawio`) e EX-005 (imagem) geram briefing e modelo viáveis; leitor `.drawio` com XXE recusado; imagem ilegível vira falha | Entregue dentro de #7, #11 e #12 |
@@ -41,7 +41,7 @@
 
 Critérios de saída de cada fase: plano, seção 3.7.
 
-O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a etapa falta só a P-12 (revisão do vault pelo arquiteto).
+O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Com a P-12 resolvida em 2026-11-12, as seis fases estão concluídas e a **Etapa 1 está fechada** (falta só mesclar `agent/archimate` na `main`).
 
 ## 4. Entregas
 
@@ -72,6 +72,7 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | 2026-11-09 | Agente: layout legível das visões (P-13, D-17): caixas maiores, busca local na grade, dobra nas relações paralelas; testes de linhas que atravessam caixas | `task/archimate/layout-legivel` | PR #23 |
 | 2026-11-09 | Desenho de arquitetura v1.1: container `mcp` e cliente MCP na página de containers (P-16) | `docs/p16-mcp-no-desenho` | PR #24 |
 | 2026-11-09 | Agente: pré-revisão do vault (6 notas com direção de relação corrigida), comando `kb_tools revisar` e roteiro de revisão para a P-12 | `task/archimate/vault-pre-revisao` | PR #25 |
+| 2026-11-12 | Agente: revisão das 46 notas do vault pelo arquiteto (21 com conteúdo ajustado, ver [`revisao-vault.md`](revisao-vault.md) §5); compose com `VAULT_INCLUIR_RASCUNHOS=false` por padrão (D-19). Fecha a F1 e a Etapa 1 | `task/archimate/revisao-vault` | PR #27 |
 
 ## 5. Pendências
 
@@ -87,7 +88,8 @@ O código da Etapa 1 está na `main` desde 2026-11-09 (PR #16). Para fechar a et
 | P-08 | ~~Se o Archi 5 roda na CI do GitHub~~ **Resolvida:** roda; os testes N2 com o `tool-archi` passam no `ubuntu-latest` | Harness §13 | F1 (2026-11-08) |
 | P-09 | Regra de aprovação de revisor quando entrar mais alguém | Harness §13 | Quando houver segunda pessoa |
 | P-10 | ~~Adicionar as verificações obrigatórias ao ruleset~~ **Resolvida:** `N0` e `N1 + N2` obrigatórios na `main` e nas `agent/*` (D-18) | Decisão D-02 | 2026-11-09 |
-| P-12 | Revisão das 46 notas do vault pelo arquiteto (hoje em `rascunho`; o agente usa os rascunhos com `VAULT_INCLUIR_RASCUNHOS=true`). Pré-revisão feita em 2026-11-09 (6 notas corrigidas) e roteiro em [`revisao-vault.md`](revisao-vault.md); falta o arquiteto revisar e marcar | Critério de saída da F1 | Antes de fechar a F1 |
+| P-12 | ~~Revisão das 46 notas do vault pelo arquiteto~~ **Resolvida:** as 46 notas estão `revisado`; 21 tiveram o conteúdo ajustado (registro em [`revisao-vault.md`](revisao-vault.md)) | Critério de saída da F1 | 2026-11-12 |
+| P-17 | O `eval.yml` ainda define `VAULT_INCLUIR_RASCUNHOS: "true"`; passar para `false` numa branch `core/*` (a branch do agente não altera `.github/`). Sem efeito hoje, porque todas as notas estão revisadas | D-19 | Próxima mudança no núcleo |
 | P-13 | ~~Abrir no Archi 5 um `.archimate` gerado e conferir se as visões estão legíveis (V5 manual)~~ **Resolvida:** o Archi 5.10 abriu os modelos, mas as visões não estavam legíveis (linhas atravessando caixas, nomes cortados, rótulos sobrepostos). Layout refeito (D-17) e conferido nas imagens que o próprio Archi gera (`--html.createReport`) para 3 modelos de sessões reais | Critério de saída da F1 | 2026-11-09 |
 | P-15 | ~~O `eval.yml` precisa subir o `tool-archi`~~ **Resolvida** no PR #13 | Avaliação da F3 | 2026-11-08 |
 | P-14 | ~~Cadastrar o secret `DASHSCOPE_API_KEY` no GitHub para o `eval.yml`~~ **Resolvida:** secret cadastrado; avaliação rápida na `main` (execução 42592506378) atingiu todas as metas | Harness §6.1 | 2026-11-09 |
@@ -173,6 +175,7 @@ ficam aqui.
 | D-16 | 2026-11-09 | Tempo limite padrão do LLM de 60 s para 180 s | Uma transcrição de reunião de 7 KB (kickoff do Sistema de Gestão de Frota) estourou 60 s nas 3 tentativas da interpretação; com 180 s, passou |
 | D-17 | 2026-11-09 | Layout das visões com caixas de 150 × 60, mais espaço e busca local que evita linhas atravessando caixas, rótulos sobre caixas e cruzamentos; dobra nas relações paralelas | Na P-13, o layout em grade pela ordem do percurso deixava as visões ilegíveis no Archi |
 | D-18 | 2026-11-09 | Verificações obrigatórias no ruleset: só `N0` e `N1 + N2` (do `ci.yml`), sem exigir PR atualizado com a base | O `eval.yml` e o `kb.yml` só rodam quando o PR mexe em certas pastas; obrigatórios, travariam PRs só de documentação. A avaliação segue rodando e comentando nos PRs que mexem no agente |
+| D-19 | 2026-11-12 | `VAULT_INCLUIR_RASCUNHOS=false` por padrão no compose: o agente só usa notas revisadas | Revisão das 46 notas concluída (P-12); notas novas, como as propostas de aprendizado, só entram depois de revisadas |
 | D-04 | 2026-11-08 | Novo tipo de branch `docs/<descricao>` para mudanças só de documentação, com PR direto para a `main` | Toda tarefa sobe ao GitHub, inclusive as de documentação, e a `main` só aceita PR |
 
 ## 9. Backlog

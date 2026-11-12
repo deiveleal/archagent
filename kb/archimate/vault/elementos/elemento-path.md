@@ -7,9 +7,9 @@ tags: [estrutura-ativa, comunicacao, link]
 fontes:
   - "ArchiMate 3.2, cap. 10 (Camada de Tecnologia)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Caminho (Path)
@@ -26,4 +26,4 @@ revisado_em: null
 
 **Relações típicas:** liga [[elemento-node]] por Association; é realizado por [[elemento-communication-network]].
 
-**Exemplo:** "VPN matriz–filial".
+**Exemplo:** "Ligação matriz–filial", realizada pela rede "VPN corporativa".

@@ -7,9 +7,9 @@ tags: [comportamento, oferta, valor]
 fontes:
   - "ArchiMate 3.2, cap. 8 (Camada de Negócio)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Serviço de negócio (BusinessService)
@@ -22,7 +22,7 @@ revisado_em: null
 
 **Confusões comuns:** Serviço × Processo: serviço é o que se oferece; processo é como se entrega.
 
-**Como nomear:** substantivo ou verbo que expressa o valor. Ex.: "Entrega de pedidos".
+**Como nomear:** substantivo de ação, do ponto de vista de quem usa; não repita o nome do processo que o realiza. Ex.: "Entrega de pedidos".
 
 **Relações típicas:** é realizado por [[elemento-business-process]]; serve [[elemento-business-actor]] e [[elemento-business-role]].
 

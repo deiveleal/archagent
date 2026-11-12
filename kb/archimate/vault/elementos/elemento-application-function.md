@@ -7,9 +7,9 @@ tags: [comportamento, funcionalidade]
 fontes:
   - "ArchiMate 3.2, cap. 9 (Camada de Aplicação)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Função de aplicação (ApplicationFunction)
@@ -22,7 +22,7 @@ revisado_em: null
 
 **Confusões comuns:** Função × Serviço: a função é interna; o serviço é a parte visível.
 
-**Como nomear:** substantivo de atividade ou verbo. Ex.: "Cálculo de frete".
+**Como nomear:** substantivo de atividade (verbo no infinitivo é para processo). Ex.: "Cálculo de frete".
 
 **Relações típicas:** recebe Assignment de [[elemento-application-component]]; realiza [[elemento-application-service]]; acessa [[elemento-data-object]].
 

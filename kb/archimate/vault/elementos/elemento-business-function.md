@@ -7,9 +7,9 @@ tags: [comportamento, capacidade, area]
 fontes:
   - "ArchiMate 3.2, cap. 8 (Camada de Negócio)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Função de negócio (BusinessFunction)
@@ -24,6 +24,6 @@ revisado_em: null
 
 **Como nomear:** substantivo de atividade. Ex.: "Gestão de clientes".
 
-**Relações típicas:** recebe Assignment de [[elemento-business-role]]; é composta por (Composition) [[elemento-business-process]]; é servida por [[elemento-application-service]].
+**Relações típicas:** recebe Assignment de [[elemento-business-role]]; é composta por (Composition) [[elemento-business-process]]; é servida por [[elemento-application-component]] (ou por [[elemento-application-service]], quando a entrada o cita).
 
 **Exemplo:** "Gestão de estoque" composta pelo processo "Repor produto".

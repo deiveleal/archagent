@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from pathlib import Path
 
@@ -10,6 +11,19 @@ from archagent.agents.archimate.vault import Vault, ler_nota, tokens, validar_no
 from .conftest import KB
 
 VAULT = KB / "archimate" / "vault"
+
+
+def _vault_em_rascunho(tmp_path: Path) -> Path:
+    """Cópia do vault com todas as notas de volta a `rascunho`."""
+    pasta = tmp_path / "vault"
+    shutil.copytree(VAULT, pasta)
+    for arq in pasta.rglob("*.md"):
+        texto = arq.read_text("utf-8")
+        texto = re.sub(r"^status: revisado$", "status: rascunho", texto, flags=re.M)
+        texto = re.sub(r"^revisado_por: .*$", "revisado_por: null", texto, flags=re.M)
+        texto = re.sub(r"^revisado_em: .*$", "revisado_em: null", texto, flags=re.M)
+        arq.write_text(texto, "utf-8")
+    return pasta
 
 
 def vault() -> Vault:
@@ -23,7 +37,15 @@ def test_tokens_sem_acento_e_camelcase() -> None:
 def test_so_revisadas_por_padrao() -> None:
     v = Vault.carregar(VAULT)
     assert all(n.status == "revisado" for n in v.notas.values())
-    assert len(v.rascunhos) >= 35
+    # P-12: as 46 notas iniciais foram revisadas; nenhuma fica de fora por padrão
+    assert len(v.notas) >= 46
+    assert v.rascunhos == []
+
+
+def test_rascunho_fica_de_fora_por_padrao(tmp_path: Path) -> None:
+    pasta = _vault_em_rascunho(tmp_path)
+    assert Vault.carregar(pasta).notas == {}
+    assert len(Vault.carregar(pasta, incluir_rascunhos=True).notas) >= 46
 
 
 def test_ficha_elemento() -> None:
@@ -85,8 +107,7 @@ def test_revisar_marca_notas_e_passa_no_check(tmp_path: Path) -> None:
 
     from archagent.agents.archimate.kb_tools import marcar_revisadas
 
-    vault = tmp_path / "vault"
-    shutil.copytree(KB / "archimate" / "vault", vault)
+    vault = _vault_em_rascunho(tmp_path)
     feitas = marcar_revisadas(vault, "Arquiteto Teste", ["elemento-node"], date(2026, 11, 9))
     assert feitas == ["elemento-node"]
     nota = ler_nota(next(vault.rglob("elemento-node.md")))

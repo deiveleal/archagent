@@ -7,9 +7,9 @@ tags: [estrutura-ativa, canal, atendimento]
 fontes:
   - "ArchiMate 3.2, cap. 8 (Camada de Negócio)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Interface de negócio (BusinessInterface)
