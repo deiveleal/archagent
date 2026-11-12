@@ -7,9 +7,9 @@ tags: [comportamento, integracao]
 fontes:
   - "ArchiMate 3.2, cap. 9 (Camada de Aplicação)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Interação de aplicação (ApplicationInteraction)

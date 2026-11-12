@@ -7,9 +7,9 @@ tags: [comportamento, gatilho]
 fontes:
   - "ArchiMate 3.2, cap. 8 (Camada de Negócio)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Evento de negócio (BusinessEvent)
@@ -24,6 +24,6 @@ revisado_em: null
 
 **Como nomear:** fato no particípio. Ex.: "Pedido recebido".
 
-**Relações típicas:** dispara (Triggering) [[elemento-business-process]].
+**Relações típicas:** dispara (Triggering) [[elemento-business-process]]; também pode ser disparado por um processo, como evento de fim ("Pedido entregue").
 
 **Exemplo:** "Pedido recebido" dispara "Separar pedido".

@@ -1,10 +1,10 @@
 # Revisão do vault pelo arquiteto (P-12)
 
-> Criado em 2026-11-09. Some quando a P-12 for resolvida (todas as notas `revisado`).
+> Criado em 2026-11-09. **Concluído em 2026-11-12:** as 46 notas estão `revisado` (P-12 resolvida). O documento fica como registro da revisão.
 
 A F1 só fecha quando as 46 notas de `kb/archimate/vault/` estiverem revisadas pelo
-arquiteto (plano §3.7). Hoje todas estão em `rascunho`, e o agente as usa por causa de
-`VAULT_INCLUIR_RASCUNHOS=true` (decisão D-07).
+arquiteto (plano §3.7). Até a revisão, todas estavam em `rascunho`, e o agente as usava por causa de
+`VAULT_INCLUIR_RASCUNHOS=true` (decisão D-07). Depois dela, o padrão voltou a `false`.
 
 ## 1. O que a pré-revisão já conferiu
 
@@ -54,58 +54,80 @@ Quando todas estiverem revisadas, `VAULT_INCLUIR_RASCUNHOS` pode voltar para `fa
 
 ### Elementos (35)
 
-- [ ] `elemento-application-collaboration` — Colaboração de aplicação (ApplicationCollaboration)
-- [ ] `elemento-application-component` — Componente de aplicação (ApplicationComponent)
-- [ ] `elemento-application-event` — Evento de aplicação (ApplicationEvent)
-- [ ] `elemento-application-function` — Função de aplicação (ApplicationFunction)
-- [ ] `elemento-application-interaction` — Interação de aplicação (ApplicationInteraction)
-- [ ] `elemento-application-interface` — Interface de aplicação (ApplicationInterface)
-- [ ] `elemento-application-process` — Processo de aplicação (ApplicationProcess)
-- [ ] `elemento-application-service` — Serviço de aplicação (ApplicationService)
-- [ ] `elemento-artifact` — Artefato (Artifact) — **corrigida na pré-revisão**
-- [ ] `elemento-business-actor` — Ator de negócio (BusinessActor)
-- [ ] `elemento-business-collaboration` — Colaboração de negócio (BusinessCollaboration)
-- [ ] `elemento-business-event` — Evento de negócio (BusinessEvent)
-- [ ] `elemento-business-function` — Função de negócio (BusinessFunction) — **corrigida na pré-revisão**
-- [ ] `elemento-business-interaction` — Interação de negócio (BusinessInteraction)
-- [ ] `elemento-business-interface` — Interface de negócio (BusinessInterface)
-- [ ] `elemento-business-object` — Objeto de negócio (BusinessObject)
-- [ ] `elemento-business-process` — Processo de negócio (BusinessProcess)
-- [ ] `elemento-business-role` — Papel de negócio (BusinessRole)
-- [ ] `elemento-business-service` — Serviço de negócio (BusinessService)
-- [ ] `elemento-communication-network` — Rede de comunicação (CommunicationNetwork)
-- [ ] `elemento-contract` — Contrato (Contract)
-- [ ] `elemento-data-object` — Objeto de dados (DataObject)
-- [ ] `elemento-device` — Dispositivo (Device)
-- [ ] `elemento-node` — Nó (Node) — **corrigida na pré-revisão**
-- [ ] `elemento-path` — Caminho (Path)
-- [ ] `elemento-product` — Produto (Product)
-- [ ] `elemento-representation` — Representação (Representation)
-- [ ] `elemento-system-software` — Software de sistema (SystemSoftware) — **corrigida na pré-revisão**
-- [ ] `elemento-technology-collaboration` — Colaboração de tecnologia (TechnologyCollaboration)
-- [ ] `elemento-technology-event` — Evento de tecnologia (TechnologyEvent)
-- [ ] `elemento-technology-function` — Função de tecnologia (TechnologyFunction)
-- [ ] `elemento-technology-interaction` — Interação de tecnologia (TechnologyInteraction)
-- [ ] `elemento-technology-interface` — Interface de tecnologia (TechnologyInterface)
-- [ ] `elemento-technology-process` — Processo de tecnologia (TechnologyProcess)
-- [ ] `elemento-technology-service` — Serviço de tecnologia (TechnologyService)
+- [x] `elemento-application-collaboration` — Colaboração de aplicação (ApplicationCollaboration)
+- [x] `elemento-application-component` — Componente de aplicação (ApplicationComponent)
+- [x] `elemento-application-event` — Evento de aplicação (ApplicationEvent)
+- [x] `elemento-application-function` — Função de aplicação (ApplicationFunction)
+- [x] `elemento-application-interaction` — Interação de aplicação (ApplicationInteraction)
+- [x] `elemento-application-interface` — Interface de aplicação (ApplicationInterface)
+- [x] `elemento-application-process` — Processo de aplicação (ApplicationProcess)
+- [x] `elemento-application-service` — Serviço de aplicação (ApplicationService)
+- [x] `elemento-artifact` — Artefato (Artifact) — **corrigida na pré-revisão**
+- [x] `elemento-business-actor` — Ator de negócio (BusinessActor)
+- [x] `elemento-business-collaboration` — Colaboração de negócio (BusinessCollaboration)
+- [x] `elemento-business-event` — Evento de negócio (BusinessEvent)
+- [x] `elemento-business-function` — Função de negócio (BusinessFunction) — **corrigida na pré-revisão**
+- [x] `elemento-business-interaction` — Interação de negócio (BusinessInteraction)
+- [x] `elemento-business-interface` — Interface de negócio (BusinessInterface)
+- [x] `elemento-business-object` — Objeto de negócio (BusinessObject)
+- [x] `elemento-business-process` — Processo de negócio (BusinessProcess)
+- [x] `elemento-business-role` — Papel de negócio (BusinessRole)
+- [x] `elemento-business-service` — Serviço de negócio (BusinessService)
+- [x] `elemento-communication-network` — Rede de comunicação (CommunicationNetwork)
+- [x] `elemento-contract` — Contrato (Contract)
+- [x] `elemento-data-object` — Objeto de dados (DataObject)
+- [x] `elemento-device` — Dispositivo (Device)
+- [x] `elemento-node` — Nó (Node) — **corrigida na pré-revisão**
+- [x] `elemento-path` — Caminho (Path)
+- [x] `elemento-product` — Produto (Product)
+- [x] `elemento-representation` — Representação (Representation)
+- [x] `elemento-system-software` — Software de sistema (SystemSoftware) — **corrigida na pré-revisão**
+- [x] `elemento-technology-collaboration` — Colaboração de tecnologia (TechnologyCollaboration)
+- [x] `elemento-technology-event` — Evento de tecnologia (TechnologyEvent)
+- [x] `elemento-technology-function` — Função de tecnologia (TechnologyFunction)
+- [x] `elemento-technology-interaction` — Interação de tecnologia (TechnologyInteraction)
+- [x] `elemento-technology-interface` — Interface de tecnologia (TechnologyInterface)
+- [x] `elemento-technology-process` — Processo de tecnologia (TechnologyProcess)
+- [x] `elemento-technology-service` — Serviço de tecnologia (TechnologyService)
 
 ### Padrões (4)
 
-- [ ] `padrao-banco-de-dados` — Dados guardados em banco
-- [ ] `padrao-camadas-ligadas` — Camadas ligadas por serviços
-- [ ] `padrao-conteineres-e-nuvem` — Aplicações em contêineres e nuvem — **corrigida na pré-revisão**
-- [ ] `padrao-integracao-por-api` — Integração entre sistemas por API
+- [x] `padrao-banco-de-dados` — Dados guardados em banco
+- [x] `padrao-camadas-ligadas` — Camadas ligadas por serviços
+- [x] `padrao-conteineres-e-nuvem` — Aplicações em contêineres e nuvem — **corrigida na pré-revisão**
+- [x] `padrao-integracao-por-api` — Integração entre sistemas por API
 
 ### Antipadrões (4)
 
-- [ ] `antipadrao-associacao-generica` — Association para tudo
-- [ ] `antipadrao-banco-como-componente` — Banco de dados como componente de aplicação
-- [ ] `antipadrao-elemento-solto` — Elemento solto
-- [ ] `antipadrao-sistema-como-ator` — Sistema modelado como ator de negócio — **corrigida na pré-revisão**
+- [x] `antipadrao-associacao-generica` — Association para tudo
+- [x] `antipadrao-banco-como-componente` — Banco de dados como componente de aplicação
+- [x] `antipadrao-elemento-solto` — Elemento solto
+- [x] `antipadrao-sistema-como-ator` — Sistema modelado como ator de negócio — **corrigida na pré-revisão**
 
 ### Convenções (3)
 
-- [ ] `convencao-escolha-de-relacoes` — Escolha da relação
-- [ ] `convencao-nomes` — Nomes dos elementos
-- [ ] `convencao-origem-e-premissa` — Origem e premissa
+- [x] `convencao-escolha-de-relacoes` — Escolha da relação
+- [x] `convencao-nomes` — Nomes dos elementos
+- [x] `convencao-origem-e-premissa` — Origem e premissa
+
+## 5. Resultado da revisão (2026-11-12)
+
+Revisão do arquiteto (Deive Leal), em 5 lotes, com apoio do Claude Code. Todas as
+relações citadas nas notas foram conferidas contra `kb/archimate/regras/relacoes.json`
+(Archi 5.10): nenhuma proibida. Mudanças de conteúdo aprovadas:
+
+| Nota | Mudança |
+| --- | --- |
+| `convencao-escolha-de-relacoes` | Realization cobre também artefato → componente e objeto de dados → objeto de negócio |
+| `convencao-nomes` | Regras para serviços (substantivo de ação, sem repetir o processo) e funções (área de atuação) |
+| `padrao-camadas-ligadas` | Ator → papel → processo quando a entrada cita cargo ou papel |
+| `padrao-integracao-por-api` | Direção da Composition explícita; a interface pode servir quem chama quando não há serviço citado |
+| `elemento-business-process`, `elemento-business-function` | Servidos diretamente pelo componente (D-12); serviço só quando citado |
+| `elemento-business-service`, `elemento-application-service`, `elemento-application-function` | Regras de nome alinhadas à convenção |
+| `elemento-contract` | "Ligado a produto" vira Aggregation pelo produto |
+| `elemento-business-event` | Também pode ser disparado por processo (evento de fim) |
+| `elemento-business-actor` | "Usa interface" vira Serving da interface ou Composition |
+| `elemento-application-interface` | Exemplo "Portal Web" como interface contradizia o prompt e a D-11; agora "Tela de checkout" do componente "Portal Web" |
+| `elemento-application-component` | Inclui o Serving direto ao processo de negócio (D-12); exemplo sem serviço inventado |
+| `elemento-device` | "Compõe nó" vira Composition nó → dispositivo |
+| `elemento-path` | Exemplo "VPN" contradizia a nota de rede; agora "Ligação matriz–filial" realizada pela "VPN corporativa" |

@@ -6,9 +6,9 @@ tags: [relacoes]
 fontes:
   - "ArchiMate 3.2"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Escolha da relação
@@ -16,7 +16,7 @@ revisado_em: null
 | Situação | Relação |
 | --- | --- |
 | A oferece algo que B usa | Serving (A → B) |
-| A implementa o serviço B | Realization (A → B) |
+| A implementa ou materializa B (o processo realiza o serviço, o artefato realiza o componente, o objeto de dados realiza o objeto de negócio) | Realization (A → B) |
 | A executa ou é responsável por B | Assignment (A → B) |
 | A lê ou grava o dado B | Access (A → B), com Read, Write ou ReadWrite |
 | Informação passa de A para B | Flow (A → B) |

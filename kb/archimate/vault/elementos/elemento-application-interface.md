@@ -7,9 +7,9 @@ tags: [estrutura-ativa, api, tela, endpoint]
 fontes:
   - "ArchiMate 3.2, cap. 9 (Camada de Aplicação)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Interface de aplicação (ApplicationInterface)
@@ -26,4 +26,4 @@ revisado_em: null
 
 **Relações típicas:** faz parte (Composition) de [[elemento-application-component]]; serve [[elemento-business-actor]] ou outro componente; disponibiliza [[elemento-application-service]] (Assignment).
 
-**Exemplo:** "Portal Web" (tela) do componente "Front-end de vendas".
+**Exemplo:** "Tela de checkout" (interface) do componente "Portal Web". O "Portal Web" em si é sistema, não interface.

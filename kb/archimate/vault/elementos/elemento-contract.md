@@ -7,9 +7,9 @@ tags: [estrutura-passiva, acordo, sla]
 fontes:
   - "ArchiMate 3.2, cap. 8 (Camada de Negócio)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Contrato (Contract)
@@ -24,6 +24,6 @@ revisado_em: null
 
 **Como nomear:** substantivo. Ex.: "Contrato de fornecimento".
 
-**Relações típicas:** é acessado por [[elemento-business-process]]; é ligado a [[elemento-product]].
+**Relações típicas:** é acessado por [[elemento-business-process]]; é agregado (Aggregation) por [[elemento-product]].
 
-**Exemplo:** "SLA de atendimento" ligado ao produto "Suporte Premium".
+**Exemplo:** "SLA de atendimento" agregado pelo produto "Suporte Premium".

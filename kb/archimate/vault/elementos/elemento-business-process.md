@@ -7,9 +7,9 @@ tags: [comportamento, fluxo, atividade]
 fontes:
   - "ArchiMate 3.2, cap. 8 (Camada de Negócio)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Processo de negócio (BusinessProcess)
@@ -24,6 +24,6 @@ revisado_em: null
 
 **Como nomear:** verbo no infinitivo + objeto. Ex.: "Registrar pedido", "Aprovar crédito".
 
-**Relações típicas:** recebe Assignment de [[elemento-business-actor]] ou [[elemento-business-role]]; é servido por [[elemento-application-service]]; realiza [[elemento-business-service]]; acessa [[elemento-business-object]]; dispara (Triggering) outros processos.
+**Relações típicas:** recebe Assignment de [[elemento-business-actor]] ou [[elemento-business-role]]; é servido por [[elemento-application-component]] (ou por [[elemento-application-service]], quando a entrada o cita); realiza [[elemento-business-service]]; acessa [[elemento-business-object]]; dispara (Triggering) outros processos.
 
-**Exemplo:** "Registrar pedido" atribuído ao "Cliente" e servido pelo serviço de aplicação "Serviço de pedidos".
+**Exemplo:** "Registrar pedido" atribuído ao "Cliente" e servido pelo componente "Sistema de Pedidos".

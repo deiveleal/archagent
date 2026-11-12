@@ -7,9 +7,9 @@ tags: [estrutura-ativa, pessoa, organizacao, area]
 fontes:
   - "ArchiMate 3.2, cap. 8 (Camada de Negócio)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Ator de negócio (BusinessActor)
@@ -24,6 +24,6 @@ revisado_em: null
 
 **Como nomear:** substantivo no singular, nome da pessoa, área ou organização. Ex.: "Cliente", "Área Financeira".
 
-**Relações típicas:** é atribuído (Assignment) a [[elemento-business-role]] ou diretamente a [[elemento-business-process]]; usa [[elemento-business-interface]].
+**Relações típicas:** é atribuído (Assignment) a [[elemento-business-role]] ou diretamente a [[elemento-business-process]]; é servido por [[elemento-business-interface]], ou a interface faz parte dele (Composition ator → interface).
 
 **Exemplo:** "Cliente" atribuído ao processo "Registrar pedido".

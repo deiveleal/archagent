@@ -7,9 +7,9 @@ tags: [estrutura-ativa, software, sistema, modulo]
 fontes:
   - "ArchiMate 3.2, cap. 9 (Camada de Aplicação)"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Componente de aplicação (ApplicationComponent)
@@ -24,6 +24,6 @@ revisado_em: null
 
 **Como nomear:** substantivo, nome do sistema ou módulo. Ex.: "API de Pedidos".
 
-**Relações típicas:** realiza [[elemento-application-service]]; é servido por [[elemento-technology-service]] ou [[elemento-system-software]]; é realizado por [[elemento-artifact]]; acessa [[elemento-data-object]].
+**Relações típicas:** serve (Serving) diretamente [[elemento-business-process]] (forma padrão, ver [[padrao-camadas-ligadas]]); realiza [[elemento-application-service]] quando a entrada o cita; é servido por [[elemento-technology-service]] ou [[elemento-system-software]]; é realizado por [[elemento-artifact]]; acessa [[elemento-data-object]].
 
-**Exemplo:** "API de Pedidos" realiza "Serviço de pedidos" e é servida pelo "PostgreSQL".
+**Exemplo:** "API de Pedidos" serve o processo "Registrar pedido" e é servida pelo "PostgreSQL".

@@ -6,9 +6,9 @@ tags: [camadas, servico]
 fontes:
   - "ArchiMate 3.2"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Camadas ligadas por serviços
@@ -19,7 +19,7 @@ revisado_em: null
 
 - Tecnologia → Aplicação: [[elemento-system-software]], [[elemento-node]] ou [[elemento-device]] servem (Serving) o [[elemento-application-component]].
 - Aplicação → Negócio: o [[elemento-application-component]] serve (Serving) o [[elemento-business-process]].
-- Negócio: o [[elemento-business-actor]] é atribuído (Assignment) ao processo.
+- Negócio: o [[elemento-business-actor]] é atribuído (Assignment) ao processo. Quando a entrada cita um cargo ou papel ("o atendente", "o gestor de frota"), use ator → [[elemento-business-role]] → processo, ambos por Assignment.
 
 **Forma detalhada (só quando a entrada cita os serviços):** o componente realiza (Realization) um [[elemento-application-service]], que serve o processo; a tecnologia realiza um [[elemento-technology-service]], que serve o componente. Pelas regras de derivação do ArchiMate, as duas formas são equivalentes.
 

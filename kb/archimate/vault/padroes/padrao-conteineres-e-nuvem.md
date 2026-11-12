@@ -6,9 +6,9 @@ tags: [kubernetes, nuvem, conteiner]
 fontes:
   - "ArchiMate 3.2"
   - "ArchiMate Cookbook"
-status: rascunho
-revisado_por: null
-revisado_em: null
+status: revisado
+revisado_por: "Deive Leal"
+revisado_em: 2026-11-12
 ---
 
 # Aplicações em contêineres e nuvem
